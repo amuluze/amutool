@@ -3,9 +3,11 @@ module gitee.com/amuluze/amutool
 go 1.17
 
 require (
+	github.com/google/go-querystring v1.1.0
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/pkg/errors v0.9.1
 	go.uber.org/zap v1.23.0
+	golang.org/x/net v0.0.0-20220826154423-83b083e8dc8b
 )
 
 require (
