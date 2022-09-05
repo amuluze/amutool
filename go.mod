@@ -13,6 +13,7 @@ require (
 require (
 	github.com/jonboulle/clockwork v0.3.0 // indirect
 	github.com/lestrrat-go/strftime v1.0.6 // indirect
+	github.com/levigross/grequests v0.0.0-20190908174114-253788527a1a // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 )
