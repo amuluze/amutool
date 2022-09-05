@@ -6,7 +6,7 @@ package requests
 
 import "net/http"
 
-type Response struct {
+type Responses struct {
 	Ok          bool
 	Error       error
 	RawResponse *http.Response
@@ -14,12 +14,12 @@ type Response struct {
 	Header      http.Header
 }
 
-func buildResponse(resp *http.Response, err error) (*Response, error) {
+func buildResponses(resp *http.Response, err error) (*Responses, error) {
 	if err != nil {
-		return &Response{Error: err}, err
+		return &Responses{Error: err}, err
 	}
 
-	goodResp := &Response{
+	goodResp := &Responses{
 		Ok:          resp.StatusCode >= 200 && resp.StatusCode < 300,
 		Error:       nil,
 		RawResponse: resp,

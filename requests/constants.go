@@ -8,8 +8,8 @@ import "time"
 
 const (
 	localUserAgent      = "Requests/0.10"
+	requestTimeout      = 30 * time.Second
 	dialTimeout         = 30 * time.Second
 	dialKeepAlive       = 30 * time.Second
 	tlshandshakeTimeout = 10 * time.Second
-	requestTimeout      = 30 * time.Second
 )
