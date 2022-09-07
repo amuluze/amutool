@@ -7,9 +7,10 @@ package requests
 import "time"
 
 const (
-	localUserAgent      = "Requests/0.10"
-	requestTimeout      = 30 * time.Second
-	dialTimeout         = 30 * time.Second
-	dialKeepAlive       = 30 * time.Second
-	tlshandshakeTimeout = 10 * time.Second
+	localUserAgent      = "Requests/0.10"  // userAgent
+	requestTimeout      = 30 * time.Second // 请求超时
+	tlshandshakeTimeout = 10 * time.Second // tls 协商超时时间
+	maxConnsPerHost     = 10               // 某一host的最大连接数
+	maxIdleConnsPerHost = 3                // 某一host的最大空闲连接数
+	idleConnTimeout     = 10 * time.Second // 空闲连接超时时间
 )

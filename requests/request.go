@@ -11,16 +11,10 @@ import (
 )
 
 func buildHttpRequest(method, url string, r *Requests) (*http.Request, error) {
+	// 这里对请求参数进行处理
+
 	return http.NewRequest(method, url, nil)
 }
-
-func addHeaders(r *Requests, req *http.Request) {
-	for key, value := range r.Headers {
-		req.Header.Set(key, value)
-	}
-}
-
-func addCookies(r *Requests, req *http.Request) {}
 
 func addQueryParams(parsedURL *url.URL, parsedQuery url.Values) string {
 	return strings.Join([]string{strings.Replace(parsedURL.String(), "?"+parsedURL.RawQuery, "", -1), parsedQuery.Encode()}, "?")

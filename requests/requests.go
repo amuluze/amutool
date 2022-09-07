@@ -68,5 +68,22 @@ func buildRequests(method, url string, r *Requests) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	addHeaders(r, req)
+	addCookies(r, req)
+
 	return httpClient.Do(req)
+}
+
+func addHeaders(r *Requests, req *http.Request) {
+	for key, value := range r.Headers {
+		req.Header.Add(key, value)
+	}
+}
+
+func addCookies(r *Requests, req *http.Request) {
+	for key, value := range r.Cookies {
+		cookie := http.Cookie{Name: key, Value: value}
+		req.AddCookie(&cookie)
+	}
 }
