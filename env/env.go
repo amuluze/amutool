@@ -4,9 +4,11 @@
 // Description:
 package env
 
-import "os"
+import (
+	"os"
+)
 
-// Getenv 获取本地系统变量
-func Getenv(key string) string {
+// GetEnv 获取本地系统变量
+func GetEnv(key string) string {
 	return os.Getenv(key)
 }
