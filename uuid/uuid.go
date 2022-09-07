@@ -4,7 +4,12 @@
 // Description:
 package uuid
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/sony/sonyflake"
+)
 
 // UUID Define alias
 type UUID = uuid.UUID
@@ -28,7 +33,28 @@ func MustString() string {
 	return MustUUID().String()
 }
 
-// MustParseUUIString convert uuid str to uuid
-func MustParseUUIString(uuidStr string) UUID {
+// MustParseUUIToString convert uuid str to uuid
+func MustParseUUIToString(uuidStr string) UUID {
 	return uuid.MustParse(uuidStr)
+}
+
+// SnowID 雪花id
+func SnowID() uint64 {
+	sf := sonyflake.NewSonyflake(sonyflake.Settings{
+		StartTime: time.Date(2021, 7, 28, 0, 0, 0, 0, time.UTC),
+	})
+	id, err := sf.NextID()
+	if err == nil {
+		return id
+	}
+
+	sleep := 1
+	for {
+		time.Sleep(time.Duration(sleep) * time.Millisecond)
+		id, err := sf.NextID()
+		if err == nil {
+			return id
+		}
+		sleep *= 2
+	}
 }

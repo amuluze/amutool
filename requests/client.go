@@ -11,14 +11,15 @@ var httpClient *http.Client
 func buildHttpClient(r *Requests) {
 	httpClient = &http.Client{
 		Transport: buildHttpTransport(r),
-		Timeout:   requestTimeout,
+		Timeout:   r.Timeout,
 	}
 }
 
 func buildHttpTransport(r *Requests) *http.Transport {
 	httpTransport := &http.Transport{
-		Proxy:       nil,
-		DialContext: nil,
+		MaxConnsPerHost:     r.MaxConnsPerHost,
+		MaxIdleConnsPerHost: r.MaxIdleConnsPerHost,
+		IdleConnTimeout:     r.IdleConnTimeout,
 	}
 	return httpTransport
 }

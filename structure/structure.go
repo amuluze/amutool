@@ -8,7 +8,7 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-// Copy 结构体映射
+// Copy 结构体映射，只会映射结构体中交集字段的值
 func Copy(s, ts interface{}) error {
 	return copier.Copy(ts, s)
 }

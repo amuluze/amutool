@@ -6,41 +6,34 @@ package requests
 
 import (
 	"net/http"
-	"net/url"
 	"time"
 )
 
 type Requests struct {
+	// 参数相关
 	Headers map[string]string // header
 	Cookies map[string]string // cookies
 	Data    map[string]string // data
 	Param   map[string]string // params
 
-	// DialTimeout is the maximum amount of time a dial will wait for a connect to complete
-	DialTimeout time.Duration
-
-	// KeepAlive specifies the keep-alive period for an active
-	// network connection. If zero, keep-alive are not enabled.
-	DialKeepAlive time.Duration
-
-	// TLSHandshakeTimeout specifies the maximum amount of time waiting to
-	// wait for a TLS handshake. Zero means no timeout.
+	// request 相关
+	DialTimeout         time.Duration
+	DialKeepAlive       time.Duration
 	TLSHandshakeTimeout time.Duration
 
-	// RequestTimeout is the maximum amount of time a whole request(include dial / request / redirect)
-	// will wait.
-	Timeout time.Duration
-
-	// Proxies is a map in the following format
-	// *protocol* => proxy address e.g http => http://127.0.0.1:8080
-	Proxies map[string]*url.URL
+	// Client 相关
+	Timeout             time.Duration
+	MaxConnsPerHost     int
+	MaxIdleConnsPerHost int
+	IdleConnTimeout     time.Duration
 }
 
 func NewRequests(options ...Options) *Requests {
 	requestsConfig := &Requests{
-		DialTimeout:   dialTimeout,
-		DialKeepAlive: dialKeepAlive,
-		Timeout:       requestTimeout,
+		MaxConnsPerHost:     maxConnsPerHost,
+		MaxIdleConnsPerHost: maxIdleConnsPerHost,
+		IdleConnTimeout:     idleConnTimeout,
+		Timeout:             requestTimeout,
 	}
 	for _, option := range options {
 		option(requestsConfig)

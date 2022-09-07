@@ -40,7 +40,6 @@ func AsString(src interface{}) string {
 			return string(b)
 		}
 	}
-	// return fmt.Sprintf("%v", src)
 }
 
 // ToInt64 any to int64

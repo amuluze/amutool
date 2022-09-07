@@ -7,6 +7,7 @@ require (
 	github.com/jinzhu/copier v0.3.5
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/pkg/errors v0.9.1
+	github.com/sony/sonyflake v1.1.0
 	go.uber.org/zap v1.23.0
 )
 
