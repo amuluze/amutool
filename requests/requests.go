@@ -5,16 +5,24 @@
 package requests
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 )
 
+type requestsHeaders map[string]string
+type requestsCookies map[string]string
+type requestsParam map[string]string
+type requestsData map[string]string
+type requestsJson interface{}
+
 type Requests struct {
 	// 参数相关
-	Headers map[string]string // header
-	Cookies map[string]string // cookies
-	Data    map[string]string // data
-	Param   map[string]string // params
+	Headers requestsHeaders // header
+	Cookies requestsCookies // cookies
+	Data    requestsData    // data
+	Json    requestsJson    // json
+	Param   requestsParam   // params
 
 	// request 相关
 	DialTimeout         time.Duration
@@ -28,15 +36,12 @@ type Requests struct {
 	IdleConnTimeout     time.Duration
 }
 
-func NewRequests(options ...Options) *Requests {
+func NewRequests() *Requests {
 	requestsConfig := &Requests{
 		MaxConnsPerHost:     maxConnsPerHost,
 		MaxIdleConnsPerHost: maxIdleConnsPerHost,
 		IdleConnTimeout:     idleConnTimeout,
 		Timeout:             requestTimeout,
-	}
-	for _, option := range options {
-		option(requestsConfig)
 	}
 
 	buildHttpClient(requestsConfig)
@@ -44,11 +49,41 @@ func NewRequests(options ...Options) *Requests {
 	return requestsConfig
 }
 
-func (r *Requests) Get(url string) (*Responses, error) {
+func (r *Requests) Get(url string, headers *requestsHeaders, cookies *requestsCookies, params *requestsParam) (*Responses, error) {
+	if headers != nil {
+		r.Headers = *headers
+	}
+
+	if cookies != nil {
+		r.Cookies = *cookies
+	}
+
+	if params != nil {
+		r.Param = *params
+	}
+
+	fmt.Printf("get requests: %+v\n", r)
 	return DoRequests("GET", url, r)
 }
 
-func (r *Requests) Post(url string) (*Responses, error) {
+func (r *Requests) Post(url string, headers *requestsHeaders, cookies *requestsCookies, data *requestsData, json *requestsJson) (*Responses, error) {
+	if headers != nil {
+		r.Headers = *headers
+	}
+
+	if cookies != nil {
+		r.Cookies = *cookies
+	}
+
+	if data != nil {
+		r.Data = *data
+	}
+
+	if json != nil {
+		r.Json = json
+	}
+
+	fmt.Printf("post requests: %+v\n", r)
 	return DoRequests("POST", url, r)
 }
 
