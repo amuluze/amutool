@@ -10,19 +10,13 @@ import (
 	"time"
 )
 
-type requestsHeaders map[string]string
-type requestsCookies map[string]string
-type requestsParam map[string]string
-type requestsData map[string]string
-type requestsJson interface{}
-
 type Requests struct {
 	// 参数相关
-	Headers requestsHeaders // header
-	Cookies requestsCookies // cookies
-	Data    requestsData    // data
-	Json    requestsJson    // json
-	Param   requestsParam   // params
+	Headers map[string]string // header
+	Cookies map[string]string // cookies
+	Param   map[string]string // params
+	Data    map[string]string // data
+	Json    interface{}       // json
 
 	// request 相关
 	DialTimeout         time.Duration
@@ -49,38 +43,18 @@ func NewRequests() *Requests {
 	return requestsConfig
 }
 
-func (r *Requests) Get(url string, headers *requestsHeaders, cookies *requestsCookies, params *requestsParam) (*Responses, error) {
-	if headers != nil {
-		r.Headers = *headers
-	}
-
-	if cookies != nil {
-		r.Cookies = *cookies
-	}
-
-	if params != nil {
-		r.Param = *params
+func (r *Requests) Get(url string, options ...Option) (*Responses, error) {
+	for _, option := range options {
+		option(r)
 	}
 
 	fmt.Printf("get requests: %+v\n", r)
 	return DoRequests("GET", url, r)
 }
 
-func (r *Requests) Post(url string, headers *requestsHeaders, cookies *requestsCookies, data *requestsData, json *requestsJson) (*Responses, error) {
-	if headers != nil {
-		r.Headers = *headers
-	}
-
-	if cookies != nil {
-		r.Cookies = *cookies
-	}
-
-	if data != nil {
-		r.Data = *data
-	}
-
-	if json != nil {
-		r.Json = json
+func (r *Requests) Post(url string, options ...Option) (*Responses, error) {
+	for _, option := range options {
+		option(r)
 	}
 
 	fmt.Printf("post requests: %+v\n", r)

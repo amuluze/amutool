@@ -6,10 +6,10 @@ package requests
 
 var requests = NewRequests()
 
-func Get(url string, headers *requestsHeaders, cookies *requestsCookies, params *requestsParam) (*Responses, error) {
-	return requests.Get(url, headers, cookies, params)
+func Get(url string, options ...Option) (*Responses, error) {
+	return requests.Get(url, options...)
 }
 
-func Post(url string, headers *requestsHeaders, cookies *requestsCookies, data *requestsData, json *requestsJson) (*Responses, error) {
-	return requests.Post(url, headers, cookies, data, json)
+func Post(url string, options ...Option) (*Responses, error) {
+	return requests.Post(url, options...)
 }
