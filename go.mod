@@ -3,7 +3,17 @@ module gitee.com/amuluze/amutool
 go 1.17
 
 require (
+<<<<<<< HEAD
 	github.com/go-redis/redis/v8 v8.11.5
+=======
+	git.in.chaitin.net/beehive/dcenter v0.0.0-20220922084243-c100967be83d
+	git.in.chaitin.net/dev/go/log v0.0.0-20220411022750-253cc766db05
+	github.com/allenai/go-swaggerui v0.1.0
+	github.com/fatih/structtag v1.2.0
+	github.com/getkin/kin-openapi v0.103.0
+	github.com/ghodss/yaml v1.0.0
+	github.com/gofiber/fiber/v2 v2.37.1
+>>>>>>> e0555ad (feat: add doc gormx and hash)
 	github.com/google/uuid v1.3.0
 	github.com/jinzhu/copier v0.3.5
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
@@ -13,10 +23,28 @@ require (
 )
 
 require (
+<<<<<<< HEAD
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+=======
+	git.in.chaitin.net/dev/go/errors v0.0.0-20220411022750-253cc766db05 // indirect
+	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/go-openapi/jsonpointer v0.19.5 // indirect
+	github.com/go-openapi/swag v0.19.5 // indirect
+	github.com/invopop/yaml v0.1.0 // indirect
+>>>>>>> e0555ad (feat: add doc gormx and hash)
 	github.com/jonboulle/clockwork v0.3.0 // indirect
+	github.com/klauspost/compress v1.15.0 // indirect
 	github.com/lestrrat-go/strftime v1.0.6 // indirect
+	github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
+	github.com/valyala/fasthttp v1.40.0 // indirect
+	github.com/valyala/tcplisten v1.0.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
+	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

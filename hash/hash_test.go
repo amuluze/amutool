@@ -22,13 +22,13 @@ func TestMD5String(t *testing.T) {
 }
 
 func TestSHA1(t *testing.T) {
-	str := "hello world"
+	str := "123456"
 	res := SHA1([]byte(str))
 	fmt.Println(res)
 }
 
 func TestSHA1String(t *testing.T) {
-	str := "hello world"
+	str := "123456"
 	res := SHA1String(str)
 	fmt.Println(res)
 }

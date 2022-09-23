@@ -6,6 +6,7 @@ package hash
 
 import (
 	"crypto/md5"
+	"crypto/sha1"
 	"fmt"
 )
 
@@ -20,7 +21,7 @@ func MD5String(s string) string {
 }
 
 func SHA1(b []byte) string {
-	md5h := md5.New()
+	md5h := sha1.New()
 	_, _ = md5h.Write(b)
 	return fmt.Sprintf("%x", md5h.Sum(nil))
 }
