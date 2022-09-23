@@ -21,7 +21,7 @@ type TestObjectTwo struct {
 
 func TestCopy(t *testing.T) {
 
-	too := &TestObjectOne{Name: "amu"}
+	too := &TestObjectOne{Name: "amu", Age: 12}
 	tot := &TestObjectTwo{}
 	Copy(too, tot)
 	fmt.Printf("tot: %+v", tot)
