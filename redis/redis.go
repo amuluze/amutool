@@ -38,3 +38,10 @@ func NewClient(config *Config) redis.UniversalClient {
 	})
 	return c
 }
+
+func GetClient(config *Config) redis.UniversalClient {
+	once.Do(func() {
+		rc = NewClient(config)
+	})
+	return rc
+}
