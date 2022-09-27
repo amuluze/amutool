@@ -6,17 +6,9 @@ package log
 
 import (
 	"context"
-	"os"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
-var std = &Logger{
-	SugaredLogger: zap.New(zapcore.NewCore(zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig()), zapcore.AddSync(os.Stdout), InfoLevel)).Sugar(),
-	name:          "std",
-	loggers:       make(map[string]*Logger),
-}
+var std *Logger
 
 func CreateLogger(options ...Option) {
 	std.CreateLogger(options...)

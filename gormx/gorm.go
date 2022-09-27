@@ -12,16 +12,6 @@ import (
 	"gorm.io/gorm/schema"
 )
 
-type Config struct {
-	Debug        bool
-	DBType       string
-	DSN          string
-	TablePrefix  string
-	MaxLifetime  int
-	MaxOpenConns int
-	MaxIdleConns int
-}
-
 func New(c *Config) (*gorm.DB, error) {
 	dialector := postgres.Open(c.DSN)
 	gconfig := &gorm.Config{

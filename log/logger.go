@@ -16,11 +16,23 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+var once sync.Once
+
 type Logger struct {
 	*zap.SugaredLogger
 	name    string
 	lock    sync.Mutex
 	loggers map[string]*Logger
+}
+
+func init() {
+	once.Do(func() {
+		std = &Logger{
+			SugaredLogger: zap.New(zapcore.NewCore(zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig()), zapcore.AddSync(os.Stdout), InfoLevel)).Sugar(),
+			name:          "std",
+			loggers:       make(map[string]*Logger),
+		}
+	})
 }
 
 func InitLogger(options ...Option) {
