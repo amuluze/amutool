@@ -10,9 +10,14 @@ import (
 )
 
 func TestKeys(t *testing.T) {
+	fmt.Println(&rc)
 	keys, err := Keys()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(keys)
+}
+
+func TestType(t *testing.T) {
+	fmt.Println(&rc)
 }

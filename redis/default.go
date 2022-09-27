@@ -5,19 +5,12 @@
 package redis
 
 import (
-	"sync"
 	"time"
 
 	"github.com/go-redis/redis/v8"
 )
 
-var once sync.Once
-var rc = GetClient(&Config{
-	Addr:     []string{"127.0.0.1:6379"},
-	Password: "Be1s.Az3",
-	DB:       0,
-})
-
+var rc redis.UniversalClient
 
 // ======================== 基本指令 ======================== //
 
