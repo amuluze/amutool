@@ -5,7 +5,6 @@
 package logger
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -17,7 +16,6 @@ var std *Logger
 
 func init() {
 	once.Do(func() {
-		fmt.Println("config")
 		std = &Logger{
 			Logger: zap.New(
 				zapcore.NewCore(
@@ -67,7 +65,11 @@ func InitLogger(options ...Option) {
 	level := config.logLevel
 
 	std = &Logger{
-		Logger:  zap.New(zapcore.NewCore(encoder, writer, level), zap.AddCaller(), zap.AddCallerSkip(1)),
+		Logger: zap.New(
+			zapcore.NewCore(encoder, writer, level),
+			zap.AddCaller(),
+			zap.AddCallerSkip(1),
+		),
 		name:    config.name,
 		loggers: make(map[string]*Logger),
 	}

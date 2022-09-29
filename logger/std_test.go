@@ -6,6 +6,7 @@ package logger
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 )
 
@@ -14,14 +15,13 @@ type User struct {
 }
 
 func TestInfo(t *testing.T) {
-
-	std.Info("hello status")
+	std.Info(fmt.Sprintf("hello status: %d", 200))
 }
 
 func TestInitLogger(t *testing.T) {
 	InitLogger(
 		SetLogLevel("info"),
-		SetLogFormat("text"),
+		SetLogFormat("json"),
 	)
 	err := errors.New("bad request")
 

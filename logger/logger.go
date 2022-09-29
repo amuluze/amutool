@@ -8,9 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"go.uber.org/zap/zapcore"
-
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 var once sync.Once
@@ -21,6 +20,42 @@ type Logger struct {
 	lock    sync.Mutex
 	fields  []zap.Field
 	loggers map[string]*Logger
+}
+
+func (l *Logger) CreateLogger(options ...Option) {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+	config := &Config{
+		name:                "std",
+		logFile:             "default.log",
+		logLevel:            InfoLevel,
+		logFormat:           "text",
+		logFileRotationTime: time.Hour * 24,
+		logFileMaxAge:       time.Hour * 24 * 7,
+		logOutput:           "stdout",
+		logFileSuffix:       ".%Y%m%d",
+	}
+	for _, option := range options {
+		option(config)
+	}
+
+	if _, ok := l.loggers[config.name]; ok {
+		return
+	}
+	encoder := getEncoder(config)
+	writer := getWriter(config)
+	level := config.logLevel
+
+	newLogger := &Logger{
+		Logger: zap.New(
+			zapcore.NewCore(encoder, writer, level),
+			zap.AddCaller(),
+			zap.AddCallerSkip(1),
+		),
+		name:    config.name,
+		loggers: make(map[string]*Logger),
+	}
+	l.loggers[config.name] = newLogger
 }
 
 func (l *Logger) AddInt(key string, value int) *Logger {
@@ -76,38 +111,6 @@ func (l *Logger) AddAny(key string, any interface{}) *Logger {
 func (l *Logger) AddError(value error) *Logger {
 	l.fields = append(l.fields, zap.Error(value))
 	return l
-}
-
-func (l *Logger) CreateLogger(options ...Option) {
-	l.lock.Lock()
-	defer l.lock.Unlock()
-	config := &Config{
-		name:                "std",
-		logFile:             "default.log",
-		logLevel:            InfoLevel,
-		logFormat:           "text",
-		logFileRotationTime: time.Hour * 24,
-		logFileMaxAge:       time.Hour * 24 * 7,
-		logOutput:           "stdout",
-		logFileSuffix:       ".%Y%m%d",
-	}
-	for _, option := range options {
-		option(config)
-	}
-
-	if _, ok := l.loggers[config.name]; ok {
-		return
-	}
-	encoder := getEncoder(config)
-	writer := getWriter(config)
-	level := config.logLevel
-
-	newLogger := &Logger{
-		Logger:  zap.New(zapcore.NewCore(encoder, writer, level), zap.AddCaller(), zap.AddCallerSkip(1)),
-		name:    config.name,
-		loggers: make(map[string]*Logger),
-	}
-	l.loggers[config.name] = newLogger
 }
 
 func (l *Logger) Debug(message string) {
