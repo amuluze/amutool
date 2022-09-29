@@ -13,18 +13,19 @@ import (
 func getEncoder(config *Config) zapcore.Encoder {
 	if config.logFormat == "text" {
 		return zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
-			TimeKey:        "timestamp",
-			LevelKey:       "level",
-			NameKey:        "logger",
-			CallerKey:      "caller",
-			FunctionKey:    zapcore.OmitKey,
-			MessageKey:     "message",
-			StacktraceKey:  "stacktrace",
-			LineEnding:     " ",
-			EncodeLevel:    cEncodeLevel,
-			EncodeTime:     cEncodeTime,
-			EncodeDuration: zapcore.NanosDurationEncoder,
-			EncodeCaller:   cEncodeCaller,
+			TimeKey:          "timestamp",
+			LevelKey:         "level",
+			NameKey:          "logger",
+			CallerKey:        "caller",
+			FunctionKey:      zapcore.OmitKey,
+			MessageKey:       "message",
+			StacktraceKey:    "stacktrace",
+			LineEnding:       " ",
+			EncodeLevel:      cEncodeLevel,
+			EncodeTime:       cEncodeTime,
+			EncodeDuration:   zapcore.NanosDurationEncoder,
+			EncodeCaller:     cEncodeCaller,
+			ConsoleSeparator: " || ",
 		})
 	} else {
 		return zapcore.NewJSONEncoder(zapcore.EncoderConfig{
@@ -33,14 +34,16 @@ func getEncoder(config *Config) zapcore.Encoder {
 			LevelKey:      "level",
 			NameKey:       "logger",
 			CallerKey:     "caller",
+			FunctionKey:   zapcore.OmitKey,
 			MessageKey:    "message",
 			StacktraceKey: "stacktrace",
-			EncodeLevel:   zapcore.LowercaseLevelEncoder, // 日志级别的以大写还是小写输出
+			LineEnding:    zapcore.DefaultLineEnding,
+			EncodeLevel:   zapcore.LowercaseLevelEncoder,
 			EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 				enc.AppendString(t.Format(TimeFormat))
-			}, // timestamp 时间字段的时间字符串格式
+			},
 			EncodeDuration: zapcore.NanosDurationEncoder,
-			EncodeCaller:   zapcore.ShortCallerEncoder, // caller 字典展示长路径韩式短路径，可以理解为相对路径和绝对路径
+			EncodeCaller:   zapcore.ShortCallerEncoder,
 		})
 	}
 }
