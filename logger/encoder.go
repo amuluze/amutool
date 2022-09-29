@@ -20,7 +20,7 @@ func getEncoder(config *Config) zapcore.Encoder {
 			FunctionKey:      zapcore.OmitKey,
 			MessageKey:       "message",
 			StacktraceKey:    "stacktrace",
-			LineEnding:       " ",
+			LineEnding:       zapcore.DefaultLineEnding,
 			EncodeLevel:      cEncodeLevel,
 			EncodeTime:       cEncodeTime,
 			EncodeDuration:   zapcore.NanosDurationEncoder,

@@ -22,7 +22,7 @@ func TestInfo(t *testing.T) {
 func TestInitLogger(t *testing.T) {
 	InitLogger(
 		SetLogLevel("info"),
-		SetLogFormat("json"),
+		SetLogFormat("text"),
 	)
 	err := errors.New("bad request")
 
