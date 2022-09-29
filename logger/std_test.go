@@ -6,8 +6,16 @@ package logger
 
 import (
 	"testing"
+
+	"github.com/pkg/errors"
 )
 
+type User struct {
+	Name string
+}
+
 func TestInfo(t *testing.T) {
-	Info("hello.", "status", 200)
+	err := errors.New("bad request")
+	user := &User{Name: "amu"}
+	Info("hello", "status", 200, user.Name, err)
 }

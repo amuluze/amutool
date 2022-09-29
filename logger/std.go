@@ -20,7 +20,21 @@ func init() {
 		std = &Logger{
 			Logger: zap.New(
 				zapcore.NewCore(
-					zapcore.NewConsoleEncoder(commonConfig),
+					zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
+						TimeKey:          "timestamp",
+						LevelKey:         "level",
+						NameKey:          "logger",
+						CallerKey:        "caller",
+						FunctionKey:      zapcore.OmitKey,
+						MessageKey:       "message",
+						StacktraceKey:    "stacktrace",
+						LineEnding:       " ",
+						EncodeLevel:      cEncodeLevel,
+						EncodeTime:       cEncodeTime,
+						EncodeDuration:   zapcore.SecondsDurationEncoder,
+						EncodeCaller:     cEncodeCaller,
+						ConsoleSeparator: " || ",
+					}),
 					zapcore.AddSync(os.Stdout),
 					InfoLevel,
 				),
@@ -71,5 +85,5 @@ func GetLoggerByName(name string) *Logger {
 }
 
 func Info(args ...interface{}) {
-	std.Sugar().Info()
+	std.Sugar().Info(args)
 }
