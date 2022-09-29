@@ -10,26 +10,9 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var commonConfig = zapcore.EncoderConfig{
-	// 下面以 Key 结尾的参数表示，Json格式日志中的 key
-	TimeKey:        "timestamp",
-	LevelKey:       "level",
-	NameKey:        "logger",
-	CallerKey:      "caller",
-	FunctionKey:    zapcore.OmitKey,
-	MessageKey:     "message",
-	StacktraceKey:  "stacktrace",
-	LineEnding:     " ",
-	EncodeLevel:    cEncodeLevel,
-	EncodeTime:     cEncodeTime,
-	EncodeDuration: zapcore.NanosDurationEncoder,
-	EncodeCaller:   cEncodeCaller,
-}
-
 func getEncoder(config *Config) zapcore.Encoder {
 	if config.logFormat == "text" {
 		return zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
-			// 下面以 Key 结尾的参数表示，Json格式日志中的 key
 			TimeKey:        "timestamp",
 			LevelKey:       "level",
 			NameKey:        "logger",
@@ -40,7 +23,7 @@ func getEncoder(config *Config) zapcore.Encoder {
 			LineEnding:     " ",
 			EncodeLevel:    cEncodeLevel,
 			EncodeTime:     cEncodeTime,
-			EncodeDuration: zapcore.NanosDurationEncoder,
+			EncodeDuration: zapcore.SecondsDurationEncoder,
 			EncodeCaller:   cEncodeCaller,
 		})
 	} else {
@@ -50,6 +33,7 @@ func getEncoder(config *Config) zapcore.Encoder {
 			LevelKey:      "level",
 			NameKey:       "logger",
 			CallerKey:     "caller",
+			FunctionKey:   zapcore.OmitKey,
 			MessageKey:    "message",
 			StacktraceKey: "stacktrace",
 			EncodeLevel:   zapcore.LowercaseLevelEncoder, // 日志级别的以大写还是小写输出

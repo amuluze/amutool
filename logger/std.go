@@ -25,7 +25,6 @@ func init() {
 						LevelKey:         "level",
 						NameKey:          "logger",
 						CallerKey:        "caller",
-						FunctionKey:      zapcore.OmitKey,
 						MessageKey:       "message",
 						StacktraceKey:    "stacktrace",
 						LineEnding:       " ",
