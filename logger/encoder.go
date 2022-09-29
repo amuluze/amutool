@@ -13,7 +13,7 @@ import (
 func getEncoder(config *Config) zapcore.Encoder {
 	if config.logFormat == "text" {
 		return zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
-			TimeKey:          "timestamp",
+			TimeKey:          "time",
 			LevelKey:         "level",
 			NameKey:          "logger",
 			CallerKey:        "caller",
@@ -23,14 +23,14 @@ func getEncoder(config *Config) zapcore.Encoder {
 			LineEnding:       zapcore.DefaultLineEnding,
 			EncodeLevel:      cEncodeLevel,
 			EncodeTime:       cEncodeTime,
-			EncodeDuration:   zapcore.NanosDurationEncoder,
+			EncodeDuration:   zapcore.SecondsDurationEncoder,
 			EncodeCaller:     cEncodeCaller,
 			ConsoleSeparator: " || ",
 		})
 	} else {
 		return zapcore.NewJSONEncoder(zapcore.EncoderConfig{
 			// 下面以 Key 结尾的参数表示，Json格式日志中的 key
-			TimeKey:       "timestamp",
+			TimeKey:       "time",
 			LevelKey:      "level",
 			NameKey:       "logger",
 			CallerKey:     "caller",
@@ -42,7 +42,7 @@ func getEncoder(config *Config) zapcore.Encoder {
 			EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 				enc.AppendString(t.Format(TimeFormat))
 			},
-			EncodeDuration: zapcore.NanosDurationEncoder,
+			EncodeDuration: zapcore.SecondsDurationEncoder,
 			EncodeCaller:   zapcore.ShortCallerEncoder,
 		})
 	}

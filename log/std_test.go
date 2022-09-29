@@ -1,21 +1,15 @@
-// Package logger
-// Date: 2022/9/29 01:10
+// Package log
+// Date: 2022/9/29 16:36
 // Author: Amu
 // Description:
-package logger
+package log
 
 import (
-	"errors"
 	"testing"
 )
 
-type User struct {
-	Name string
-}
-
 func TestInfo(t *testing.T) {
-
-	std.Info("hello status")
+	Info("hello")
 }
 
 func TestInitLogger(t *testing.T) {
@@ -23,10 +17,9 @@ func TestInitLogger(t *testing.T) {
 		SetLogLevel("info"),
 		SetLogFormat("text"),
 	)
-	err := errors.New("bad request")
 
-	std.AddError(err).AddInt("status", 200).Info("hello")
-	std.AddError(err).AddInt("status", 500).Error("hello")
+	std.Info("hello")
+	std.Error("hello")
 
 	std.Info("good")
 }
@@ -41,6 +34,5 @@ func TestCreateLogger(t *testing.T) {
 	log := GetLoggerByName("logger")
 	log.Info("hello logger")
 
-	err := errors.New("bad error")
-	log.AddString("ni", "hao").AddInt("status", 200).AddError(err).Info("test craete")
+	log.Error("test create")
 }

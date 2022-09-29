@@ -5,6 +5,7 @@
 package logger
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -16,17 +17,18 @@ var std *Logger
 
 func init() {
 	once.Do(func() {
+		fmt.Println("config")
 		std = &Logger{
 			Logger: zap.New(
 				zapcore.NewCore(
 					zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
-						TimeKey:          "timestamp",
+						TimeKey:          "time",
 						LevelKey:         "level",
 						NameKey:          "logger",
 						CallerKey:        "caller",
 						MessageKey:       "message",
 						StacktraceKey:    "stacktrace",
-						LineEnding:       " ",
+						LineEnding:       zapcore.DefaultLineEnding,
 						EncodeLevel:      cEncodeLevel,
 						EncodeTime:       cEncodeTime,
 						EncodeDuration:   zapcore.SecondsDurationEncoder,
@@ -36,6 +38,8 @@ func init() {
 					zapcore.AddSync(os.Stdout),
 					InfoLevel,
 				),
+				zap.AddCaller(),
+				zap.AddCallerSkip(1),
 			),
 			name:    "std",
 			loggers: make(map[string]*Logger),
@@ -63,7 +67,7 @@ func InitLogger(options ...Option) {
 	level := config.logLevel
 
 	std = &Logger{
-		Logger:  zap.New(zapcore.NewCore(encoder, writer, level)),
+		Logger:  zap.New(zapcore.NewCore(encoder, writer, level), zap.AddCaller(), zap.AddCallerSkip(1)),
 		name:    config.name,
 		loggers: make(map[string]*Logger),
 	}
@@ -81,47 +85,58 @@ func GetLoggerByName(name string) *Logger {
 }
 
 func AddInt(key string, value int) *Logger {
-	return std.AddInt(key, value)
+	std.AddInt(key, value)
+	return std
 }
 
 func AddInt32(key string, value int32) *Logger {
-	return std.AddInt32(key, value)
+	std.AddInt32(key, value)
+	return std
 }
 
 func AddInt64(key string, value int64) *Logger {
-	return std.AddInt64(key, value)
+	std.AddInt64(key, value)
+	return std
 }
 
 func AddFloat32(key string, value float32) *Logger {
-	return std.AddFloat32(key, value)
+	std.AddFloat32(key, value)
+	return std
 }
 
 func AddFloat64(key string, value float64) *Logger {
-	return std.AddFloat64(key, value)
+	std.AddFloat64(key, value)
+	return std
 }
 
 func AddString(key, value string) *Logger {
-	return std.AddString(key, value)
+	std.AddString(key, value)
+	return std
 }
 
 func AddTime(key string, value time.Time) *Logger {
-	return std.AddTime(key, value)
+	std.AddTime(key, value)
+	return std
 }
 
 func AddDuration(key string, value time.Duration) *Logger {
-	return std.AddDuration(key, value)
+	std.AddDuration(key, value)
+	return std
 }
 
 func AddBool(key string, value bool) *Logger {
-	return std.AddBool(key, value)
+	std.AddBool(key, value)
+	return std
 }
 
 func AddAny(key string, value interface{}) *Logger {
-	return std.AddAny(key, value)
+	std.AddAny(key, value)
+	return std
 }
 
 func AddError(value error) *Logger {
-	return std.AddError(value)
+	std.AddError(value)
+	return std
 }
 
 func Debug(message string) {

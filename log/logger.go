@@ -28,7 +28,7 @@ type Logger struct {
 func init() {
 	once.Do(func() {
 		std = &Logger{
-			SugaredLogger: zap.New(zapcore.NewCore(zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig()), zapcore.AddSync(os.Stdout), InfoLevel)).Sugar(),
+			SugaredLogger: zap.New(zapcore.NewCore(zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig()), zapcore.AddSync(os.Stdout), InfoLevel), zap.AddCaller(), zap.AddCallerSkip(2)).Sugar(),
 			name:          "std",
 			loggers:       make(map[string]*Logger),
 		}
@@ -55,7 +55,7 @@ func InitLogger(options ...Option) {
 	level := config.logLevel
 
 	std = &Logger{
-		SugaredLogger: zap.New(zapcore.NewCore(encoder, writer, level)).Sugar(),
+		SugaredLogger: zap.New(zapcore.NewCore(encoder, writer, level), zap.AddCaller(), zap.AddCallerSkip(1)).Sugar(),
 		name:          config.name,
 		loggers:       make(map[string]*Logger),
 	}
