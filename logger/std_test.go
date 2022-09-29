@@ -5,9 +5,8 @@
 package logger
 
 import (
+	"errors"
 	"testing"
-
-	"github.com/pkg/errors"
 )
 
 type User struct {
@@ -16,6 +15,19 @@ type User struct {
 
 func TestInfo(t *testing.T) {
 	err := errors.New("bad request")
-	user := &User{Name: "amu"}
-	Info("hello", "status", 200, user.Name, err)
+
+	AddError(err).AddInt("status", 200).Info("hello status")
+}
+
+func TestInitLogger(t *testing.T) {
+	InitLogger(
+		SetLogLevel("info"),
+		SetLogFormat("json"),
+	)
+	err := errors.New("bad request")
+
+	AddError(err).AddInt("status", 200).Info("hello")
+	AddError(err).AddInt("status", 500).Error("hello")
+
+	Info("good")
 }

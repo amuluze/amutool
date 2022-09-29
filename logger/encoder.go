@@ -23,7 +23,7 @@ func getEncoder(config *Config) zapcore.Encoder {
 			LineEnding:     " ",
 			EncodeLevel:    cEncodeLevel,
 			EncodeTime:     cEncodeTime,
-			EncodeDuration: zapcore.SecondsDurationEncoder,
+			EncodeDuration: zapcore.NanosDurationEncoder,
 			EncodeCaller:   cEncodeCaller,
 		})
 	} else {
@@ -33,7 +33,6 @@ func getEncoder(config *Config) zapcore.Encoder {
 			LevelKey:      "level",
 			NameKey:       "logger",
 			CallerKey:     "caller",
-			FunctionKey:   zapcore.OmitKey,
 			MessageKey:    "message",
 			StacktraceKey: "stacktrace",
 			EncodeLevel:   zapcore.LowercaseLevelEncoder, // 日志级别的以大写还是小写输出
