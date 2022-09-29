@@ -3,7 +3,3 @@
 // Author: Amu
 // Description:
 package gormx
-
-import "gorm.io/gorm"
-
-var DB *gorm.DB

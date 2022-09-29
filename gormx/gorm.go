@@ -5,37 +5,52 @@
 package gormx
 
 import (
+	"fmt"
 	"time"
 
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/schema"
 )
 
-func New(c *Config) (*gorm.DB, error) {
-	dialector := postgres.Open(c.DSN)
-	gconfig := &gorm.Config{
-		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   c.TablePrefix,
-			SingularTable: true,
-		},
+var db *gorm.DB
+
+func InitDB(options ...Option) error {
+	cfg := &Config{
+		Debug:        true,
+		Type:         "mysql",
+		Host:         "127.0.0.1",
+		Port:         "3306",
+		UserName:     "root",
+		Password:     "123456",
+		Name:         "test",
+		TablePrefix:  "",
+		MaxLifetime:  7200,
+		MaxOpenConns: 10,
+		MaxIdleConns: 5,
 	}
-	db, err := gorm.Open(dialector, gconfig)
+
+	for _, option := range options {
+		option(cfg)
+	}
+
+	dial := cfg.Dial()
+	conn, err := gorm.Open(dial, &gorm.Config{})
 	if err != nil {
-		return nil, err
+		fmt.Println(err.Error())
+		return err
 	}
 
-	if c.Debug {
-		db = db.Debug()
-	}
-	sqlDB, err := db.DB()
+	sqlDB, err := conn.DB()
 	if err != nil {
-		return nil, err
+		fmt.Println(err.Error())
+		return err
 	}
+	sqlDB.SetMaxIdleConns(cfg.MaxIdleConns)
+	sqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
+	sqlDB.SetConnMaxLifetime(time.Second * time.Duration(cfg.MaxLifetime))
+	db = conn
+	return nil
+}
 
-	sqlDB.SetMaxIdleConns(c.MaxIdleConns)
-	sqlDB.SetMaxOpenConns(c.MaxOpenConns)
-	sqlDB.SetConnMaxLifetime(time.Duration(c.MaxLifetime) * time.Second)
-
-	return db, nil
+func GetDB() *gorm.DB {
+	return db
 }

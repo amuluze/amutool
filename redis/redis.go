@@ -6,35 +6,22 @@ package redis
 
 import (
 	"context"
-	"sync"
 	"time"
 
 	"github.com/go-redis/redis/v8"
 )
 
-var once sync.Once
-var ctx = context.Background()
-
-type RedisClient struct {
+type Client struct {
 	redis.UniversalClient
 }
 
-func init() {
-	once.Do(func() {
-		rc = &RedisClient{
-			redis.NewUniversalClient(&redis.UniversalOptions{
-				Addrs:    []string{"127.0.0.1:6379"},
-				DB:       0,
-				Password: "Be1s.Az3",
-			}),
-		}
-	})
-}
+var rc redis.UniversalClient
+var ctx = context.Background()
 
 func InitRedis(options ...Option) {
 	config := &Config{
 		Addr:                  []string{"127.0.0.1:6379"},
-		Password:              "Be1s.Az3",
+		Password:              "123456",
 		DB:                    0,
 		MasterName:            "",
 		DialConnectionTimeout: 5 * time.Second,
@@ -46,7 +33,7 @@ func InitRedis(options ...Option) {
 	for _, option := range options {
 		option(config)
 	}
-	rc = &RedisClient{
+	rc = &Client{
 		redis.NewUniversalClient(&redis.UniversalOptions{
 			Addrs:        config.Addr,
 			DB:           config.DB,

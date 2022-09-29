@@ -10,8 +10,6 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-var rc redis.UniversalClient
-
 // ======================== 基本指令 ======================== //
 
 func Keys() ([]string, error) {
