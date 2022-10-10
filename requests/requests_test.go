@@ -14,7 +14,7 @@ func TestGet(t *testing.T) {
 		"Good": "Job",
 	}
 
-	resp, err := Get("http://httpbin.org/get?Hello=World", SetParam(params))
+	resp, err := Get("http://httpbin.org/get?Hello=World", SetParams(params))
 	if err != nil {
 		return
 	}

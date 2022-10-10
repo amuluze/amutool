@@ -20,7 +20,7 @@ func SetCookies(rc map[string]string) Option {
 	}
 }
 
-func SetParam(rp map[string]string) Option {
+func SetParams(rp map[string]string) Option {
 	return func(req *Requests) {
 		req.Param = rp
 	}
