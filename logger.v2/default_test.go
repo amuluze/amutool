@@ -5,9 +5,12 @@
 package logger
 
 import (
+	"errors"
 	"testing"
 )
 
 func TestInfo(t *testing.T) {
-	std.Info("hello status: %s", 200)
+	std.Info("hello status: ", 200)
+	err := errors.New("request failed")
+	std.Errorf("this is a error message: %s", err)
 }

@@ -78,3 +78,11 @@ func InitLogger(options ...Option) {
 func CreateLogger(options ...Option) {
 	std.CreateLogger(options...)
 }
+
+func Error(args ...interface{}) {
+	std.Error(args...)
+}
+
+func Errorf(args ...interface{}) {
+	std.Errorf(args...)
+}

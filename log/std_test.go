@@ -20,8 +20,8 @@ func TestInitLogger(t *testing.T) {
 	)
 	
 	std.Info("hello", "world", errors.New("this is a error message"))
-	ss := "test test test"
-	std.Error("hello %s", ss)
+	err := errors.New("test error log")
+	std.Error("hello %v", err)
 	
 	std.Info("good")
 }

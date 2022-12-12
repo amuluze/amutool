@@ -62,7 +62,15 @@ func (l *Logger) CreateLogger(options ...Option) {
 }
 
 func (l *Logger) Info(args ...interface{}) {
-	l.Logger.Info(fmt.Sprintln(args...))
+	l.Logger.Info(fmt.Sprint(args...))
+}
+
+func (l *Logger) Error(args ...interface{}) {
+	l.Logger.Error(fmt.Sprint(args...))
+}
+
+func (l *Logger) Errorf(args ...interface{}) {
+	l.Logger.Error(fmt.Sprintf(args[0].(string), args[1:]...))
 }
 
 func getEncoder(config *Config) zapcore.Encoder {
