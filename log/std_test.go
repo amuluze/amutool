@@ -5,6 +5,7 @@
 package log
 
 import (
+	"github.com/pkg/errors"
 	"testing"
 )
 
@@ -17,10 +18,11 @@ func TestInitLogger(t *testing.T) {
 		SetLogLevel("info"),
 		SetLogFormat("text"),
 	)
-
-	std.Info("hello")
-	std.Error("hello")
-
+	
+	std.Info("hello", "world", errors.New("this is a error message"))
+	ss := "test test test"
+	std.Error("hello %s", ss)
+	
 	std.Info("good")
 }
 
@@ -30,9 +32,9 @@ func TestCreateLogger(t *testing.T) {
 		SetLogLevel("info"),
 		SetLogFormat("text"),
 	)
-
+	
 	log := GetLoggerByName("logger")
 	log.Info("hello logger")
-
+	
 	log.Error("test create")
 }
