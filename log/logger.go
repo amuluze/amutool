@@ -205,7 +205,7 @@ func (l *Logger) WithContext(ctx context.Context) *zap.SugaredLogger {
 		fields = append(fields, UserIDKey, v)
 	}
 
-	if v := l.FromUserNameContext(ctx); v != "" {
+	if v := .FromUserNameContext(ctx); v != "" {
 		fields = append(fields, UserNameKey, v)
 	}
 
@@ -229,7 +229,7 @@ func (l *Logger) Info(args ...interface{}) {
 }
 
 func (l *Logger) Infof(ctx context.Context, args ...interface{}) {
-	l.WithContext(ctx).Info(args...)
+	l.WithContext(ctx).c(args...)
 }
 
 func (l *Logger) Warn(args ...interface{}) {

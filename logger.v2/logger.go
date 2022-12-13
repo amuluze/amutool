@@ -5,6 +5,7 @@
 package logger
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -61,8 +62,37 @@ func (l *Logger) CreateLogger(options ...Option) {
 	l.loggers[config.name] = newLogger
 }
 
+func (l *Logger) WithField(ctx context.Context, key string, value any) *zap.Logger {
+	var fields []zap.Field
+	switch value.(type) {
+	case int:
+		fields = append(fields, zap.Int(key, value.(int)))
+	}
+	return l.Logger.With(fields...)
+}
+
+func (l *Logger) Debug(args ...interface{}) {
+	l.Logger.Debug(fmt.Sprint(args...))
+}
+
+func (l *Logger) Debugf(args ...interface{}) {
+	l.Logger.Debug(fmt.Sprintf(args[0].(string), args[1:]...))
+}
+
 func (l *Logger) Info(args ...interface{}) {
 	l.Logger.Info(fmt.Sprint(args...))
+}
+
+func (l *Logger) Infof(args ...interface{}) {
+	l.Logger.Info(fmt.Sprintf(args[0].(string), args[1:]...))
+}
+
+func (l *Logger) Warn(args ...interface{}) {
+	l.Logger.Warn(fmt.Sprint(args...))
+}
+
+func (l *Logger) Warnf(args ...interface{}) {
+	l.Logger.Warn(fmt.Sprintf(args[0].(string), args[1:]...))
 }
 
 func (l *Logger) Error(args ...interface{}) {
@@ -71,6 +101,22 @@ func (l *Logger) Error(args ...interface{}) {
 
 func (l *Logger) Errorf(args ...interface{}) {
 	l.Logger.Error(fmt.Sprintf(args[0].(string), args[1:]...))
+}
+
+func (l *Logger) Fatal(args ...interface{}) {
+	l.Logger.Fatal(fmt.Sprint(args...))
+}
+
+func (l *Logger) Fatalf(args ...interface{}) {
+	l.Logger.Fatal(fmt.Sprintf(args[0].(string), args[1:]...))
+}
+
+func (l *Logger) Panic(args ...interface{}) {
+	l.Logger.Panic(fmt.Sprint(args...))
+}
+
+func (l *Logger) Panicf(args ...interface{}) {
+	l.Logger.Panic(fmt.Sprintf(args[0].(string), args[1:]...))
 }
 
 func getEncoder(config *Config) zapcore.Encoder {

@@ -1,6 +1,6 @@
 module gitee.com/amuluze/amutool
 
-go 1.17
+go 1.18
 
 require (
 	github.com/allenai/go-swaggerui v0.1.0
