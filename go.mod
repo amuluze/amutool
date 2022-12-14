@@ -14,7 +14,6 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gofiber/fiber/v2 v2.37.1
 	github.com/google/uuid v1.3.0
-	github.com/jinzhu/copier v0.3.5
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/koding/multiconfig v0.0.0-20171124222453-69c27309b2d7
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
@@ -23,10 +22,8 @@ require (
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/pkg/errors v0.9.1
 	github.com/sony/sonyflake v1.1.0
-	github.com/spf13/cast v1.5.0
 	github.com/stretchr/testify v1.8.2
 	github.com/tidwall/gjson v1.14.4
-	go.uber.org/automaxprocs v1.5.2
 	go.uber.org/zap v1.24.0
 	gorm.io/driver/mysql v1.3.6
 	gorm.io/driver/postgres v1.3.10
@@ -104,6 +101,7 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.17 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
+	github.com/rogpeppe/go-internal v1.6.1 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
