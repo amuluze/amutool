@@ -1,6 +1,6 @@
 ## requests
 
-类似 Python request 的库的 http 客户端工具。
+类似 Python requests 的库的 http 客户端工具。
 
 ```shell
 GET: url params headers cookies 
@@ -10,8 +10,6 @@ POST: url data json headers cookies
 ```
 
 ### Example
-
-
 ```shell
 https://tonybai.com/2021/04/02/go-http-client-connection-control/
 https://segmentfault.com/a/1190000039874413

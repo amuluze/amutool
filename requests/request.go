@@ -26,7 +26,7 @@ func buildHttpRequest(method, url string, r *Requests) (*http.Request, error) {
 	if r.Data != nil {
 		return createFormDataRequest(method, url, r)
 	}
-
+	fmt.Println("==", r.Json)
 	if r.Json != nil {
 		return createJsonRequest(method, url, r)
 	}
@@ -94,7 +94,7 @@ func createJsonRequest(method, url string, r *Requests) (*http.Request, error) {
 		}
 		reader = bytes.NewReader(byteSlice)
 	}
-
+	fmt.Printf("--------request json: %#v\n", r.Json)
 	req, err := http.NewRequest(method, url, reader)
 	if err != nil {
 		return nil, err

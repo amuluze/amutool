@@ -7,14 +7,15 @@ package requests
 import (
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestGet(t *testing.T) {
 	params := map[string]string{
-		"Good": "Job",
+		"good": "job",
 	}
 
-	resp, err := Get("http://httpbin.org/get?Hello=World", SetParams(params))
+	resp, err := Get("http://localhost:9000/get?hello=world", SetParam(params))
 	if err != nil {
 		return
 	}
@@ -27,5 +28,62 @@ func TestGet(t *testing.T) {
 	fmt.Printf("response header: %+v\n", resp.Header)
 	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<")
 
-	fmt.Println(resp.RawResponse.Body)
+	fmt.Printf("resp: %#v\n", resp)
+}
+
+func SetParam(params map[string]string) {
+	panic("unimplemented")
+}
+
+func TestPost(t *testing.T) {
+	data := map[string]string{
+		"name": "amuluze",
+		"age":  "12",
+	}
+
+	resp, err := Post("http://localhost:9000/post", SetData(data))
+	if err != nil {
+		return
+	}
+	fmt.Printf("data resp: %#v\n", resp)
+
+	load := map[string]interface{}{
+		"name":        "amuluze",
+		"age":         12,
+		"is_delete":   false,
+		"create_time": time.Now(),
+	}
+
+	resp, err = Post("http://localhost:9000/json/post", SetJson(load))
+	if err != nil {
+		return
+	}
+	fmt.Printf("json resp: %#v\n", resp)
+}
+
+func TestSetHeaders(t *testing.T) {
+	type Result struct {
+		Hello    string `json:"hello"`
+		Duration int    `json:"duration"`
+		IsDelete bool   `json:"is_delete"`
+	}
+	headers := map[string]string{
+		"token": "123456",
+	}
+	resp, _ := Get("http://localhost:9000/header", SetHeaders(headers))
+
+	fmt.Printf("header resp: %#v\n", resp.String())
+	var res Result
+	//_ = json.Unmarshal(resp.Bytes(), &res)
+	//fmt.Printf("res: %#v\n", res)
+	resp.JSON(res)
+	fmt.Printf("header resp: %#v\n", res)
+}
+
+func TestSetCookies(t *testing.T) {
+	cookies := map[string]string{
+		"session_id": "asdfghjjkl",
+	}
+	resp, _ := Get("http://localhost:9000/header", SetCookies(cookies))
+	fmt.Printf("header resp: %#v\n", resp.String())
 }

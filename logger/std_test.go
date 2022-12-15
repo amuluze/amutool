@@ -43,4 +43,5 @@ func TestCreateLogger(t *testing.T) {
 
 	err := errors.New("bad error")
 	log.AddString("ni", "hao").AddInt("status", 200).AddError(err).Info("test craete")
+	log.Info("test message")
 }

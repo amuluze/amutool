@@ -120,7 +120,7 @@ func (l *Logger) Debug(message string) {
 
 func (l *Logger) Info(message string) {
 	l.Logger.Info(message, l.fields...)
-	l.fields = l.fields[0:0]
+	// l.fields = l.fields[0:0]
 }
 
 func (l *Logger) Warn(message string) {

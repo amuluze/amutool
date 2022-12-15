@@ -39,6 +39,11 @@ func InitDB(options ...Option) error {
 		return err
 	}
 
+	// 开启调试模式
+	if cfg.Debug {
+		conn = conn.Debug()
+	}
+
 	sqlDB, err := conn.DB()
 	if err != nil {
 		fmt.Println(err.Error())
@@ -53,4 +58,9 @@ func InitDB(options ...Option) error {
 
 func GetDB() *gorm.DB {
 	return db
+}
+
+// GetDBWithModel 绑定表结构体
+func GetDBWithModel(m interface{}) *gorm.DB {
+	return GetDB().Model(m)
 }
