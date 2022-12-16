@@ -6,6 +6,7 @@ require (
 	github.com/allenai/go-swaggerui v0.1.0
 	github.com/dimiro1/banner v1.1.0
 	github.com/fatih/structtag v1.2.0
+	github.com/fsnotify/fsnotify v1.5.4
 	github.com/getkin/kin-openapi v0.103.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-redis/redis/v8 v8.11.5
@@ -14,8 +15,7 @@ require (
 	github.com/jinzhu/copier v0.3.5
 	github.com/koding/multiconfig v0.0.0-20171124222453-69c27309b2d7
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
-	github.com/mattn/go-colorable v0.1.6
-	github.com/onsi/ginkgo v1.16.5
+	github.com/mattn/go-colorable v0.1.12
 	github.com/pkg/errors v0.9.1
 	github.com/sony/sonyflake v1.1.0
 	go.uber.org/atomic v1.7.0
@@ -34,7 +34,6 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/camelcase v1.0.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
-	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/swag v0.19.5 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
@@ -53,7 +52,7 @@ require (
 	github.com/klauspost/compress v1.15.0 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e // indirect
-	github.com/mattn/go-isatty v0.0.12 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-sqlite3 v1.14.12 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
