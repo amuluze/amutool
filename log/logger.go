@@ -229,7 +229,7 @@ func (l *Logger) Info(args ...interface{}) {
 }
 
 func (l *Logger) Infof(ctx context.Context, args ...interface{}) {
-	l.WithContext(ctx).c(args...)
+	l.WithContext(ctx).Info(args...)
 }
 
 func (l *Logger) Warn(args ...interface{}) {
