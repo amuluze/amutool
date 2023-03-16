@@ -15,7 +15,7 @@ func TestGet(t *testing.T) {
 		"good": "job",
 	}
 
-	resp, err := Get("http://localhost:9000/get?hello=world", SetParam(params))
+	resp, err := Get("http://localhost:9000/get?hello=world", SetParams(params))
 	if err != nil {
 		return
 	}
