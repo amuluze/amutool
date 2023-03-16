@@ -31,7 +31,7 @@ type Server struct {
 	ShutDownTimeout int64
 }
 
-var Cfg *Config
+var Cfg = new(Config)
 var once sync.Once
 
 func loadConfigs() {
@@ -71,28 +71,29 @@ func GetConfigs() *Config {
 	return Cfg
 }
 
-func MustLoad(fpaths ...string) {
+func MustLoad(model interface{}, filePaths ...string) {
 	once.Do(func() {
 		loaders := []multiconfig.Loader{
 			&multiconfig.TagLoader{},
 			&multiconfig.EnvironmentLoader{},
 		}
 
-		for _, fpath := range fpaths {
-			if strings.HasSuffix(fpath, "toml") {
-				loaders = append(loaders, &multiconfig.TOMLLoader{Path: fpath})
+		for _, filePath := range filePaths {
+			fmt.Println(filePath)
+			if strings.HasSuffix(filePath, "toml") {
+				loaders = append(loaders, &multiconfig.TOMLLoader{Path: filePath})
 			}
-			if strings.HasSuffix(fpath, "json") {
-				loaders = append(loaders, &multiconfig.JSONLoader{Path: fpath})
+			if strings.HasSuffix(filePath, "json") {
+				loaders = append(loaders, &multiconfig.JSONLoader{Path: filePath})
 			}
-			if strings.HasSuffix(fpath, "yaml") {
-				loaders = append(loaders, &multiconfig.YAMLLoader{Path: fpath})
+			if strings.HasSuffix(filePath, "yaml") {
+				loaders = append(loaders, &multiconfig.YAMLLoader{Path: filePath})
 			}
 		}
 		m := multiconfig.DefaultLoader{
 			Loader:    multiconfig.MultiLoader(loaders...),
 			Validator: multiconfig.MultiValidator(&multiconfig.RequiredValidator{}),
 		}
-		m.MustLoad(Cfg)
+		m.MustLoad(model)
 	})
 }

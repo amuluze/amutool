@@ -16,6 +16,6 @@ func TestGetConfigs(t *testing.T) {
 }
 
 func TestMustLoad(t *testing.T) {
-	MustLoad("config.toml")
+	MustLoad(Cfg, "./config.toml")
 	fmt.Printf("prod: %#v\n", Cfg)
 }
