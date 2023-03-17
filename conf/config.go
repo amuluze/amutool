@@ -1,8 +1,8 @@
-// Package config
+// Package conf
 // Date: 2022/9/30 11:25
 // Author: Amu
 // Description:
-package config
+package conf
 
 import (
 	"fmt"
@@ -41,7 +41,7 @@ func loadConfigs() {
 	//configFileName := configFilePrefix
 	//configs.SetConfigName(configFileName)
 	//configs.SetConfigType(configFileType)
-	viper.SetConfigFile("./config.toml")
+	viper.SetConfigFile("./conf.toml")
 	viper.WatchConfig()
 	viper.OnConfigChange(func(in fsnotify.Event) {
 		fmt.Println("配置文件变化： ", in.Name)

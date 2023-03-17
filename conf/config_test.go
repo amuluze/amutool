@@ -1,8 +1,8 @@
-// Package config
+// Package conf
 // Date: 2022/9/30 11:53
 // Author: Amu
 // Description:
-package config
+package conf
 
 import (
 	"fmt"
@@ -16,6 +16,6 @@ func TestGetConfigs(t *testing.T) {
 }
 
 func TestMustLoad(t *testing.T) {
-	MustLoad(Cfg, "./config.toml")
-	fmt.Printf("prod: %#v\n", Cfg)
+	MustLoad(Cfg, "./conf.toml")
+	fmt.Printf("prod: %#v\n", Cfg.Servers.Dev)
 }
