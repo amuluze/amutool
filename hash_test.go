@@ -1,8 +1,8 @@
-// Package hash
+// Package amutool
 // Date: 2022/9/7 10:26
 // Author: Amu
 // Description:
-package hash
+package amutool
 
 import (
 	"fmt"

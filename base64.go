@@ -1,8 +1,8 @@
-// Package base64
+// Package amutool
 // Date: 2022/9/7 01:01
 // Author: Amu
 // Description:
-package base64
+package amutool
 
 import "encoding/base64"
 

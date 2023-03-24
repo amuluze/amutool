@@ -1,8 +1,8 @@
-// Package hash
+// Package amutool
 // Date: 2022/9/7 09:45
 // Author: Amu
 // Description:
-package hash
+package amutool
 
 import (
 	"crypto/md5"

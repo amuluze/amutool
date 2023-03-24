@@ -1,8 +1,8 @@
-// Package uuid
+// Package amutool
 // Date: 2022/9/7 09:49
 // Author: Amu
 // Description:
-package uuid
+package amutool
 
 import (
 	"time"

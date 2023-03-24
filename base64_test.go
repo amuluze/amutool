@@ -1,8 +1,8 @@
-// Package base64
+// Package amutool
 // Date: 2022/9/7 10:12
 // Author: Amu
 // Description:
-package base64
+package amutool
 
 import (
 	"fmt"

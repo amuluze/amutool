@@ -1,8 +1,8 @@
-// Package rand
+// Package amutool
 // Date: 2022/9/7 00:57
 // Author: Amu
 // Description:
-package rand
+package amutool
 
 import (
 	"math/rand"

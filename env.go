@@ -1,8 +1,8 @@
-// Package env
+// Package amutool
 // Date: 2022/9/7 01:02
 // Author: Amu
 // Description:
-package env
+package amutool
 
 import (
 	"os"

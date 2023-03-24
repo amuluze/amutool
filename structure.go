@@ -1,8 +1,8 @@
-// Package structure
+// Package amutool
 // Date: 2022/9/7 09:50
 // Author: Amu
 // Description:
-package structure
+package amutool
 
 import (
 	"github.com/jinzhu/copier"

@@ -9,13 +9,27 @@ import (
 	"testing"
 )
 
-func TestGetConfigs(t *testing.T) {
-	res := GetConfigs()
-	fmt.Printf("%#v\n", res.Servers.Prod)
-	fmt.Printf("%#v\n", res.Servers.Dev)
+type Config struct {
+	//Database Database
+	Servers Servers
 }
 
+type Servers struct {
+	Prod Server
+	Dev  Server
+}
+
+type Server struct {
+	Host            string
+	Port            string
+	ShutDownTimeout int64
+}
+
+var Cfg = new(Config)
+
 func TestMustLoad(t *testing.T) {
-	MustLoad(Cfg, "./conf.toml")
-	fmt.Printf("prod: %#v\n", Cfg.Servers.Dev)
+	//MustLoad(Cfg, "./config.toml")
+	MustLoad(Cfg, "./config.yaml")
+	fmt.Printf("dev: %#v\n", Cfg.Servers.Dev)
+	fmt.Printf("prod: %#v\n", Cfg.Servers.Prod)
 }

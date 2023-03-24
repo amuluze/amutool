@@ -1,8 +1,8 @@
-// Package rand
+// Package amutool
 // Date: 2022/9/23 13:38
 // Author: Amu
 // Description:
-package rand
+package amutool
 
 import (
 	"fmt"

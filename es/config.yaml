@@ -1,0 +1,6 @@
+addr: http://127.0.0.1:9200/
+username: elastic
+password: 123456
+sniff: false
+debug: false
+healthcheck: false

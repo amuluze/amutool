@@ -1,8 +1,8 @@
-// Package structure
+// Package amutool
 // Date: 2022/9/7 11:16
 // Author: Amu
 // Description:
-package structure
+package amutool
 
 import (
 	"fmt"
