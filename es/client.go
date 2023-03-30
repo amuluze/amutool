@@ -1,0 +1,203 @@
+// Package es
+// Date: 2023/3/24 14:30
+// Author: Amu
+// Description:
+package es
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"os"
+	"time"
+
+	"gitee.com/amuluze/amutool/iohelper"
+
+	"github.com/olivere/elastic/v7"
+)
+
+type Config struct {
+	Elastic Elastic
+}
+
+type Elastic struct {
+	Addr          string
+	Username      string
+	Password      string
+	Sniff         bool
+	Debug         bool
+	Healthcheck   bool
+	IndexNames    []string
+	TemplateNames []string
+	TemplatePath  string
+	PolicyNames   []string
+	PolicyPath    string
+}
+
+type Client struct {
+	*elastic.Client
+}
+
+func NewEsClient(config *Config) (*Client, error) {
+	cfg := config.Elastic
+	client, err := elastic.NewClient(
+		//elastic 服务地址
+		elastic.SetURL(cfg.Addr),
+		elastic.SetSniff(cfg.Sniff),
+		elastic.SetHealthcheck(cfg.Healthcheck),
+		elastic.SetBasicAuth(cfg.Username, cfg.Password),
+		// 设置错误日志输出
+		elastic.SetErrorLog(log.New(os.Stderr, "ELASTIC ", log.LstdFlags)),
+		// 设置info日志输出
+		elastic.SetInfoLog(log.New(os.Stdout, "", log.LstdFlags)),
+	)
+	info, code, err := client.Ping(cfg.Addr).Do(context.Background())
+	if err != nil {
+		log.Fatalln("Failed to create elastic client")
+		return nil, err
+	}
+	log.Printf("Elasticsearch returned with code: %d and version: %s\n", code, info.Version.Number)
+	// 创建 policy index
+	cli := &Client{client}
+	if len(cfg.IndexNames) > 0 {
+		res, err := checkPolicy(config, cli)
+		fmt.Printf("res: %v, err: %v\n", res, err)
+		res, err = checkTemplate(config, cli)
+		fmt.Printf("res: %v, err: %v\n", res, err)
+		res, err = checkIndex(config, cli)
+		fmt.Printf("res: %v, err: %v\n", res, err)
+	}
+	return cli, nil
+}
+
+// checkPolicy 检查及更新索引声明周期策略
+func checkPolicy(config *Config, cli *Client) (bool, error) {
+	cfg := config.Elastic
+	try := 0
+	for _, policyName := range cfg.PolicyNames {
+		policyCheckTextMd5 := iohelper.NewCheckTextMd5(policyName, "", cfg.PolicyPath, policyName)
+		policyChanged := policyCheckTextMd5.Change()
+
+		for {
+			exists, err := cli.ILMPolicyExists(context.Background(), policyName)
+			fmt.Printf("ex: %v, err: %v\n", exists, err)
+			try++
+			if try > CreatePolicyRetry {
+				panic("try to create policy over 50 times")
+			}
+			//if err != nil {
+			//	continue
+			//}
+
+			// 更新 policy
+			if !exists || policyChanged {
+				// 存在，但是需要更新，所以先删除旧的
+				if exists {
+					err := cli.DeleteILMPolicy(context.TODO(), policyName)
+					if err != nil {
+						continue
+					}
+				}
+
+				err := cli.PutILMPolicy(context.TODO(), policyName, cfg.PolicyPath)
+				fmt.Printf("put err: %v\n", err)
+				if err != nil {
+					continue
+				}
+
+				err = policyCheckTextMd5.Write()
+				exists = true
+			}
+			if exists {
+				break
+			}
+			time.Sleep(2 * time.Second)
+		}
+	}
+	return true, nil
+}
+
+// checkTemplate 检查及更新索引模版
+func checkTemplate(config *Config, cli *Client) (bool, error) {
+	cfg := config.Elastic
+	try := 0
+	for _, templateName := range cfg.TemplateNames {
+		templateCheckTextMd5 := iohelper.NewCheckTextMd5(templateName, "", cfg.TemplatePath, templateName)
+		templateChanged := templateCheckTextMd5.Change()
+
+		for {
+			exists, err := cli.TemplateExists(context.Background(), templateName)
+			try++
+			if try > CreateTemplateRetry {
+				panic("try to create index template over 50 times")
+			}
+
+			if err != nil {
+				fmt.Printf("template exists error: %v, exists: %v\n", err, exists)
+			}
+			fmt.Printf("template exists error: %v, exists: %v\n", err, exists)
+			if !exists || templateChanged {
+				// 存在，但是需要更新，所以先删除旧的
+				if exists {
+					err := cli.DeleteIndexTemplate(context.TODO(), templateName)
+					if err != nil {
+						continue
+					}
+				}
+
+				err := cli.PutIndexTemplate(context.TODO(), templateName, cfg.PolicyPath)
+				if err != nil {
+					fmt.Printf("put index template error: %v\n", err)
+					continue
+				}
+
+				err = templateCheckTextMd5.Write()
+			}
+
+			if exists {
+				break
+			}
+			time.Sleep(2 * time.Second)
+		}
+	}
+	return true, nil
+}
+
+// checkIndex 检查索引是否存在如果不存在则创建
+func checkIndex(config *Config, cli *Client) (bool, error) {
+	cfg := config.Elastic
+	try := 0
+	for _, indexName := range cfg.IndexNames {
+		for {
+			exists, err := cli.IndexExists(context.Background(), indexName)
+			try++
+			if try > CreateIndexRetry {
+				panic("try to create index over 50 times")
+			}
+			if err != nil {
+				fmt.Printf("index exists error: %v", err)
+			}
+			if !exists {
+				newIndexName := fmt.Sprintf("<%s-{now/d}-00001>", indexName)
+				indexBody := `{
+					"aliases": {
+						"%s": {"is_write_index": true}
+					}
+				}`
+
+				indexBody = fmt.Sprintf(indexBody, indexName)
+
+				res, err := cli.CreateIndex(context.TODO(), newIndexName, indexBody)
+				if err != nil || res == false {
+					fmt.Printf("create index failure: %v\n", err)
+				}
+				exists = true
+			}
+			if exists {
+				break
+			}
+			time.Sleep(2 * time.Second)
+		}
+	}
+	return true, nil
+}

@@ -26,7 +26,7 @@ import (
 
 func main() {
 	logger.InitLogger(
-		logger.SetLogOutput("file"), // 定义日志输出方式为 file
+		logger.SetLogOutput("iohelper"), // 定义日志输出方式为 iohelper
 		logger.SetLogFile("./logs/std.log"),  // 定义日志写入文件路径
 		logger.SetLogLevel("error"), // 定义日志级别，默认 info
 		logger.SetLogFileRotationTime(time.Hour),  // 定义日志切割间隔，默认为 1 天
@@ -54,7 +54,7 @@ func InitLog() {
 		logger.SetName("nlog"),
 		logger.SetLogFile("./logs/nlog.log"),
 		logger.SetLogLevel("info"),
-		logger.SetLogOutput("file"),
+		logger.SetLogOutput("iohelper"),
 		logger.SetLogFormat("json"),
 		logger.SetLogFileRotationTime(time.Hour),
 		logger.SetLogFileMaxAge(time.Hour*24*7),
@@ -65,7 +65,7 @@ func InitLog() {
 		logger.SetName("mlog"),
 		logger.SetLogFile("./logs/mlog.log"),
 		logger.SetLogLevel("info"),
-		logger.SetLogOutput("file"),
+		logger.SetLogOutput("iohelper"),
 		logger.SetLogFormat("text"),
 		logger.SetLogFileRotationTime(time.Hour),
 		logger.SetLogFileMaxAge(time.Hour*24*7),

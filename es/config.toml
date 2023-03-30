@@ -1,0 +1,12 @@
+[Elastic]
+Addr = "http://127.0.0.1:9200/"
+Username = "elastic"
+Password = "123456"
+Sniff = false                                                       # 是否嗅探新的 ES Mode，单机版不用开启
+Debug = false
+Healthcheck = false                                                 # 是否开启健康检查，60s 一次
+IndexNames = ["leefs_logs",]                                        # 注意这里的模板名称和策略名称需要一一对应
+TemplateNames = ["leefs_logs",]                                     # 模板名称
+TemplatePath = "/Users/amu/Desktop/amuluze/amutool/es"              # 模板文件路径
+PolicyNames = ["leefs_logs_policy",]                                # 策略名称
+PolicyPath = "/Users/amu/Desktop/amuluze/amutool/es"                # 索引声明周期策略文件路径

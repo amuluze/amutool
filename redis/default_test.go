@@ -7,17 +7,32 @@ package redis
 import (
 	"fmt"
 	"testing"
+
+	"gitee.com/amuluze/amutool/conf"
 )
 
+func getClient() *Client {
+	var cfg = new(Config)
+	conf.MustLoad(cfg, "./config.toml")
+	fmt.Printf("cfg: %#v\n", cfg)
+	client := NewClient(cfg)
+	return client
+}
+
+var client = getClient()
+
 func TestKeys(t *testing.T) {
-	fmt.Println(&rc)
-	keys, err := Keys()
+	keys, err := client.Keys()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	fmt.Println(keys)
 }
 
-func TestType(t *testing.T) {
-	fmt.Println(&rc)
+func TestGet(t *testing.T) {
+	result, err := client.Get("hello")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(result)
 }

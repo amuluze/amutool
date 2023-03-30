@@ -17,7 +17,7 @@ type Config struct {
 	logFormat           string        `default:"text"`        // 【默认】日志打印样式，支持 text 和 json
 	logFileRotationTime time.Duration `default:"1d"`          // 【默认】日志文件切割间隔
 	logFileMaxAge       time.Duration `default:"7d"`          // 【默认】日志文件保留时间
-	logOutput           string        `default:"stdout"`      // 【默认】日志输出位置，只会 stdout file
+	logOutput           string        `default:"stdout"`      // 【默认】日志输出位置，只会 stdout iohelper
 	logFileSuffix       string        `default:".%Y%m%d"`     // 【默认】归档日志后缀
 }
 

@@ -195,7 +195,7 @@ func (d *Document) WriteToJson() error {
 	}
 	fileObj, err := os.OpenFile(d.OpenAPIJsonFile, os.O_RDWR|os.O_TRUNC|os.O_CREATE, 0766)
 	if err != nil {
-		fmt.Printf("Failed to open json file %s: %v", d.OpenAPIJsonFile, err)
+		fmt.Printf("Failed to open json iohelper %s: %v", d.OpenAPIJsonFile, err)
 		return err
 	}
 	content, err := d.MarshalJSON()
@@ -206,7 +206,7 @@ func (d *Document) WriteToJson() error {
 	}
 
 	if _, err := io.WriteString(fileObj, string(content)); err == nil {
-		fmt.Println("success generated json file")
+		fmt.Println("success generated json iohelper")
 		return nil
 	}
 	return err
@@ -227,7 +227,7 @@ func (d *Document) WriteToYaml() error {
 	}
 	fileObj, err := os.OpenFile(d.OpenAPIYamlFile, os.O_RDWR|os.O_TRUNC|os.O_CREATE, 0766)
 	if err != nil {
-		fmt.Printf("Failed to open yaml file %s: %v", d.OpenAPIYamlFile, err)
+		fmt.Printf("Failed to open yaml iohelper %s: %v", d.OpenAPIYamlFile, err)
 		return err
 	}
 	content, err := d.MarshalYAML()
@@ -238,7 +238,7 @@ func (d *Document) WriteToYaml() error {
 	}
 
 	if _, err := io.WriteString(fileObj, string(content)); err == nil {
-		fmt.Println("success generated yaml file.")
+		fmt.Println("success generated yaml iohelper.")
 		return nil
 	}
 	return err

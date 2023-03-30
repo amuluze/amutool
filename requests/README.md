@@ -5,7 +5,7 @@
 ```shell
 GET: url params headers cookies 
 POST: url data json headers cookies
-  - data: 要发送到指定 url 的 map slice byte 或 file
+  - data: 要发送到指定 url 的 map slice byte 或 iohelper
   - json: 要发送到指定 url 的 json 对象
 ```
 

@@ -8,26 +8,22 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/olivere/elastic/v7"
-
 	"gitee.com/amuluze/amutool/conf"
 )
 
-func getClient() *elastic.Client {
+func getClient() *Client {
 	var cfg = new(Config)
-	conf.MustLoad(cfg, "./config.yaml")
+	conf.MustLoad(cfg, "./config.toml")
 	fmt.Printf("cfg: %#v\n", cfg)
-	client := NewEsClient(cfg)
+	client, err := NewEsClient(cfg)
+	if err != nil {
+		fmt.Println(err)
+	}
 	return client
 }
 
-func TestNewEsClient(t *testing.T) {
-	c := getClient()
-	fmt.Println(c)
-}
-
 func TestIsRunning(t *testing.T) {
-	client := getClient()
-	isRunning := client.IsRunning()
+	var esClient = getClient()
+	isRunning := esClient.IsRunning()
 	fmt.Println(isRunning)
 }
