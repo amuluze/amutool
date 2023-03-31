@@ -1,0 +1,12 @@
+[Kafka.Producer]
+Topics = ["test_message"]
+Retry = 10
+
+[Kafka.Consumer]
+Topics = []
+Group = ""
+ChannelBufferSize = 10
+BulkSize = 50
+BulkTimeout = "3m"
+Retry = 5
+Process = []
