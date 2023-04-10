@@ -20,7 +20,7 @@ func GetLogger(name string) *Logger {
 }
 
 func WithField(fields ...zap.Field) *zap.Logger {
-	return defaultLogger.With(fields...)
+	return defaultLogger.WithField(fields...)
 }
 
 func Debug(args ...interface{}) {
