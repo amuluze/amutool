@@ -47,7 +47,7 @@ func init() {
 					zap.InfoLevel,
 				),
 				zap.AddCaller(),
-				zap.AddCallerSkip(1),
+				zap.AddCallerSkip(2),
 			),
 			name:    "default",
 			loggers: make(map[string]*Logger),
