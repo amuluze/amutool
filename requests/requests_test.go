@@ -31,10 +31,6 @@ func TestGet(t *testing.T) {
 	fmt.Printf("resp: %#v\n", resp)
 }
 
-func SetParam(params map[string]string) {
-	panic("unimplemented")
-}
-
 func TestPost(t *testing.T) {
 	data := map[string]string{
 		"name": "amuluze",
@@ -46,19 +42,6 @@ func TestPost(t *testing.T) {
 		return
 	}
 	fmt.Printf("data resp: %#v\n", resp)
-
-	load := map[string]interface{}{
-		"name":        "amuluze",
-		"age":         12,
-		"is_delete":   false,
-		"create_time": time.Now(),
-	}
-
-	resp, err = Post("http://localhost:9000/json/post", SetJson(load))
-	if err != nil {
-		return
-	}
-	fmt.Printf("json resp: %#v\n", resp)
 }
 
 func TestSetHeaders(t *testing.T) {
@@ -86,4 +69,19 @@ func TestSetCookies(t *testing.T) {
 	}
 	resp, _ := Get("http://localhost:9000/header", SetCookies(cookies))
 	fmt.Printf("header resp: %#v\n", resp.String())
+}
+
+func TestSetJson(t *testing.T) {
+	load := map[string]interface{}{
+		"name":        "amuluze",
+		"age":         12,
+		"is_delete":   false,
+		"create_time": time.Now(),
+	}
+
+	resp, err := Post("http://localhost:9000/json/post", SetJson(load))
+	if err != nil {
+		return
+	}
+	fmt.Printf("json resp: %#v\n", resp)
 }

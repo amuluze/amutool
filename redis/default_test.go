@@ -15,7 +15,7 @@ func getClient() *Client {
 	var cfg = new(Config)
 	conf.MustLoad(cfg, "./config.toml")
 	fmt.Printf("cfg: %#v\n", cfg)
-	client := NewClient(cfg)
+	client, _ := NewClient(cfg)
 	return client
 }
 

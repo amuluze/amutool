@@ -1,0 +1,9 @@
+[ClickHouse]
+Addrs = ["10.13.20.77:9000"]
+Database = "hera"
+Username = ""
+Password = ""
+DialTimeout = "60s"
+MaxOpenConns = 32
+MaxIdleConns = 16
+ConnMaxLifeTime = "1h"
