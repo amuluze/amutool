@@ -6,6 +6,7 @@ package logx
 
 import (
 	"fmt"
+	"os"
 	"sync"
 	"time"
 
@@ -21,6 +22,37 @@ type Logger struct {
 	name    string
 	lock    sync.Mutex
 	loggers map[string]*Logger
+}
+
+func init() {
+	once.Do(func() {
+		defaultLogger = &Logger{
+			Logger: zap.New(
+				zapcore.NewCore(
+					zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
+						TimeKey:          "time",
+						LevelKey:         "level",
+						NameKey:          "logger",
+						CallerKey:        "caller",
+						MessageKey:       "message",
+						StacktraceKey:    "stacktrace",
+						LineEnding:       zapcore.DefaultLineEnding,
+						EncodeLevel:      cEncodeLevel,
+						EncodeTime:       cEncodeTime,
+						EncodeDuration:   zapcore.SecondsDurationEncoder,
+						EncodeCaller:     cEncodeCaller,
+						ConsoleSeparator: " || ",
+					}),
+					zapcore.AddSync(os.Stdout),
+					zap.InfoLevel,
+				),
+				zap.AddCaller(),
+				zap.AddCallerSkip(1),
+			),
+			name:    "default",
+			loggers: make(map[string]*Logger),
+		}
+	})
 }
 
 func (l *Logger) NewLogger(options ...Option) {

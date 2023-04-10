@@ -4,45 +4,7 @@
 // Description:
 package logx
 
-import (
-	"os"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-)
-
 var defaultLogger *Logger
-
-func init() {
-	once.Do(func() {
-		defaultLogger = &Logger{
-			Logger: zap.New(
-				zapcore.NewCore(
-					zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
-						TimeKey:          "time",
-						LevelKey:         "level",
-						NameKey:          "logger",
-						CallerKey:        "caller",
-						MessageKey:       "message",
-						StacktraceKey:    "stacktrace",
-						LineEnding:       zapcore.DefaultLineEnding,
-						EncodeLevel:      cEncodeLevel,
-						EncodeTime:       cEncodeTime,
-						EncodeDuration:   zapcore.SecondsDurationEncoder,
-						EncodeCaller:     cEncodeCaller,
-						ConsoleSeparator: " || ",
-					}),
-					zapcore.AddSync(os.Stdout),
-					zap.InfoLevel,
-				),
-				zap.AddCaller(),
-				zap.AddCallerSkip(1),
-			),
-			name:    "default",
-			loggers: make(map[string]*Logger),
-		}
-	})
-}
 
 func NewLogger(options ...Option) {
 	defaultLogger.NewLogger(options...)
