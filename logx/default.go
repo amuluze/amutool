@@ -4,6 +4,8 @@
 // Description:
 package logx
 
+import "go.uber.org/zap"
+
 var defaultLogger *Logger
 
 func NewLogger(options ...Option) {
@@ -15,6 +17,10 @@ func GetLogger(name string) *Logger {
 		return defaultLogger.loggers[name]
 	}
 	return nil
+}
+
+func WithField(fields ...zap.Field) *zap.Logger {
+	return defaultLogger.With(fields...)
 }
 
 func Debug(args ...interface{}) {
