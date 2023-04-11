@@ -7,8 +7,6 @@ package document
 import (
 	"reflect"
 
-	v1 "gitee.com/amuluze/amutool/log"
-
 	"gitee.com/amuluze/amutool/doc/constants"
 	"github.com/fatih/structtag"
 	"github.com/getkin/kin-openapi/openapi3"
@@ -102,7 +100,6 @@ func (d *Document) getResponseSchemaByModel(model interface{}) *openapi3.Schema 
 			// 如果 field 在 components 中，则映射到 components
 			if _, ok := d.OpenAPI.Components.Schemas[field.Name]; ok {
 				schema.Properties[field.Name] = &openapi3.SchemaRef{Ref: "#/components/schemas/" + d.OpenAPI.Components.Schemas[field.Name].Value.Title}
-				v1.Info("---->", schema.Properties)
 				continue
 			}
 
@@ -149,7 +146,6 @@ func (d *Document) getResponseSchemaByModel(model interface{}) *openapi3.Schema 
 			}
 			defaultTag, err := tags.Get(constants.DEFAULT)
 			if err == nil {
-				v1.Info(">>>>>>>>", field.Type)
 				fieldSchema.Default = defaultTag.Name
 			}
 			exampleTag, err := tags.Get(constants.EXAMPLE)

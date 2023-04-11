@@ -6,10 +6,9 @@ package document
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strconv"
-
-	v1 "gitee.com/amuluze/amutool/log"
 
 	"gitee.com/amuluze/amutool/doc/constants"
 	"github.com/fatih/structtag"
@@ -101,11 +100,10 @@ func (d *Document) getComponentSchemaByModel(model interface{}) *openapi3.Schema
 			}
 			defaultTag, err := tags.Get(constants.DEFAULT)
 			if err == nil {
-				v1.Info(">>>>>>>>", field.Type.String(), "    ", defaultTag.Value())
+
 				switch field.Type.String() {
 				case "int":
 					defaultValue, _ := strconv.ParseInt(defaultTag.Value(), 10, 64)
-					v1.Info(defaultValue)
 					fieldSchema.Default = defaultValue
 				default:
 					fieldSchema.Default = defaultTag.Value()
@@ -125,7 +123,7 @@ func (d *Document) getComponentSchemaByModel(model interface{}) *openapi3.Schema
 				var ee []interface{}
 				err := json.Unmarshal([]byte(enumTag.Value()), &ee)
 				if err != nil {
-					v1.Error(enumTag.String(), "设置错误")
+					fmt.Println(err)
 				}
 				fieldSchema.Enum = ee
 			}

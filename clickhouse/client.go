@@ -5,23 +5,49 @@
 package clickhouse
 
 import (
+	"fmt"
 	"time"
 
-	"github.com/ClickHouse/clickhouse-go/v2"
+	_ "github.com/ClickHouse/clickhouse-go"
+	"github.com/jmoiron/sqlx"
 )
 
-func DefaultConn() (clickhouse.Conn, error) {
-	conn, err := clickhouse.Open(&clickhouse.Options{
-		Addr: []string{"localhost:9000"},
-		Auth: clickhouse.Auth{
-			Database: "test",
-			Username: "root",
-			Password: "123456",
-		},
-		DialTimeout:     30 * time.Second,
-		MaxOpenConns:    16,
-		MaxIdleConns:    8,
-		ConnMaxLifetime: time.Hour,
-	})
-	return conn, err
+type Client struct {
+	*sqlx.DB
+}
+
+func NewClient(config *Config) (*Client, error) {
+	source := fmt.Sprintf("tcp://%s?debug=true&username=%s&password=%s&database=%s", config.Addr, config.Username, config.Password, config.Database)
+
+	dialTimeout, err := time.ParseDuration(config.DialTimeout)
+	if err != nil {
+		return nil, err
+	}
+	maxLifeTime, err := time.ParseDuration(config.ConnMaxLifeTime)
+	if err != nil {
+		return nil, err
+	}
+
+	pool, err := sqlx.Open("clickhouse", source)
+	if err != nil {
+		return nil, err
+	}
+	pool.SetConnMaxLifetime(maxLifeTime)
+	pool.SetConnMaxIdleTime(dialTimeout)
+	pool.SetMaxIdleConns(config.MaxIdleConns)
+	pool.SetMaxOpenConns(config.MaxOpenConns)
+
+	return &Client{pool}, nil
+}
+
+func (c *Client) Close() {
+	c.Close()
+}
+
+func (c *Client) GetTx() (*Tx, error) {
+	tx, err := c.Beginx()
+	if err != nil {
+		return nil, err
+	}
+	return &Tx{tx}, err
 }

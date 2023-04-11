@@ -3,7 +3,7 @@ module gitee.com/amuluze/amutool
 go 1.18
 
 require (
-	github.com/ClickHouse/clickhouse-go/v2 v2.8.3
+	github.com/ClickHouse/clickhouse-go v1.5.4
 	github.com/Shopify/sarama v1.38.1
 	github.com/allenai/go-swaggerui v0.1.0
 	github.com/dimiro1/banner v1.1.0
@@ -14,6 +14,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.37.1
 	github.com/google/uuid v1.3.0
 	github.com/jinzhu/copier v0.3.5
+	github.com/jmoiron/sqlx v1.3.5
 	github.com/koding/multiconfig v0.0.0-20171124222453-69c27309b2d7
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/mattn/go-colorable v0.1.13
@@ -22,7 +23,6 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.2
-	go.uber.org/atomic v1.10.0
 	go.uber.org/automaxprocs v1.5.2
 	go.uber.org/zap v1.24.0
 	gorm.io/driver/mysql v1.3.6
@@ -72,14 +72,13 @@ require (
 )
 
 require (
-	github.com/ClickHouse/ch-go v0.52.1 // indirect
+	github.com/cloudflare/golz4 v0.0.0-20150217214814-ef862a3cdc58 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/eapache/go-resiliency v1.3.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20230111030713-bf00bc1b83b6 // indirect
 	github.com/eapache/queue v1.1.0 // indirect
-	github.com/go-faster/city v1.0.1 // indirect
-	github.com/go-faster/errors v0.6.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
+	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
@@ -90,14 +89,11 @@ require (
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
 	github.com/jonboulle/clockwork v0.3.0 // indirect
 	github.com/lestrrat-go/strftime v1.0.6 // indirect
-	github.com/paulmach/orb v0.9.0 // indirect
 	github.com/pierrec/lz4/v4 v4.1.17 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/rogpeppe/go-internal v1.6.1 // indirect
-	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
-	go.opentelemetry.io/otel v1.14.0 // indirect
-	go.opentelemetry.io/otel/trace v1.14.0 // indirect
+	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/goleak v1.2.1 // indirect
 )

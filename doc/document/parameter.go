@@ -7,15 +7,13 @@ package document
 import (
 	"reflect"
 
-	v1 "gitee.com/amuluze/amutool/log"
-
 	"gitee.com/amuluze/amutool/doc/constants"
 	"github.com/fatih/structtag"
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
 func (d *Document) getParametersByModel(models ...interface{}) openapi3.Parameters {
-	v1.Info("parameters models: ", models)
+
 	parameters := openapi3.NewParameters()
 	for _, model := range models {
 		if model == nil {
@@ -59,7 +57,7 @@ func (d *Document) getParametersByModel(models ...interface{}) openapi3.Paramete
 						parameters = append(parameters, embedParameter)
 					}
 				}
-				v1.Info("value interface: ", value)
+
 				parameter := &openapi3.Parameter{
 					Schema: openapi3.NewSchemaRef("", d.getSchemaByType(value.Interface(), true)),
 				}
@@ -118,6 +116,5 @@ func (d *Document) getParametersByModel(models ...interface{}) openapi3.Paramete
 		}
 	}
 
-	v1.Info("parameters: ", parameters)
 	return parameters
 }

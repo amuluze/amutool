@@ -1,9 +1,11 @@
 [ClickHouse]
-Addrs = ["10.13.20.77:9000"]
-Database = "hera"
-Username = ""
-Password = ""
-DialTimeout = "60s"
-MaxOpenConns = 32
-MaxIdleConns = 16
-ConnMaxLifeTime = "1h"
+Addr = "localhost:9000"       # 服务地址
+Database = "hera"               # 数据库
+Username = ""                   # 用户名
+Password = ""                   # 密码
+DialTimeout = "60s"             # 链接超时时间
+MaxOpenConns = 32               # 最大打开链接输
+MaxIdleConns = 16               # 最大空闲连接数
+ConnMaxLifeTime = "1h"          # 最大连接存活时长 最大单位 h 7d = 168h
+BatchInterval = "10s"           # 批量入库间隔
+BatchSize = 10                  # 批量入库数量

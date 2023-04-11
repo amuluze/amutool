@@ -1,10 +1,10 @@
 [Redis]
-Addrs = ["localhost:6379",]  # redis 地址，兼容单机 集群 哨兵模式
-Password = "123456"         # 密码，为空则表示没有密码
-DB = 0                      # 使用数据库
-PoolSize = 50               # 连接池大小
-MasterName = ""             # 有值，则为哨兵模式
-DialConnectionTimeout = 5   # 连接超时，5s
-DialReadTimeout = 3         # 读取超时，3s，-1 表示取消去读超时
-DialWriteTimeout = 3        # 写入超时，3s，-1 表示取消去写超时
-IdleTimeout = 5             # 空闲连接超时，5m，-1 表示取消去闲置超时
+Addrs = ["localhost:6379",]     # redis 地址，兼容单机 集群 哨兵模式
+Password = "123456"             # 密码，为空则表示没有密码
+DB = 0                          # 使用数据库
+PoolSize = 50                   # 连接池大小
+MasterName = ""                 # 有值，则为哨兵模式
+DialConnectionTimeout = "5s"    # 连接超时，5s
+DialReadTimeout = "3s"          # 读取超时，3s，-1 表示取消去读超时
+DialWriteTimeout = "3s"         # 写入超时，3s，-1 表示取消去写超时
+IdleTimeout = "5s"              # 空闲连接超时，5m，-1 表示取消去闲置超时
