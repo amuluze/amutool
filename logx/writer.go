@@ -7,39 +7,51 @@ package logx
 import (
 	"os"
 	"path/filepath"
+	"time"
 
 	rotator "github.com/lestrrat-go/file-rotatelogs"
 
 	"go.uber.org/zap/zapcore"
 )
 
-func getConsoleWriter() zapcore.WriteSyncer {
-	return zapcore.AddSync(os.Stdout)
+var destinations []zapcore.WriteSyncer = []zapcore.WriteSyncer{
+	zapcore.AddSync(os.Stdout),
 }
 
 func getFileWriter(config *Config) zapcore.WriteSyncer {
-	logFilePath := config.logFile
-	if !filepath.IsAbs(config.logFile) {
-		abspath, _ := filepath.Abs(filepath.Join(filepath.Dir(os.Args[0]), config.logFile))
+	if config.LogOutput != "file" {
+		return nil
+	}
+	logFilePath := config.LogFile
+	if !filepath.IsAbs(config.LogFile) {
+		abspath, _ := filepath.Abs(filepath.Join(filepath.Dir(os.Args[0]), config.LogFile))
 		logFilePath = abspath
 	}
 
 	_log, _ := rotator.New(
-		filepath.Join(logFilePath+config.logFileSuffix),
+		filepath.Join(logFilePath+config.LogFileSuffix),
 		// 生成软连接，指向最新的日志文件
 		rotator.WithLinkName(logFilePath),
-		// 保留文件期限
-		rotator.WithMaxAge(config.logFileMaxAge),
-		// 日志文件的切割间隔
-		rotator.WithRotationTime(config.logFileRotationTime),
+		// 保留文件期限，默认 7 天
+		rotator.WithMaxAge(time.Duration(config.LogFileMaxAge)*time.Hour*24*7),
+		// 日志文件的切割间隔，默认 1 天分割一个文件
+		rotator.WithRotationTime(time.Duration(config.LogFileRotationTime)*time.Hour*24),
 	)
 	return zapcore.AddSync(_log)
 }
 
+func getKafkaWriter(config *Config) zapcore.WriteSyncer {
+	return nil
+}
+
 func getWriter(config *Config) zapcore.WriteSyncer {
-	if config.logOutput == "stdout" {
-		return getConsoleWriter()
-	} else {
-		return zapcore.NewMultiWriteSyncer(getConsoleWriter(), getFileWriter(config))
+	if config.LogOutput == "file" {
+		if fileWriter := getFileWriter(config); fileWriter != nil {
+			destinations = append(destinations, fileWriter)
+		}
 	}
+	if config.LogOutput == "kafka" {
+		destinations = append(destinations, getKafkaWriter(config))
+	}
+	return zapcore.NewMultiWriteSyncer(destinations...)
 }

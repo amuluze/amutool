@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"os"
 	"sync"
-	"time"
 
 	"go.uber.org/zap/zapcore"
 
@@ -59,25 +58,25 @@ func (l *Logger) NewLogger(options ...Option) {
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	config := &Config{
-		name:                "default",
-		logFile:             "default.log",
-		logLevel:            zap.InfoLevel,
-		logFormat:           "text",
-		logFileRotationTime: time.Hour * 24,
-		logFileMaxAge:       time.Hour * 24 * 7,
-		logOutput:           "stdout",
-		logFileSuffix:       ".%Y%m%d",
+		Name:                "default",
+		LogFile:             "default.log",
+		LogLevel:            zap.InfoLevel,
+		LogFormat:           "text",
+		LogFileRotationTime: 1,
+		LogFileMaxAge:       7,
+		LogOutput:           "stdout",
+		LogFileSuffix:       ".%Y%m%d",
 	}
 	for _, option := range options {
 		option(config)
 	}
 
-	if _, ok := l.loggers[config.name]; ok {
+	if _, ok := l.loggers[config.Name]; ok {
 		return
 	}
 	encoder := getEncoder(config)
 	writer := getWriter(config)
-	level := config.logLevel
+	level := config.LogLevel
 
 	newLogger := &Logger{
 		Logger: zap.New(
@@ -85,10 +84,10 @@ func (l *Logger) NewLogger(options ...Option) {
 			zap.AddCaller(),
 			zap.AddCallerSkip(1),
 		),
-		name:    config.name,
+		name:    config.Name,
 		loggers: make(map[string]*Logger),
 	}
-	l.loggers[config.name] = newLogger
+	l.loggers[config.Name] = newLogger
 }
 
 func (l *Logger) WithField(fields ...zap.Field) {

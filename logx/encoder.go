@@ -11,7 +11,7 @@ import (
 )
 
 func getEncoder(config *Config) zapcore.Encoder {
-	if config.logFormat == "text" {
+	if config.LogFormat == "text" {
 		return zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
 			TimeKey:          "time",
 			LevelKey:         "level",

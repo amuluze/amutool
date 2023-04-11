@@ -1,0 +1,9 @@
+[Log]
+Name = "test"
+LogFile = "test.log"
+LogLevel = "info"
+LogFormat = "json"
+LogFileRotationTime = "1"
+LogFileMaxAge = "7"
+LogOutput = "file"
+LogFileSuffix = ".%Y%m%d"
