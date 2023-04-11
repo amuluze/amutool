@@ -91,8 +91,8 @@ func (l *Logger) NewLogger(options ...Option) {
 	l.loggers[config.name] = newLogger
 }
 
-func (l *Logger) WithField(fields ...zap.Field) *zap.Logger {
-	return l.Logger.With(fields...)
+func (l *Logger) WithField(fields ...zap.Field) {
+	l.Logger = l.Logger.With(fields...)
 }
 
 func (l *Logger) Debug(args ...interface{}) {
