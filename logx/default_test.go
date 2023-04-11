@@ -6,6 +6,20 @@ package logx
 
 import "testing"
 
-func TestDebug(t *testing.T) {
-	defaultLogger.Debug("hello golang")
+func TestInfo(t *testing.T) {
+	WithField(Field("trace_id", 123456))
+	Info("hello golang")
+}
+
+func TestNewLogger(t *testing.T) {
+	NewLogger(
+		SetName("test"),
+		SetLogFormat("json"),
+		//SetLogFile("./logs/test.log"),
+		//SetLogOutput("file"),
+		SetLogLevel("debug"),
+	)
+	testLogger := GetLogger("test")
+	testLogger.WithField(Field("trace_id", "1234456"))
+	testLogger.Error("test logger error message")
 }
