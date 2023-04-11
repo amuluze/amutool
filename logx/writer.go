@@ -5,9 +5,12 @@
 package logx
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/Shopify/sarama"
 
 	rotator "github.com/lestrrat-go/file-rotatelogs"
 
@@ -41,7 +44,21 @@ func getFileWriter(config *Config) zapcore.WriteSyncer {
 }
 
 func getKafkaWriter(config *Config) zapcore.WriteSyncer {
-	return nil
+	var kl LogKafka
+	var err error
+	kl.Topic = "test_topic"
+	cfg := sarama.NewConfig()
+	cfg.Producer.RequiredAcks = sarama.WaitForAll
+	cfg.Producer.Partitioner = sarama.NewHashPartitioner
+	cfg.Producer.Return.Successes = true
+	cfg.Producer.Return.Errors = true
+
+	kl.Producer, err = sarama.NewSyncProducer([]string{"localhost:9000"}, cfg)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+	return zapcore.AddSync(&kl)
 }
 
 func getWriter(config *Config) zapcore.WriteSyncer {
@@ -54,4 +71,20 @@ func getWriter(config *Config) zapcore.WriteSyncer {
 		destinations = append(destinations, getKafkaWriter(config))
 	}
 	return zapcore.NewMultiWriteSyncer(destinations...)
+}
+
+type LogKafka struct {
+	Producer sarama.SyncProducer
+	Topic    string
+}
+
+func (lk *LogKafka) Write(p []byte) (n int, err error) {
+	msg := &sarama.ProducerMessage{}
+	msg.Topic = lk.Topic
+	msg.Value = sarama.ByteEncoder(p)
+	_, _, err = lk.Producer.SendMessage(msg)
+	if err != nil {
+		return
+	}
+	return
 }
