@@ -19,8 +19,8 @@ func GetLogger(name string) *Logger {
 	return nil
 }
 
-func WithField(fields ...zap.Field) *zap.Logger {
-	return defaultLogger.WithField(fields...)
+func WithField(fields ...zap.Field) {
+	defaultLogger.WithField(fields...)
 }
 
 func Debug(args ...interface{}) {
