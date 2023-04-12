@@ -6,6 +6,7 @@ package kafka
 
 import (
 	"context"
+
 	"gitee.com/amuluze/amutool/logx"
 	"github.com/Shopify/sarama"
 )
@@ -27,7 +28,7 @@ type ConsumerGroup struct {
 func NewConsumerGroup(gc *GroupConfig, handler sarama.ConsumerGroupHandler) (*ConsumerGroup, error) {
 	g := ConsumerGroup{}
 	g.config = sarama.NewConfig()
-	g.config.Version = Version
+	// g.config.Version = Version
 	g.config.Consumer.Return.Errors = ConsumerReturnErrors
 	g.config.Consumer.Offsets.Initial = ConsumerOffset
 	g.config.Consumer.Fetch.Min = ConsumerFetchMin
