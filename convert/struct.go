@@ -10,7 +10,7 @@ import (
 	"fmt"
 )
 
-func ToMap(content interface{}) map[string]interface{} {
+func StructToMap(content interface{}) map[string]interface{} {
 	var result map[string]interface{}
 	if marshalContent, err := json.Marshal(content); err != nil {
 		fmt.Println(err)
@@ -28,7 +28,7 @@ func ToMap(content interface{}) map[string]interface{} {
 	return result
 }
 
-func ToJson(content interface{}) interface{} {
+func StructToJson(content interface{}) interface{} {
 	if marshalContent, err := json.Marshal(content); err != nil {
 		return nil
 	} else {

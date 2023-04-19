@@ -1,14 +1,14 @@
 [DB]
 # 连接地址
-Host = "postgresql"
+Host = "localhost"
 # 连接端口
 Port = 5432
 # 用户名
-User = "beehive"
+User = "root"
 # 密码
-Password = "wjgXztYQjf"
+Password = "123456"
 # 数据库
-DBName = "beehive"
+DBName = "test"
 # SSL模式
 SSLMode = "disable"
 # 是否开启调试模式

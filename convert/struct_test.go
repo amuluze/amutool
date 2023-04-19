@@ -16,12 +16,12 @@ type User struct {
 
 func TestToJson(t *testing.T) {
 	user := &User{Name: "amu", Age: 32}
-	res := ToJson(user)
+	res := StructToJson(user)
 	fmt.Printf("%s\n", res)
 }
 
 func TestToMap(t *testing.T) {
 	user := &User{Name: "amu", Age: 32}
-	res := ToMap(user)
+	res := StructToMap(user)
 	fmt.Printf("%s\n", res)
 }
