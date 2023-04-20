@@ -18,6 +18,7 @@
   - [x] image: 镜像相关操作
   - [x] network: 网络相关操作
 - [x] database: 数据库操作，支持 postgres mysql sqlite
+- [x] es: Elasticsearch Client and BulkClient
 - [x] envx: 环境变量获取
 - [x] errors: error 封装
 - [ ] hashx:摘要算法
@@ -46,7 +47,6 @@
 - [x] uuidx: uuid 相关操作
 
 ### Todo
-- [ ] es: Elasticsearch Client and BulkClient
 - [ ] doc: api 文档自动生成
 - [ ] encrypt: 加解密
 - [ ] executors
