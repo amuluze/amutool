@@ -6,10 +6,14 @@ package docker
 
 import (
 	"context"
+	"io/ioutil"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/tidwall/gjson"
 )
 
 type ContainerSummary struct {
@@ -56,6 +60,59 @@ func (m *Manager) ListContainer(ctx context.Context) ([]ContainerSummary, error)
 	return containerSummaryList, nil
 }
 
-func (m *Manager) CreateContainer(ctx context.Context, imageTag string, networkID string, imageID string) (string, error) {
-	return "", nil
+// CreateContainer 根据条件创建容器（各种条件会比较复杂），创建成功后返回 containerID，此时容器状态为 created
+func (m *Manager) CreateContainer(ctx context.Context, imageTag string, networkID string, containerName string) (string, error) {
+	containerConfig := &container.Config{
+		Image: imageTag,
+	}
+	//hostConfig := &container.HostConfig{
+	//
+	//}
+	//networkConfig := &network.NetworkingConfig{
+	//
+	//}
+	//platform := &v1.Platform{
+	//
+	//}
+	createResponse, err := m.Client.ContainerCreate(ctx, containerConfig, nil, nil, nil, containerName)
+	if err != nil {
+		return "", err
+	}
+	return createResponse.ID, nil
+}
+
+// StartContainer 根据 containerID 启动容器
+func (m *Manager) StartContainer(ctx context.Context, containerID string) error {
+	return m.Client.ContainerStart(ctx, containerID, types.ContainerStartOptions{})
+}
+
+// StopContainer stop 指定容器
+func (m *Manager) StopContainer(ctx context.Context, containerID string) error {
+	return m.Client.ContainerStop(ctx, containerID, container.StopOptions{})
+}
+
+// RestartContainer 重启指定容器
+func (m *Manager) RestartContainer(ctx context.Context, containerID string) error {
+	return m.Client.ContainerRestart(ctx, containerID, container.StopOptions{})
+}
+
+// DeleteContainer 删除指定容器
+func (m *Manager) DeleteContainer(ctx context.Context, containerID string) error {
+	return m.Client.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{Force: true, RemoveVolumes: false, RemoveLinks: false})
+}
+
+// CopyFileToContainer 向容器中拷贝文件
+func (m *Manager) CopyFileToContainer(ctx context.Context, containerID, srcFile, dstFile string) error {
+	file, _ := os.Open(srcFile)
+	return m.Client.CopyToContainer(ctx, containerID, dstFile, file, types.CopyToContainerOptions{AllowOverwriteDirWithFile: true, CopyUIDGID: false})
+}
+
+// GetContainerMem 获取指定容器的内存使用情况，单位 MB
+func (m *Manager) GetContainerMem(ctx context.Context, containerID string) (int64, error) {
+	stats, _ := m.Client.ContainerStats(ctx, containerID, false)
+	body, _ := ioutil.ReadAll(stats.Body)
+	memUsage := gjson.Get(string(body), "memory_stats.usage").Int() / 1024 / 1024
+	memCache := gjson.Get(string(body), "memory_stats.stats.cache").Int() / 1024 / 1024
+	mem := memUsage - memCache
+	return mem, nil
 }
