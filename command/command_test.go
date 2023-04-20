@@ -15,6 +15,14 @@ func TestRunCommand(t *testing.T) {
 		fmt.Printf("error: %v\n", err)
 		return
 	} else {
-		fmt.Printf("res: %v\n", string(res))
+		fmt.Printf("res: %v\n", res)
+	}
+}
+
+func TestRunCommandWithBlock(t *testing.T) {
+	if res, err := RunCommandWithBlock(context.TODO(), "ls"); err != nil {
+		fmt.Printf("error: %v\n", err)
+	} else {
+		fmt.Printf("res: \n%v\n", res)
 	}
 }

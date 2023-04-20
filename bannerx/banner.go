@@ -12,12 +12,16 @@ import (
 	"github.com/dimiro1/banner"
 )
 
-func GenerateBanner() {
-	templ := `{{ .Title "Banner" "" 4 }}`
-	temp := "{{ .Title " + "\"Hello\"" + " \"\" 4 }}"
-	fmt.Println(templ)
-	fmt.Println(temp)
-	isEnabled := true
-	isColorEnabled := true
-	banner.InitString(colorable.NewColorableStdout(), isEnabled, isColorEnabled, temp)
+func GenerateBanner(bannerString string) {
+	templ := fmt.Sprintf(`{{ .Title "%s" "" 4 }}
+	  {{ .AnsiColor.BrightRed }}GoVersion: {{ .GoVersion }}
+	  {{ .AnsiColor.BrightRed }}GOOS: {{ .GOOS }}
+	  {{ .AnsiColor.BrightGreen }}GOARCH: {{ .GOARCH }}
+	  {{ .AnsiColor.BrightGreen }}NumCPU: {{ .NumCPU }}
+	  {{ .AnsiColor.BrightGreen }}GOPATH: {{ .GOPATH }}
+	  {{ .AnsiColor.BrightGreen }}GOROOT: {{ .GOROOT }}
+	  Compiler: {{ .Compiler }}
+	  ENV: {{ .Env "GOPATH" }}
+	  Now: {{ .Now "Monday, 2 Jan 2006" }}`, bannerString)
+	banner.InitString(colorable.NewColorableStdout(), true, true, templ)
 }

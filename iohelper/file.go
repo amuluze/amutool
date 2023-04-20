@@ -46,23 +46,6 @@ func GetPwd() string {
 	return strings.Replace(dir, "\\", "/", -1)
 }
 
-// FileMD5 计算文件的 md5
-func FileMD5(filename string) (string, error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return "", err
-	}
-	defer f.Close()
-
-	md5Handle := md5.New()
-	_, err = io.Copy(md5Handle, f)
-	if err != nil {
-		return "", err
-	}
-	md5String := hex.EncodeToString(md5Handle.Sum(nil))
-	return md5String, nil
-}
-
 // GetFileSize 获取文件大小
 func GetFileSize(filename string) (int64, error) {
 	file, err := os.Stat(filename)
@@ -72,7 +55,7 @@ func GetFileSize(filename string) (int64, error) {
 	return file.Size(), nil
 }
 
-// SaveToFile 写入文件
+// SaveToFile 写入文件 isClear false 追加写入 true 覆盖写入
 func SaveToFile(fname string, src []string, isClear bool) bool {
 	return WriteFile(fname, src, isClear)
 }
@@ -144,4 +127,21 @@ func CopyFile(src, des string) error {
 
 	_, err = io.Copy(desFile, srcFile)
 	return err
+}
+
+// FileMD5 计算文件的 md5
+func FileMD5(filename string) (string, error) {
+	f, err := os.Open(filename)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	md5Handle := md5.New()
+	_, err = io.Copy(md5Handle, f)
+	if err != nil {
+		return "", err
+	}
+	md5String := hex.EncodeToString(md5Handle.Sum(nil))
+	return md5String, nil
 }

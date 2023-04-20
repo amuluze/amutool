@@ -34,10 +34,11 @@ func NewCheckTextMd5(fileName, fileText, md5FilePath, md5Name string) *CheckText
 	if fileText != "" {
 		namePrefix = textMD5(fileText)
 	} else {
-		namePrefix = textMD5(fileName)
+		namePrefix, _ = FileMD5(fileName)
 	}
 
 	versionFile := fmt.Sprint(md5FilePath, "/.", namePrefix, "-", md5Name)
+	fmt.Printf("version file: %v\n", versionFile)
 	err := EnsureDir(versionFile)
 	if err != nil {
 		panic("create template md5 file dir failure")
@@ -89,6 +90,6 @@ func (s *CheckTextMd5) Write() error {
 	} else {
 		templateFileMd5, _ = FileMD5(s.fileName)
 	}
-
+	fmt.Printf("template file md5: %v\n", templateFileMd5)
 	return os.WriteFile(s.versionFile, []byte(templateFileMd5), 0640)
 }

@@ -11,12 +11,12 @@ import (
 
 func TestBase64Encode(t *testing.T) {
 	str := "hello world"
-	res := Encode([]byte(str))
+	res := Encode(str)
 	fmt.Println(res)
 }
 
 func TestBase64Decode(t *testing.T) {
 	str := "aGVsbG8gd29ybGQ="
 	res, _ := Decode(str)
-	fmt.Println(string(res))
+	fmt.Println(res)
 }

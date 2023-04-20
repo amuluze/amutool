@@ -1,8 +1,8 @@
-// Package convert
+// Package convertx
 // Date: 2022/9/7 01:04
 // Author: Amu
 // Description:
-package convert
+package convertx
 
 import (
 	"encoding/binary"

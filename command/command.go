@@ -10,20 +10,24 @@ import (
 	"os/exec"
 )
 
-func RunCommand(ctx context.Context, name string, args ...string) ([]byte, error) {
+func RunCommand(ctx context.Context, name string, args ...string) (string, error) {
 	cmd := exec.CommandContext(ctx, name, args...)
 	buf := new(bytes.Buffer)
 	cmd.Stdout = buf
 	cmd.Stderr = buf
 	err := cmd.Run()
-	return buf.Bytes(), err
+	return buf.String(), err
 }
 
-func RunCommandWithBlock(ctx context.Context, name string, args ...string) ([]byte, error) {
+func RunCommandWithBlock(ctx context.Context, name string, args ...string) (string, error) {
 	cmd := exec.CommandContext(ctx, name, args...)
 	buf := new(bytes.Buffer)
 	cmd.Stdout = buf
 	cmd.Stderr = buf
 	err := cmd.Start()
-	return buf.Bytes(), err
+	err = cmd.Wait()
+	if err != nil {
+		return "", err
+	}
+	return buf.String(), err
 }

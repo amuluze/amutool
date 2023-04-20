@@ -23,6 +23,7 @@ require (
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/pkg/errors v0.9.1
 	github.com/sony/sonyflake v1.1.0
+	github.com/spf13/cast v1.5.0
 	github.com/stretchr/testify v1.8.2
 	github.com/tidwall/gjson v1.14.4
 	go.uber.org/automaxprocs v1.5.2
@@ -103,7 +104,6 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.17 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
-	github.com/rogpeppe/go-internal v1.6.1 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect

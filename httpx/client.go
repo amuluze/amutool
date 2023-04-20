@@ -1,8 +1,8 @@
-// Package http
+// Package httpx
 // Date: 2023/4/6 10:28
 // Author: Amu
 // Description:
-package http
+package httpx
 
 import (
 	"bytes"
@@ -18,8 +18,12 @@ type ResponseWrapper struct {
 	Header     http.Header
 }
 
-func Get(url string, timeout int) ResponseWrapper {
-	req, err := http.NewRequest("GET", url, nil)
+func Get(url string, params *string, timeout int) ResponseWrapper {
+	var body *bytes.Buffer
+	if params != nil {
+		body = bytes.NewBufferString(*params)
+	}
+	req, err := http.NewRequest("GET", url, body)
 	if err != nil {
 		return createRequestError(err)
 	}
@@ -27,9 +31,13 @@ func Get(url string, timeout int) ResponseWrapper {
 	return request(req, timeout)
 }
 
-func PostParams(url string, params string, timeout int) ResponseWrapper {
-	buf := bytes.NewBufferString(params)
-	req, err := http.NewRequest("POST", url, buf)
+// PostParams post form data
+func PostParams(url string, params *string, timeout int) ResponseWrapper {
+	var body *bytes.Buffer
+	if params != nil {
+		body = bytes.NewBufferString(*params)
+	}
+	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
 		return createRequestError(err)
 	}
@@ -38,9 +46,13 @@ func PostParams(url string, params string, timeout int) ResponseWrapper {
 	return request(req, timeout)
 }
 
-func PostJson(url string, body string, timeout int) ResponseWrapper {
-	buf := bytes.NewBufferString(body)
-	req, err := http.NewRequest("POST", url, buf)
+// PostJson post json
+func PostJson(url string, params *string, timeout int) ResponseWrapper {
+	var body *bytes.Buffer
+	if params != nil {
+		body = bytes.NewBufferString(*params)
+	}
+	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
 		return createRequestError(err)
 	}

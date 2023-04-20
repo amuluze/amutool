@@ -35,7 +35,7 @@ func (b *Bearer) Provider() AuthType {
 
 func (b *Bearer) Scheme() *openapi3.SecurityScheme {
 	return &openapi3.SecurityScheme{
-		Type:         "http",
+		Type:         "httpx",
 		Scheme:       "bearer",
 		BearerFormat: "JWT",
 	}

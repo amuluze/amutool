@@ -4,8 +4,10 @@
 // Description:
 package bannerx
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestGenerateBanner(t *testing.T) {
-	GenerateBanner()
+	GenerateBanner("amu tool")
 }

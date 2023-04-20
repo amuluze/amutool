@@ -34,7 +34,7 @@ func SetLicense(license DocInfoLicense) Option {
 func SetSecuritySchema(schema security.ISecurity) Option {
 	return func(doc *Document) {
 		doc.OpenAPI.Components.SecuritySchemes = map[string]*openapi3.SecuritySchemeRef{
-			"http": {Value: schema.Scheme()},
+			"httpx": {Value: schema.Scheme()},
 		}
 	}
 }

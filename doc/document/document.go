@@ -69,7 +69,7 @@ func New(title, description, version string, options ...Option) *Document {
 		Components: openapi3.NewComponents(),
 		Tags:       openapi3.Tags{},
 		Paths:      map[string]*openapi3.PathItem{},
-		Security:   openapi3.SecurityRequirements{map[string][]string{"http": {}}},
+		Security:   openapi3.SecurityRequirements{map[string][]string{"httpx": {}}},
 	}
 
 	doc := &Document{

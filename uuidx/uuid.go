@@ -33,7 +33,7 @@ func MustString() string {
 	return MustUUID().String()
 }
 
-// MustParseUUIToString convert uuid str to uuid
+// MustParseUUIToString convertx uuid str to uuid
 func MustParseUUIToString(uuidStr string) UUID {
 	return uuid.MustParse(uuidStr)
 }

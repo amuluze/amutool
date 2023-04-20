@@ -11,24 +11,12 @@ import (
 
 func TestMD5(t *testing.T) {
 	str := "hello world"
-	res := MD5([]byte(str))
-	fmt.Println(res)
-}
-
-func TestMD5String(t *testing.T) {
-	str := "hello world"
-	res := MD5String(str)
+	res := MD5(str)
 	fmt.Println(res)
 }
 
 func TestSHA1(t *testing.T) {
 	str := "123456"
-	res := SHA1([]byte(str))
-	fmt.Println(res)
-}
-
-func TestSHA1String(t *testing.T) {
-	str := "123456"
-	res := SHA1String(str)
+	res := SHA1(str)
 	fmt.Println(res)
 }
