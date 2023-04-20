@@ -9,12 +9,6 @@ import (
 	"fmt"
 )
 
-const (
-	CreateTemplateRetry = 50
-	TemplateFilePrefix  = "template_"
-	TemplateFileSuffix  = ".json"
-)
-
 func (c *Client) TemplateExists(ctx context.Context, templateName string) (bool, error) {
 	exists, err := c.GetIndexTemplate(ctx, templateName)
 	if err != nil {
@@ -40,7 +34,7 @@ func (c *Client) PutIndexTemplate(ctx context.Context, templateName string, temp
 		return err
 	}
 
-	res, err := c.IndexPutIndexTemplate(templateName).Pretty(true).BodyString(bodyString).Do(context.TODO())
+	res, err := c.IndexPutIndexTemplate(templateName).Pretty(true).BodyString(bodyString).Do(ctx)
 	if err != nil || !res.Acknowledged {
 		fmt.Printf("template body string: %v\n", err)
 		return err

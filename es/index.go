@@ -11,10 +11,6 @@ import (
 	"github.com/olivere/elastic/v7"
 )
 
-const (
-	CreateIndexRetry = 50
-)
-
 func (c *Client) IndexExists(ctx context.Context, indexName string) (bool, error) {
 	res, err := c.IndexGet(indexName).Human(true).Do(ctx)
 	if err != nil {

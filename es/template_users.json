@@ -1,12 +1,12 @@
 {
-  "index_patterns": ["leefs_logs-*"],
+  "index_patterns": ["users-*"],
   "priority": 1,
   "template": {
     "settings": {
       "number_of_shards": 1,
       "number_of_replicas": 1,
-      "index.lifecycle.name": "leefs_ilm_policy",
-      "index.lifecycle.rollover_alias": "leefs_logs",
+      "index.lifecycle.name": "users",
+      "index.lifecycle.rollover_alias": "users",
       "index.lifecycle.parse_origination_date": true
     },
     "mappings": {
@@ -22,16 +22,11 @@
           },
           "norms": false
         },
-        "attacker": {
-          "type": "text",
-          "norms": false,
-          "fields": {
-            "keyword": {
-              "type": "keyword",
-              "ignore_above": 256,
-              "normalizer": "lowercase"
-            }
-          }
+        "age": {
+          "type": "long"
+        },
+        "sex": {
+          "type": "long"
         }
       }
     }

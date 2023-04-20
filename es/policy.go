@@ -9,12 +9,6 @@ import (
 	"fmt"
 )
 
-const (
-	CreatePolicyRetry = 50
-	PolicyFilePrefix  = "ilm_"
-	PolicyFileSuffix  = ".json"
-)
-
 func (c *Client) ILMPolicyExists(ctx context.Context, policyName string) (bool, error) {
 	res, err := c.XPackIlmGetLifecycle().Pretty(true).Human(true).Policy(policyName).Do(ctx)
 	if err != nil {
@@ -35,7 +29,7 @@ func (c *Client) PutILMPolicy(ctx context.Context, policyName string, policyPath
 		return err
 	}
 	fmt.Printf("body string: %#v\n", bodyString)
-	res, err := c.XPackIlmPutLifecycle().Policy(policyName).BodyString(bodyString).Do(context.TODO())
+	res, err := c.XPackIlmPutLifecycle().Policy(policyName).BodyString(bodyString).Do(ctx)
 	fmt.Printf(">>>>res: %v, err: %v\n", res, err)
 	if err != nil || res.Acknowledged {
 		return err

@@ -19,25 +19,18 @@ import (
 // ================================================= config =================================================
 
 type Config struct {
-	Elastic Elastic
-}
-
-type Elastic struct {
 	Addr              string
 	Username          string
 	Password          string
+	ConfigPath        string
+	BulkFlushInterval string
 	Sniff             bool
 	Debug             bool
 	Healthcheck       bool
-	IndexNames        []string
-	TemplateNames     []string
-	TemplatePath      string
-	PolicyNames       []string
-	PolicyPath        string
 	BulkWorkers       int
 	BulkActions       int
 	BulkSize          int
-	BulkFlushInterval int
+	IndexNames        []string
 }
 
 // ================================================= client =================================================
@@ -46,8 +39,7 @@ type Client struct {
 	*elastic.Client
 }
 
-func NewEsClient(config *Config) (*Client, error) {
-	cfg := config.Elastic
+func NewEsClient(cfg *Config) (*Client, error) {
 	client, err := elastic.NewClient(
 		//elastic 服务地址
 		elastic.SetURL(cfg.Addr),
@@ -68,26 +60,26 @@ func NewEsClient(config *Config) (*Client, error) {
 	// 创建 policy index
 	cli := &Client{client}
 	if len(cfg.IndexNames) > 0 {
-		res, err := checkPolicy(config, cli)
+		res, err := checkPolicy(cfg, cli)
 		fmt.Printf("res: %v, err: %v\n", res, err)
-		res, err = checkTemplate(config, cli)
+		res, err = checkTemplate(cfg, cli)
 		fmt.Printf("res: %v, err: %v\n", res, err)
-		res, err = checkIndex(config, cli)
+		res, err = checkIndex(cfg, cli)
 		fmt.Printf("res: %v, err: %v\n", res, err)
 	}
 	return cli, nil
 }
 
 // checkPolicy 检查及更新索引声明周期策略
-func checkPolicy(config *Config, cli *Client) (bool, error) {
-	cfg := config.Elastic
+func checkPolicy(cfg *Config, cli *Client) (bool, error) {
 	try := 0
-	for _, policyName := range cfg.PolicyNames {
-		policyCheckTextMd5 := iohelper.NewCheckTextMd5(policyName, "", cfg.PolicyPath, policyName)
+	for _, indexName := range cfg.IndexNames {
+		policyFileName := PolicyFilePrefix + indexName + PolicyFileSuffix
+		policyCheckTextMd5 := iohelper.NewCheckTextMd5(policyFileName, "", cfg.ConfigPath, PolicyFilePrefix+indexName)
 		policyChanged := policyCheckTextMd5.Change()
 
 		for {
-			exists, err := cli.ILMPolicyExists(context.Background(), policyName)
+			exists, err := cli.ILMPolicyExists(context.Background(), policyFileName)
 			fmt.Printf("ex: %v, err: %v\n", exists, err)
 			try++
 			if try > CreatePolicyRetry {
@@ -101,13 +93,13 @@ func checkPolicy(config *Config, cli *Client) (bool, error) {
 			if !exists || policyChanged {
 				// 存在，但是需要更新，所以先删除旧的
 				if exists {
-					err := cli.DeleteILMPolicy(context.TODO(), policyName)
+					err := cli.DeleteILMPolicy(context.TODO(), policyFileName)
 					if err != nil {
 						continue
 					}
 				}
 
-				err := cli.PutILMPolicy(context.TODO(), policyName, cfg.PolicyPath)
+				err := cli.PutILMPolicy(context.TODO(), policyFileName, cfg.ConfigPath)
 				fmt.Printf("put err: %v\n", err)
 				if err != nil {
 					continue
@@ -126,15 +118,15 @@ func checkPolicy(config *Config, cli *Client) (bool, error) {
 }
 
 // checkTemplate 检查及更新索引模版
-func checkTemplate(config *Config, cli *Client) (bool, error) {
-	cfg := config.Elastic
+func checkTemplate(cfg *Config, cli *Client) (bool, error) {
 	try := 0
-	for _, templateName := range cfg.TemplateNames {
-		templateCheckTextMd5 := iohelper.NewCheckTextMd5(templateName, "", cfg.TemplatePath, templateName)
+	for _, indexName := range cfg.IndexNames {
+		templateFIleName := TemplateFilePrefix + indexName + TemplateFileSuffix
+		templateCheckTextMd5 := iohelper.NewCheckTextMd5(templateFIleName, "", cfg.ConfigPath, TemplateFilePrefix+indexName)
 		templateChanged := templateCheckTextMd5.Change()
 
 		for {
-			exists, err := cli.TemplateExists(context.Background(), templateName)
+			exists, err := cli.TemplateExists(context.Background(), templateFIleName)
 			try++
 			if try > CreateTemplateRetry {
 				panic("try to create index template over 50 times")
@@ -147,13 +139,13 @@ func checkTemplate(config *Config, cli *Client) (bool, error) {
 			if !exists || templateChanged {
 				// 存在，但是需要更新，所以先删除旧的
 				if exists {
-					err := cli.DeleteIndexTemplate(context.TODO(), templateName)
+					err := cli.DeleteIndexTemplate(context.TODO(), templateFIleName)
 					if err != nil {
 						continue
 					}
 				}
 
-				err := cli.PutIndexTemplate(context.TODO(), templateName, cfg.PolicyPath)
+				err := cli.PutIndexTemplate(context.TODO(), templateFIleName, cfg.ConfigPath)
 				if err != nil {
 					fmt.Printf("put index template error: %v\n", err)
 					continue
@@ -172,8 +164,7 @@ func checkTemplate(config *Config, cli *Client) (bool, error) {
 }
 
 // checkIndex 检查索引是否存在如果不存在则创建
-func checkIndex(config *Config, cli *Client) (bool, error) {
-	cfg := config.Elastic
+func checkIndex(cfg *Config, cli *Client) (bool, error) {
 	try := 0
 	for _, indexName := range cfg.IndexNames {
 		for {

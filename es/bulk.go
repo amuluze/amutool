@@ -32,10 +32,10 @@ type BulkStats struct {
 	Failed    int64 // # of requests that ES reported as failed
 }
 
-func NewBulkProcess(client *Client, config *Config) (*BulkProcessor, error) {
-	cfg := config.Elastic
+func NewBulkProcess(client *Client, cfg *Config) (*BulkProcessor, error) {
+	interval, _ := time.ParseDuration(cfg.BulkFlushInterval)
 	service := elastic.NewBulkProcessorService(client.Client).
-		FlushInterval(time.Duration(cfg.BulkFlushInterval) * time.Second).
+		FlushInterval(interval).
 		Workers(cfg.BulkWorkers).
 		BulkActions(cfg.BulkActions).
 		BulkSize(cfg.BulkSize * 1024 * 1024).
