@@ -14,6 +14,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gofiber/fiber/v2 v2.37.1
 	github.com/google/uuid v1.3.0
+	github.com/gorilla/rpc v1.2.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/koding/multiconfig v0.0.0-20171124222453-69c27309b2d7
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible

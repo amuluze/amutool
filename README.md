@@ -47,6 +47,7 @@
 - [x] uuidx: uuid 相关操作
 
 ### Todo
+- [ ] jsonrpc
 - [ ] doc: api 文档自动生成
 - [ ] encrypt: 加解密
 - [ ] executors
