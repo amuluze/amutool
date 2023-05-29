@@ -1,4 +1,5 @@
 ## amutool
+golang 工具类封装
 
 ### Done
 - [x] bannerx: banner 生成
