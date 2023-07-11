@@ -20,7 +20,7 @@ func TestGetRangeNum(t *testing.T) {
 }
 
 func TestGetRandomString(t *testing.T) {
-	res := GetRandomString(3)
+	res := RandomString(3)
 	fmt.Println(res)
 }
 
