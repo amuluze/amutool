@@ -1,7 +1,7 @@
 ### log
 Golang log 工具封装
 
-config.toml
+toml 配置实例
 ```yaml
 [log]
 Name = "test"                       # logger name

@@ -41,17 +41,19 @@ randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](
 
 ## DONE
 - [x] bannerx: banner 生成
+- [x] basex: base 64 编解码
 - [x] randx: 随机整数、字符串生成
+- [x] command: 运行 linux 命令
+- [x] database: 数据库操作，支持 postgres mysql sqlite
+- [x] logx: 日志 zap 封装
 
 
 ## TODO
-- [ ] basex: base 64 编解码
+
 - [ ] clickhouse: clickhouse 客户端
-- [ ] command: 运行 linux 命令
 - [ ] conf: 配置文件加载，支持 json yaml toml
 - [ ] convertx: 类型转换
 - [ ] docker: golang 操作 docker
-- [ ] database: 数据库操作，支持 postgres mysql sqlite
 - [ ] es: Elasticsearch Client and BulkClient
 - [ ] envx: 环境变量获取
 - [ ] errors: error 封装
@@ -59,7 +61,6 @@ randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](
 - [ ] httpx:简单的 http 客户端
 - [ ] iohelper: io 操作相关
 - [ ] kafka:操作 kafka
-- [ ] logx: 日志 zap 封装
 - [ ] redis: redis 客户端
 - [ ] stringx: 字符串操作封装
 - [ ] timex: 时间相关操作

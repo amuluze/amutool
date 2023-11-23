@@ -48,8 +48,8 @@ func RandBytes(length int) []byte {
 	return b
 }
 
-// RandomString 生成随机字符串
-func RandomString(length int) string {
+// RandString 生成随机字符串
+func RandString(length int) string {
 	return random(Letters, length)
 }
 

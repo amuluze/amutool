@@ -9,22 +9,22 @@ import (
 	"testing"
 )
 
-func TestGetRandInt(t *testing.T) {
-	res := GetRandInt(1, 100)
+func TestRandInt(t *testing.T) {
+	res := RandInt(1, 100)
 	fmt.Println(res)
 }
 
-func TestGetRangeNum(t *testing.T) {
-	res := GetRangeNum(3)
+func TestRandNumeral(t *testing.T) {
+	res := RandNumeral(3)
 	fmt.Println(res)
 }
 
-func TestGetRandomString(t *testing.T) {
-	res := RandomString(3)
+func TestRandString(t *testing.T) {
+	res := RandString(3)
 	fmt.Println(res)
 }
 
-func TestGetRangeNumString(t *testing.T) {
-	res := GetRangeNumString(4)
+func TestRandNumeralOrLetter(t *testing.T) {
+	res := RandNumeralOrLetter(4)
 	fmt.Println(res)
 }
