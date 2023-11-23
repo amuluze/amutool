@@ -49,13 +49,18 @@ randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](
 - [x] conf: 配置文件加载，支持 json yaml toml
 - [x] envx: 环境变量获取
 - [x] errors: error 封装
+- [x] hashx:摘要算法
+
+
+
+
+
 
 ## TODO
 - [ ] clickhouse: clickhouse 客户端
 - [ ] convertx: 类型转换
 - [ ] docker: golang 操作 docker
 - [ ] es: Elasticsearch Client and BulkClient
-- [ ] hashx:摘要算法
 - [ ] httpx:简单的 http 客户端
 - [ ] iohelper: io 操作相关
 - [ ] kafka:操作 kafka
