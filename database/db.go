@@ -21,14 +21,14 @@ type Config struct {
 	Port         string
 	UserName     string
 	Password     string
-	Name         string
+	DBName       string
 	TablePrefix  string
 	MaxLifetime  int
 	MaxOpenConns int
 	MaxIdleConns int
 }
 
-func (c *Config) Dial() gorm.Dialector {
+func (c *Config) dial() gorm.Dialector {
 	var dsn string
 	var dialector gorm.Dialector
 	switch c.Type {
@@ -38,7 +38,7 @@ func (c *Config) Dial() gorm.Dialector {
 			c.Password,
 			c.Host,
 			c.Port,
-			c.Name,
+			c.DBName,
 		)
 		dialector = mysql.New(mysql.Config{
 			DSN:                       dsn,
@@ -53,7 +53,7 @@ func (c *Config) Dial() gorm.Dialector {
 			c.Host,
 			c.Port,
 			c.UserName,
-			c.Name,
+			c.DBName,
 			c.Password,
 		)
 		dialector = postgres.New(postgres.Config{
@@ -61,7 +61,7 @@ func (c *Config) Dial() gorm.Dialector {
 			PreferSimpleProtocol: true,
 		})
 	default:
-		dsn = fmt.Sprintf("%s.db", c.Name)
+		dsn = fmt.Sprintf("%s.db", c.DBName)
 		dialector = sqlite.Open(dsn)
 	}
 
@@ -73,7 +73,7 @@ type DB struct {
 }
 
 func NewDB(cfg *Config) (*DB, error) {
-	dial := cfg.Dial()
+	dial := cfg.dial()
 	db, err := gorm.Open(dial, &gorm.Config{})
 	if err != nil {
 		return nil, err
