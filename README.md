@@ -46,12 +46,11 @@ randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](
 - [x] command: 运行 linux 命令
 - [x] database: 数据库操作，支持 postgres mysql sqlite
 - [x] logx: 日志 zap 封装
+- [x] conf: 配置文件加载，支持 json yaml toml
 
 
 ## TODO
-
 - [ ] clickhouse: clickhouse 客户端
-- [ ] conf: 配置文件加载，支持 json yaml toml
 - [ ] convertx: 类型转换
 - [ ] docker: golang 操作 docker
 - [ ] es: Elasticsearch Client and BulkClient
