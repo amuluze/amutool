@@ -50,9 +50,7 @@ randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](
 - [x] envx: 环境变量获取
 - [x] errors: error 封装
 - [x] hashx:摘要算法
-
-
-
+- [x] uuidx: uuid 相关操作
 
 
 
@@ -67,7 +65,6 @@ randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](
 - [ ] redis: redis 客户端
 - [ ] stringx: 字符串操作封装
 - [ ] timex: 时间相关操作
-- [ ] uuidx: uuid 相关操作
 - [ ] jsonrpc
 - [ ] doc: api 文档自动生成
 - [ ] encrypt: 加解密
