@@ -7,7 +7,7 @@ package kafka
 import (
 	"time"
 
-	"github.com/Shopify/sarama"
+	"github.com/IBM/sarama"
 )
 
 var (
@@ -17,20 +17,24 @@ var (
 )
 
 const (
-	ConsumerReturnErrors = true
-	ConsumerFetchMin     = 1
-	ConsumerFetchMax     = 0
-	ConsumerOffset       = sarama.OffsetNewest
-	ConsumerFetchDefault = 1 << 20
+	ConsumerFetchMin                  = 1
+	ConsumerFetchDefault              = 1 << 20
+	ConsumerRetryBackoff              = 2 * time.Second
+	ConsumerMaxWaitTime               = 250 * time.Millisecond
+	ConsumerMaxProcessingTime         = 100 * time.Millisecond
+	ConsumerReturnErrors              = true
+	ConsumerOffsetsAutoCommitEnable   = true
+	ConsumerOffsetsAutoCommitInterval = 1 * time.Second
+	ConsumerOfsettsInitial            = sarama.OffsetNewest
 )
 
 const (
-	ProducerRetryMax            = 3
-	ProducerReturnErrors        = true
-	ProducerMaxMessageBodyBytes = 1000000
-	ProducerReturnSuccesses     = true
-	ProducerCompressionLevel    = sarama.CompressionLevelDefault
-	ProducerCompression         = sarama.CompressionNone
-	ProducerRetryBackoff        = 100 * time.Millisecond
 	ProducerTimeout             = 10 * time.Second
+	ProducerRetryMax            = 3
+	ProducerRetryBackoff        = 100 * time.Millisecond
+	ProducerReturnErrors        = true
+	ProducerReturnSuccesses     = true
+	ProducerMaxMessageBodyBytes = 1000000
+	ProducerCompression         = sarama.CompressionNone
+	ProducerCompressionLevel    = sarama.CompressionLevelDefault
 )
