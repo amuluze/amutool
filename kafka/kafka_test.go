@@ -9,8 +9,6 @@ import (
 	"strconv"
 	"testing"
 	"time"
-
-	"github.com/IBM/sarama"
 )
 
 func TestKafkaProducer(t *testing.T) {
@@ -24,7 +22,7 @@ func TestKafkaProducer(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		time.Sleep(time.Second)
 		strI := strconv.Itoa(i)
-		kafkaClient.SendMessage("kafka-test", sarama.StringEncoder("testKey"+strI), sarama.StringEncoder("testValue"+strI))
+		kafkaClient.SendMessage("kafka-test", StringEncoder("testKey"+strI), StringEncoder("testValue"+strI))
 	}
 }
 
