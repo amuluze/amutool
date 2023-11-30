@@ -50,7 +50,7 @@ func New(opts ...Option) (*Manager, error) {
 	conf.Producer.RequiredAcks = opt.producerRequiredAcks // 消息发送确认
 	conf.Producer.Partitioner = sarama.NewHashPartitioner // 通过msg中的key生成hash值,选择分区
 
-	conf.Consumer.Offsets.Initial = opt.consumerOffsetInitial     // 消费模式
+	conf.Consumer.Offsets.Initial = OffsetNewest                  // 消费模式
 	conf.Consumer.Offsets.AutoCommit.Enable = true                // 自动提交 offset
 	conf.Consumer.Offsets.AutoCommit.Interval = 3 * time.Second   // 自动提交 offset 间隔
 	conf.Consumer.Offsets.Retry.Max = opt.consumerOffsetsRetryMax // 消费失败重试次数
