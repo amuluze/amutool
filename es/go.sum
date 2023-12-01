@@ -1,2 +1,14 @@
-gitee.com/amuluze/amutool v0.0.0-20231130095827-90c4e3bfbf9a h1:BEfzQOTvrREh7t9GPLNs7U5yBsTpxX24EM3lXA1vXHw=
-gitee.com/amuluze/amutool v0.0.0-20231130095827-90c4e3bfbf9a/go.mod h1:gPQBfuOiIcY/41yqb+D47i7pHi00s/uf5AWVXYsw2D0=
+gitee.com/amuluze/amutool/iohelper v0.0.0-20231201065840-6949137ea47e h1:bQvqSsof2+xvchaQeSpWhbbJIKlU3XI9Hgv5V5AhW5g=
+gitee.com/amuluze/amutool/iohelper v0.0.0-20231201065840-6949137ea47e/go.mod h1:eFZVjUfI2FcWXebf1kIZTtRUKY3xaEzfNrJ7YNUbNhI=
+github.com/fortytw2/leaktest v1.3.0 h1:u8491cBMTQ8ft8aeV+adlcytMZylmA5nnwwkRZjI8vw=
+github.com/fortytw2/leaktest v1.3.0/go.mod h1:jDsjWgpAGjm2CA7WthBh/CdZYEPF31XHquHwclZch5g=
+github.com/google/go-cmp v0.5.7 h1:81/ik6ipDQS2aGcBfIN5dHDB36BwrStyeAQquSYCV4o=
+github.com/google/go-cmp v0.5.7/go.mod h1:n+brtR0CgQNWTVd5ZUFpTBC8YFBDLK/h/bpaJ8/DtOE=
+github.com/josharian/intern v1.0.0 h1:vlS4z54oSdjm0bgjRigI+G1HpF+tI+9rE5LLzOg8HmY=
+github.com/josharian/intern v1.0.0/go.mod h1:5DoeVV0s6jJacbCEi61lwdGj/aVlrQvzHFFd8Hwg//Y=
+github.com/mailru/easyjson v0.7.7 h1:UGYAvKxe3sBsEDzO8ZeWOSlIQfWFlxbzLZe7hwFURr0=
+github.com/mailru/easyjson v0.7.7/go.mod h1:xzfreul335JAWq5oZzymOObrkdz5UnU4kGfJJLY9Nlc=
+github.com/olivere/elastic/v7 v7.0.32 h1:R7CXvbu8Eq+WlsLgxmKVKPox0oOwAE/2T9Si5BnvK6E=
+github.com/olivere/elastic/v7 v7.0.32/go.mod h1:c7PVmLe3Fxq77PIfY/bZmxY/TAamBhCzZ8xDOE09a9k=
+github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
+github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
