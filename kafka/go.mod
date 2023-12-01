@@ -2,10 +2,7 @@ module gitee.com/amuluze/amutool/kafka
 
 go 1.21.4
 
-require (
-	github.com/IBM/sarama v1.42.1
-	github.com/pkg/errors v0.9.1
-)
+require github.com/IBM/sarama v1.42.1
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
