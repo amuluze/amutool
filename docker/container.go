@@ -128,7 +128,7 @@ func (m *Manager) GetContainerMem(ctx context.Context, containerID string) (floa
 	stats, _ := m.Client.ContainerStats(ctx, containerID, false)
 	body, _ := io.ReadAll(stats.Body)
 	fmt.Println(string(body))
-	memUsage := gjson.Get(string(body), "memory_stats.stats.active_anon").Float() / (1024 * 1024)
+	memUsage := gjson.Get(string(body), "memory_stats.usage").Float() / (1024 * 1024)
 	return memUsage, nil
 }
 
@@ -137,5 +137,9 @@ func (m *Manager) GetContainerCPU(ctx context.Context, containerID string) (floa
 	stats, _ := m.Client.ContainerStats(ctx, containerID, false)
 	body, _ := io.ReadAll(stats.Body)
 	fmt.Println(string(body))
-	return 0, nil
+
+	cpuDelta := gjson.Get(string(body), "cpu_stats.cpu_usage.total_usage").Float() - gjson.Get(string(body), "precpu_stats.cpu_usage.total_usage").Float()
+	systemDelta := gjson.Get(string(body), "cpu_stats.system_cpu_usage").Float() - gjson.Get(string(body), "precpu_stats.system_cpu_usage").Float()
+	cpuPercent := (cpuDelta / systemDelta) * 100.0
+	return cpuPercent, nil
 }
