@@ -13,4 +13,5 @@ if __name__ == '__main__':
     topic = "test"
     for i in range(1000):
         msg = "hello " + str(i)
+        print(msg)
         producer.send(topic, msg.encode("utf-8"))

@@ -20,9 +20,14 @@ func TestKafkaProducer(t *testing.T) {
 		fmt.Println("new kafka client error")
 	}
 	for i := 0; i < 10; i++ {
-		time.Sleep(time.Second)
+		//time.Sleep(time.Second)
 		strI := strconv.Itoa(i)
-		kafkaClient.SendMessage("kafka-test", StringEncoder("testKey"+strI), StringEncoder("testValue"+strI))
+		kafkaClient.SendMessage("test", StringEncoder("testKey"+strI), StringEncoder("testValue"+strI))
+	}
+	time.Sleep(10 * time.Second)
+	err = kafkaClient.Close()
+	if err != nil {
+		fmt.Println("kafka client close error: ")
 	}
 }
 
@@ -39,7 +44,7 @@ func TestKafkaConsumer(t *testing.T) {
 	}
 
 	for {
-		time.Sleep(time.Second)
+		//time.Sleep(time.Second)
 		msg := <-kafkaClient.ConsumerMessages
 		fmt.Printf("A message was received: %s\n", msg.Value)
 	}
