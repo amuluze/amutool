@@ -11,14 +11,20 @@ func Int64ToTime(timestamp int64) time.Time {
 	return time.Unix(timestamp, 0)
 }
 
-func CurrentDate() string {
+// CurrentDate 获取当前日期
+func CurrentDate(format string) string {
+	if format != "" {
+		return time.Now().Format(format)
+	}
 	return time.Now().Format("2006-01-02")
 }
 
+// CurrentTime 获取当前时间
 func CurrentTime() string {
-	return ""
+	return time.Now().Format("15:04:05")
 }
 
+// CurrentTimestamp 获取当前秒级时间戳
 func CurrentTimestamp() int64 {
-	return 0
+	return time.Now().Unix()
 }
