@@ -10,3 +10,15 @@ import "time"
 func Int64ToTime(timestamp int64) time.Time {
 	return time.Unix(timestamp, 0)
 }
+
+func CurrentDate() string {
+	return time.Now().Format("2006-01-02")
+}
+
+func CurrentTime() string {
+	return ""
+}
+
+func CurrentTimestamp() int64 {
+	return 0
+}

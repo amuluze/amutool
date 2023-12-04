@@ -1,34 +1,34 @@
 {
-  "index_patterns": ["users-*"],
-  "priority": 1,
-  "template": {
+    "index_patterns": ["users-*"],
+    "priority": 1,
+    "template": {
     "settings": {
-      "number_of_shards": 1,
-      "number_of_replicas": 1,
-      "index.lifecycle.name": "users",
-      "index.lifecycle.rollover_alias": "users",
-      "index.lifecycle.parse_origination_date": true
+        "number_of_shards": 1,
+        "number_of_replicas": 1,
+        "index.lifecycle.name": "users",
+        "index.lifecycle.rollover_alias": "users",
+        "index.lifecycle.parse_origination_date": true
     },
     "mappings": {
-      "_source": { "enabled": true },
-      "properties": {
+        "_source": { "enabled": true },
+        "properties": {
         "username": {
-          "type": "text",
-          "fields": {
+            "type": "text",
+            "fields": {
             "keyword": {
-              "type": "keyword",
-              "ignore_above": 256
+                "type": "keyword",
+                "ignore_above": 256
             }
-          },
-          "norms": false
+            },
+            "norms": false
         },
         "age": {
-          "type": "long"
+            "type": "long"
         },
         "sex": {
-          "type": "long"
+            "type": "long"
         }
-      }
+        }
     }
-  }
+    }
 }

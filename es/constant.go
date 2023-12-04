@@ -4,6 +4,8 @@
 // Description:
 package es
 
+import "github.com/olivere/elastic/v7"
+
 const (
 	CreateIndexRetry    = 50
 	CreatePolicyRetry   = 50
@@ -12,4 +14,27 @@ const (
 	PolicyFileSuffix    = ".json"
 	TemplateFilePrefix  = "template_"
 	TemplateFileSuffix  = ".json"
+)
+
+var (
+	NewMatchQuery             = elastic.NewMatchQuery
+	NewTermQuery              = elastic.NewTermQuery
+	NewTermsQuery             = elastic.NewTermsQuery
+	NewTermsQueryFrom         = elastic.NewTermsQueryFromStrings
+	NewBoolQuery              = elastic.NewBoolQuery
+	NewRangeQuery             = elastic.NewRangeQuery
+	NewNestedQuery            = elastic.NewNestedQuery
+	NewMatchAllQuery          = elastic.NewMatchAllQuery
+	NewMatchPhraseQuery       = elastic.NewMatchPhraseQuery
+	NewMatchPhrasePrefixQuery = elastic.NewMatchPhrasePrefixQuery
+	NewRegexpQuery            = elastic.NewRegexpQuery
+
+	NewTermsAggregation     = elastic.NewTermsAggregation
+	NewAvgAggregation       = elastic.NewAvgAggregation
+	NewDateRangeAggregation = elastic.NewDateRangeAggregation
+	NewFilterAggregation    = elastic.NewFilterAggregation
+	NewFiltersAggregation   = elastic.NewFiltersAggregation
+	NewSumAggregation       = elastic.NewSumAggregation
+	NewMaxAggregation       = elastic.NewMaxAggregation
+	NewMinAggregation       = elastic.NewMinAggregation
 )

@@ -6,7 +6,6 @@ package es
 
 import (
 	"context"
-	"fmt"
 )
 
 func (c *Client) ILMPolicyExists(ctx context.Context, policyName string) (bool, error) {
@@ -20,22 +19,9 @@ func (c *Client) ILMPolicyExists(ctx context.Context, policyName string) (bool, 
 	return false, nil
 }
 
-func (c *Client) PutILMPolicy(ctx context.Context, policyName string, policyPath string) error {
-	fileName := fmt.Sprint(policyPath, "/", PolicyFilePrefix, policyName, PolicyFileSuffix)
-	fmt.Printf("policy file name: %v\n", fileName)
-	bodyString, err := c.ReadFile(fileName)
-	if err != nil {
-		fmt.Printf("read file error: %#v", err)
-		return err
-	}
-	fmt.Printf("body string: %#v\n", bodyString)
-	res, err := c.XPackIlmPutLifecycle().Policy(policyName).BodyString(bodyString).Do(ctx)
-	fmt.Printf(">>>>res: %v, err: %v\n", res, err)
-	if err != nil || res.Acknowledged {
-		return err
-	}
-	fmt.Printf("res: %#v\n", res)
-	return nil
+func (c *Client) PutILMPolicy(ctx context.Context, policyName string, policyBody string) (bool, error) {
+	res, err := c.XPackIlmPutLifecycle().Policy(policyName).BodyString(policyBody).Do(ctx)
+	return res.Acknowledged, err
 }
 
 func (c *Client) GetILMPolicy(ctx context.Context, policyName string) (map[string]interface{}, error) {
@@ -46,11 +32,7 @@ func (c *Client) GetILMPolicy(ctx context.Context, policyName string) (map[strin
 	return res[policyName].Policy, nil
 }
 
-func (c *Client) DeleteILMPolicy(ctx context.Context, policyName string) error {
+func (c *Client) DeleteILMPolicy(ctx context.Context, policyName string) (bool, error) {
 	res, err := c.XPackIlmDeleteLifecycle().Policy(policyName).Human(true).Do(ctx)
-	if err != nil {
-		return err
-	}
-	fmt.Println(res)
-	return nil
+	return res.Acknowledged, err
 }

@@ -6,47 +6,30 @@ package es
 
 import (
 	"context"
-	"fmt"
+
+	"github.com/olivere/elastic/v7"
 )
 
 func (c *Client) TemplateExists(ctx context.Context, templateName string) (bool, error) {
-	exists, err := c.GetIndexTemplate(ctx, templateName)
+	res, err := c.IndexGetIndexTemplate(templateName).Human(true).Pretty(true).Do(ctx)
 	if err != nil {
 		return false, err
 	}
-	fmt.Printf("exists: %#v\n", exists)
-	return true, nil
+	_, exists := res.IndexTemplates.ByName(templateName)
+	return exists, nil
 }
 
-func (c *Client) GetIndexTemplate(ctx context.Context, templateName string) (map[string]interface{}, error) {
-	do, err := c.IndexGetIndexTemplate(templateName).Human(true).Pretty(true).Do(ctx)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Printf("do: %#v\n", do)
-	return nil, nil
+func (c *Client) GetIndexTemplate(ctx context.Context, templateName string) (*elastic.IndicesGetIndexTemplateData, error) {
+	res, err := c.GetIndexTemplate(ctx, templateName)
+	return res, err
 }
 
-func (c *Client) PutIndexTemplate(ctx context.Context, templateName string, templatePath string) error {
-	fileName := fmt.Sprint(templatePath, "/", TemplateFilePrefix, templateName, TemplateFileSuffix)
-	bodyString, err := c.ReadFile(fileName)
-	if err != nil {
-		return err
-	}
-
-	res, err := c.IndexPutIndexTemplate(templateName).Pretty(true).BodyString(bodyString).Do(ctx)
-	if err != nil || !res.Acknowledged {
-		fmt.Printf("template body string: %v\n", err)
-		return err
-	}
-	return nil
+func (c *Client) PutIndexTemplate(ctx context.Context, templateName string, templateBody string) (bool, error) {
+	res, err := c.IndexPutIndexTemplate(templateName).Pretty(true).BodyString(templateBody).Do(ctx)
+	return res.Acknowledged, err
 }
 
-func (c *Client) DeleteIndexTemplate(ctx context.Context, templateName string) error {
+func (c *Client) DeleteIndexTemplate(ctx context.Context, templateName string) (bool, error) {
 	res, err := c.IndexDeleteIndexTemplate(templateName).Human(true).Do(ctx)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("res: %#v\n", res)
-	return nil
+	return res.Acknowledged, err
 }

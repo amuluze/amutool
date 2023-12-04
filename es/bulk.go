@@ -8,9 +8,13 @@ import (
 	"context"
 	"time"
 
+	"gitee.com/amuluze/amutool/uuidx"
+
+	"gitee.com/amuluze/amutool/logx"
 	"github.com/olivere/elastic/v7"
 )
 
+// BulkProcessor 增删改批量操作
 type BulkProcessor struct {
 	*elastic.BulkProcessor
 }
@@ -32,20 +36,32 @@ type BulkStats struct {
 	Failed    int64 // # of requests that ES reported as failed
 }
 
-func NewBulkProcess(client *Client, cfg *Config) (*BulkProcessor, error) {
-	interval, _ := time.ParseDuration(cfg.BulkFlushInterval)
+func NewBulkProcessor(client *Client, opts ...BulkOption) (*BulkProcessor, error) {
+	opt := &bulkOption{}
+	for _, o := range opts {
+		o(opt)
+	}
+	interval, _ := time.ParseDuration(opt.BulkFlushInterval)
 	service := elastic.NewBulkProcessorService(client.Client).
 		FlushInterval(interval).
-		Workers(cfg.BulkWorkers).
-		BulkActions(cfg.BulkActions).
-		BulkSize(cfg.BulkSize * 1024 * 1024).
+		Workers(opt.BulkWorkers).
+		BulkActions(opt.BulkActions).
+		BulkSize(opt.BulkSize * 1024 * 1024).
 		Stats(true)
 
-	processor, err := service.Do(context.Background())
+	processor, err := service.After(after).Do(context.Background())
 	if err != nil {
 		return nil, err
 	}
 	return &BulkProcessor{processor}, err
+}
+
+func after(executionID int64, requests []elastic.BulkableRequest, response *elastic.BulkResponse, err error) {
+	if err != nil {
+		logx.Errorf("bulk commit failed, err: %v\n", err)
+	}
+	// do what ever you want in case bulk commit success
+	logx.Infof("commit successfully, len(requests): %d, execution id: %d, response: %v\n", len(requests), executionID, response)
 }
 
 func (p *BulkProcessor) Close() error {
@@ -58,6 +74,10 @@ func (p *BulkProcessor) Start(ctx context.Context) error {
 
 func (p *BulkProcessor) Stop() error {
 	return p.BulkProcessor.Stop()
+}
+
+func (p *BulkProcessor) Flush() error {
+	return p.BulkProcessor.Flush()
 }
 
 func (p *BulkProcessor) Stats() BulkStats {
@@ -74,30 +94,19 @@ func (p *BulkProcessor) Stats() BulkStats {
 	}
 }
 
-func (p *BulkProcessor) Add(request BulkRequest) error {
-	req, err := p.buildRequest(request)
-	if err != nil {
-		return err
-	}
-	p.BulkProcessor.Add(req)
-	return nil
+func (p *BulkProcessor) Create(indexName string, doc interface{}) {
+	cr := elastic.NewBulkCreateRequest().Index(indexName).Id(uuidx.MustString()).Doc(doc)
+	p.BulkProcessor.Add(cr)
 }
 
-func (p *BulkProcessor) Flush() error {
-	return p.BulkProcessor.Flush()
+func (p *BulkProcessor) Update(indexName string, docID string, doc interface{}) {
+	ur := elastic.NewBulkUpdateRequest().Index(indexName).Id(docID).Doc(doc)
+	p.BulkProcessor.Add(ur)
 }
 
-func (p *BulkProcessor) buildRequest(request BulkRequest) (elastic.BulkableRequest, error) {
-	var req elastic.BulkableRequest
-	switch request.Action {
-	case "create":
-		req = elastic.NewBulkCreateRequest().UseEasyJSON(true).Index(request.Index).Doc(request.Doc)
-	case "update":
-		req = elastic.NewBulkUpdateRequest().UseEasyJSON(true).Index(request.Index).Doc(request.Doc)
-	case "delete":
-		req = elastic.NewBulkDeleteRequest().UseEasyJSON(true).Index(request.Index)
-	case "index":
-		req = elastic.NewBulkIndexRequest().UseEasyJSON(true).Index(request.Index).OpType(request.Action).Doc(request.Doc)
+func (p *BulkProcessor) Delete(indexName string, docIDs []string) {
+	for _, docID := range docIDs {
+		dr := elastic.NewBulkDeleteRequest().Index(indexName).Id(docID)
+		p.BulkProcessor.Add(dr)
 	}
-	return req, nil
 }

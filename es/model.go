@@ -7,7 +7,4 @@ package es
 type Model interface {
 	GetIndexName() string
 	GetId() string
-	ExistIndex() bool
-	SetNowIndex(string)
-	GetSortField() string
 }

@@ -1,27 +1,27 @@
 {
-  "policy": {
+    "policy": {
     "phases": {
-      "hot": {
+        "hot": {
         "actions": {
-          "rollover": {
+            "rollover": {
             "max_docs": "50"
-          }
+            }
         }
-      },
-      "warm": {
+        },
+        "warm": {
         "min_age": "10s",
         "actions": {
-          "allocate": {
+            "allocate": {
             "number_of_replicas": 0
-          }
+            }
         }
-      },
-      "delete": {
+        },
+        "delete": {
         "min_age": "20s",
         "actions": {
-          "delete": {}
+            "delete": {}
         }
-      }
+        }
     }
-  }
+    }
 }

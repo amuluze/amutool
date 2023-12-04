@@ -10,12 +10,6 @@ import (
 	"github.com/olivere/elastic/v7"
 )
 
-// ================================================= 增加 =================================================
-
-// ================================================= 删除 =================================================
-
-// ================================================= 更新 =================================================
-
 // ================================================= 查找 =================================================
 
 func (c *Client) Find(ctx context.Context, bulkModel Model, options ...QueryOption) (*elastic.SearchResult, error) {
@@ -38,10 +32,6 @@ func (c *Client) FindByIndexNameScroll(ctx context.Context, indexNames []string,
 		return c.GetScrollQueryService(options...).Scroll("5m").Size(size).Index(indexNames...).Do(ctx)
 	}
 	return c.GetScrollQueryService(options...).ScrollId(scrollID).Scroll("5m").Size(size).Index(indexNames...).Do(ctx)
-}
-
-func (c *Client) Count(ctx context.Context, bulkModel Model, options ...CountOption) (int64, error) {
-	return c.GetCountService(options...).Index(bulkModel.GetIndexName()).Do(ctx)
 }
 
 func (c *Client) CountByIndices(ctx context.Context, indexNames []string, options ...CountOption) (int64, error) {

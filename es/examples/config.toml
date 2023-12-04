@@ -10,4 +10,4 @@ ConfigPath = "/Users/amu/Desktop/amuluze/amutool/es"              # 模板文件
 BulkWorkers = 2                                                     # bulkprocessor worker 数量，每个 worker 是一个携程
 BulkActions = 1000                                                  # 每个 worker 的队列容量
 BulkSize = 50                                                       # 刷新的大小限制 单位 MB
-BulkFlushInterval = 30                                              # 刷新间隔，单位 s
+BulkFlushInterval = 30s                                              # 刷新间隔
