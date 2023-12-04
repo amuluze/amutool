@@ -164,7 +164,7 @@ func (m *Manager) Cleanup(sarama.ConsumerGroupSession) error {
 	return nil
 }
 
-func (m *Manager) Close() {
+func (m *Manager) Close() error {
 	var err error
 	if m.Producer != nil {
 		err = m.Producer.Close()
@@ -179,4 +179,5 @@ func (m *Manager) Close() {
 			fmt.Println("Close ConsumerGroup failed")
 		}
 	}
+	return err
 }
