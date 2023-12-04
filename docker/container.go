@@ -6,7 +6,8 @@ package docker
 
 import (
 	"context"
-	"io/ioutil"
+	"fmt"
+	"io"
 	"os"
 	"strings"
 	"time"
@@ -28,10 +29,25 @@ type ContainerSummary struct {
 type Container struct {
 }
 
+// getUptime 获取指定容器的启动时间
 func (m *Manager) getUptime(ctx context.Context, containerID string) string {
 	inspect, _ := m.Client.ContainerInspect(ctx, containerID)
 	started, _ := time.Parse(time.RFC3339Nano, inspect.State.StartedAt)
 	return started.Format("2006-01-02 15:04:05")
+}
+
+// GetContainerIDByName 根据名称获取指定 container ID
+func (m *Manager) GetContainerIDByName(ctx context.Context, name string) (string, error) {
+	containers, err := m.Client.ContainerList(ctx, types.ContainerListOptions{All: true})
+	if err != nil {
+		return "", err
+	}
+	for _, ct := range containers {
+		if ct.Names[0] == name {
+			return ct.ID, nil
+		}
+	}
+	return "", nil
 }
 
 // ListContainer 获取所有容器 []ContainerSummary
@@ -108,11 +124,18 @@ func (m *Manager) CopyFileToContainer(ctx context.Context, containerID, srcFile,
 }
 
 // GetContainerMem 获取指定容器的内存使用情况，单位 MB
-func (m *Manager) GetContainerMem(ctx context.Context, containerID string) (int64, error) {
+func (m *Manager) GetContainerMem(ctx context.Context, containerID string) (float64, error) {
 	stats, _ := m.Client.ContainerStats(ctx, containerID, false)
-	body, _ := ioutil.ReadAll(stats.Body)
-	memUsage := gjson.Get(string(body), "memory_stats.usage").Int() / 1024 / 1024
-	memCache := gjson.Get(string(body), "memory_stats.stats.cache").Int() / 1024 / 1024
-	mem := memUsage - memCache
-	return mem, nil
+	body, _ := io.ReadAll(stats.Body)
+	fmt.Println(string(body))
+	memUsage := gjson.Get(string(body), "memory_stats.stats.active_anon").Float() / (1024 * 1024)
+	return memUsage, nil
+}
+
+// GetContainerCPU 获取指定容器 CPU 使用情况，单位百分比
+func (m *Manager) GetContainerCPU(ctx context.Context, containerID string) (float64, error) {
+	stats, _ := m.Client.ContainerStats(ctx, containerID, false)
+	body, _ := io.ReadAll(stats.Body)
+	fmt.Println(string(body))
+	return 0, nil
 }

@@ -54,6 +54,8 @@ randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](
 - [x] kafka:操作 kafka
 - [x] es: Elasticsearch Client and BulkClient
 - [x] timex: 时间相关操作
+- [x] redis: redis 客户端
+
 
 
 ## TODO
@@ -62,7 +64,6 @@ randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](
 - [ ] docker: golang 操作 docker
 - [ ] httpx:简单的 http 客户端
 - [ ] iohelper: io 操作相关
-- [ ] redis: redis 客户端
 - [ ] stringx: 字符串操作封装
 - [ ] jsonrpc
 - [ ] doc: api 文档自动生成
