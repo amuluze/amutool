@@ -14,50 +14,48 @@ import (
 
 var ctx = context.Background()
 
-type Config struct {
-	Redis Redis
-}
-
-type Redis struct {
-	Addrs                 []string // redis 地址，兼容单机和集群
-	Password              string   // 密码，没有则为空
-	DB                    int      // 使用数据库
-	PoolSize              int      // 连接池大小
-	MasterName            string   // 有值，则为哨兵模式
-	DialConnectionTimeout string   // 连接超时，默认 5s
-	DialReadTimeout       string   // 读取超时，默认 3s，-1 表示取消读超时
-	DialWriteTimeout      string   // 写入超时，默认 3s， -1 表示取消写超时
-	IdleTimeout           string   // 空闲连接超时，默认 5m，-1 表示取消闲置超时
-}
-
 type Client struct {
 	redis.UniversalClient
 }
 
-func NewClient(config *Config) (*Client, error) {
-	cfg := config.Redis
-	dailTimeout, err := time.ParseDuration(cfg.DialConnectionTimeout)
+func NewClient(opts ...Option) (*Client, error) {
+	conf := &option{
+		Addrs:                 []string{"localhost:6379"},
+		Password:              "123456",
+		DB:                    0,
+		PoolSize:              50,
+		MasterName:            "",
+		DialConnectionTimeout: "5s",
+		DialReadTimeout:       "3s",
+		DialWriteTimeout:      "3s",
+		IdleTimeout:           "5s",
+	}
+	for _, opt := range opts {
+		opt(conf)
+	}
+
+	dailTimeout, err := time.ParseDuration(conf.DialConnectionTimeout)
 	if err != nil {
 		return nil, err
 	}
-	readTimeout, err := time.ParseDuration(cfg.DialReadTimeout)
+	readTimeout, err := time.ParseDuration(conf.DialReadTimeout)
 	if err != nil {
 		return nil, err
 	}
-	writeTimeout, err := time.ParseDuration(cfg.DialWriteTimeout)
+	writeTimeout, err := time.ParseDuration(conf.DialWriteTimeout)
 	if err != nil {
 		return nil, err
 	}
-	idleTimeout, err := time.ParseDuration(cfg.IdleTimeout)
+	idleTimeout, err := time.ParseDuration(conf.IdleTimeout)
 	if err != nil {
 		return nil, err
 	}
 	c := redis.NewUniversalClient(&redis.UniversalOptions{
-		Addrs:        cfg.Addrs,
-		DB:           cfg.DB,
-		Password:     cfg.Password,
-		PoolSize:     cfg.PoolSize,
-		MasterName:   cfg.MasterName,
+		Addrs:        conf.Addrs,
+		DB:           conf.DB,
+		Password:     conf.Password,
+		PoolSize:     conf.PoolSize,
+		MasterName:   conf.MasterName,
 		DialTimeout:  dailTimeout,
 		ReadTimeout:  readTimeout,
 		WriteTimeout: writeTimeout,
@@ -69,4 +67,8 @@ func NewClient(config *Config) (*Client, error) {
 		return nil, err
 	}
 	return &Client{c}, nil
+}
+
+func (rc *Client) Close() {
+	rc.Close()
 }
