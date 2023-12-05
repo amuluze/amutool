@@ -13,19 +13,21 @@ import (
 type Option func(*option)
 
 type option struct {
-	clientID                string
-	version                 sarama.KafkaVersion // 版本
-	username                string              // 用户名
-	password                string              // 密码
-	producerBrokers         []string            // 生产者连接地址
-	producerRetryMax        int                 // 生产者最大重试次数
-	producerRequiredAcks    sarama.RequiredAcks // 生产者确认模式
-	consumerBrokers         []string            // 消费者连接地址
-	consumerTopics          []string            // 消费主题
-	consumerGroup           string              // 消费者组
-	consumerOffsetInitial   int64               // 消费模式
-	consumerOffsetsRetryMax int                 // 消费最大重试次数
-	autoSubmit              bool                // 消费时自动提交
+	clientID                  string
+	version                   sarama.KafkaVersion // 版本
+	username                  string              // 用户名
+	password                  string              // 密码
+	producerBrokers           []string            // 生产者连接地址
+	producerRetryMax          int                 // 生产者最大重试次数
+	producerRequiredAcks      sarama.RequiredAcks // 生产者确认模式
+	consumerBrokers           []string            // 消费者连接地址
+	consumerTopics            []string            // 消费主题
+	consumerGroup             string              // 消费者组
+	consumerOffsetInitial     int64               // 消费模式
+	consumerOffsetsRetryMax   int                 // 消费最大重试次数
+	autoSubmit                bool                // 消费时自动提交
+	consumerMessageBufferSize int64               // 消费者消息队列长度
+	consumerRebalanceStrategy string              // consumer 分区分配策略
 }
 
 func WithClientID(CID string) Option {
@@ -104,5 +106,17 @@ func WithConsumerOffsetsRetryMax(retryMax int) Option {
 func WithAutoSubmit(auto bool) Option {
 	return func(o *option) {
 		o.autoSubmit = auto
+	}
+}
+
+func WithConsumerMessageBufferSize(size int64) Option {
+	return func(o *option) {
+		o.consumerMessageBufferSize = size
+	}
+}
+
+func WituConsumerRebalanceStrategy(rebalanceStrategy string) Option {
+	return func(o *option) {
+		o.consumerRebalanceStrategy = rebalanceStrategy
 	}
 }

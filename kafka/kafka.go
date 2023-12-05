@@ -16,25 +16,29 @@ import (
 type Manager struct {
 	Producer         sarama.AsyncProducer
 	ConsumerGroup    sarama.ConsumerGroup
-	ConsumerMessages chan *sarama.ConsumerMessage
+	ConsumerMessages chan ConsumerMessage
 	Consumers        chan Consumer
 	option           *option
 }
 
 func New(opts ...Option) (*Manager, error) {
 	opt := &option{
-		version:                 defaultVersion,
-		producerRetryMax:        defaultRetryMax,
-		producerRequiredAcks:    WaitLeader,
-		consumerOffsetsRetryMax: defaultRetryMax,
-		autoSubmit:              defaultAutoSubmit,
+		version:                   defaultVersion,
+		producerRetryMax:          defaultRetryMax,
+		producerRequiredAcks:      WaitLeader,
+		consumerOffsetsRetryMax:   defaultRetryMax,
+		consumerMessageBufferSize: 1000,
+		consumerRebalanceStrategy: "roundrobin",
+		autoSubmit:                defaultAutoSubmit,
 	}
 
 	for _, f := range opts {
 		f(opt)
 	}
 
-	manager := &Manager{option: opt}
+	manager := &Manager{
+		option: opt,
+	}
 
 	if len(opt.producerBrokers) == 0 && len(opt.consumerBrokers) == 0 {
 		return manager, errors.New("producer Brokers和consumer Brokers不能同时为空")
@@ -55,6 +59,16 @@ func New(opts ...Option) (*Manager, error) {
 	conf.Consumer.Offsets.AutoCommit.Interval = 3 * time.Second   // 自动提交 offset 间隔
 	conf.Consumer.Offsets.Retry.Max = opt.consumerOffsetsRetryMax // 消费失败重试次数
 	conf.Consumer.Return.Errors = true
+	switch opt.consumerRebalanceStrategy {
+	case "sticky":
+		conf.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.NewBalanceStrategySticky()}
+	case "roundrobin":
+		conf.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.NewBalanceStrategyRoundRobin()}
+	case "range":
+		conf.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.NewBalanceStrategyRange()}
+	default:
+		conf.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.NewBalanceStrategyRoundRobin()}
+	}
 
 	if opt.username != "" && opt.password != "" {
 		conf.Net.SASL.User = "admin"
@@ -87,7 +101,13 @@ func New(opts ...Option) (*Manager, error) {
 
 	// 初始化指定消费组
 	if len(opt.consumerBrokers) > 0 {
-		group, err := sarama.NewConsumerGroup(opt.consumerBrokers, opt.consumerGroup, conf)
+		client, err := sarama.NewClient(opt.consumerBrokers, conf)
+		if err != nil {
+			return manager, err
+		}
+		//client.Partitions(opt.consumerTopics)
+		consumerCount := manager.getPartitions(client)
+		group, err := sarama.NewConsumerGroupFromClient(opt.consumerGroup, client)
 		if err != nil {
 			return manager, err
 		}
@@ -95,12 +115,15 @@ func New(opts ...Option) (*Manager, error) {
 		fmt.Println("Consumer Group init success")
 
 		if opt.autoSubmit {
-			manager.ConsumerMessages = make(chan *sarama.ConsumerMessage, 256)
+			manager.ConsumerMessages = make(chan ConsumerMessage, opt.consumerMessageBufferSize)
 		} else {
-			manager.Consumers = make(chan Consumer, 256)
+			manager.Consumers = make(chan Consumer, opt.consumerMessageBufferSize)
 		}
 
-		go manager.consumerLoop(opt.consumerTopics)
+		// 启动多个 consumer
+		for i := 0; i < consumerCount; i++ {
+			go manager.consumerLoop(opt.consumerTopics)
+		}
 
 		manager.ConsumerGroup = group
 	}
@@ -129,6 +152,22 @@ func (m *Manager) consumerLoop(topics []string) {
 			return
 		}
 	}
+}
+
+func (m *Manager) getPartitions(client sarama.Client) int {
+	consumerCount := 1
+	for _, topic := range m.option.consumerTopics {
+		// 获取 topic partition id list
+		partitions, err := client.Partitions(topic)
+		if err != nil {
+			fmt.Printf("get %s partitions error: %v\n", topic, err)
+			continue
+		}
+		if len(partitions) > consumerCount {
+			consumerCount = len(partitions)
+		}
+	}
+	return consumerCount
 }
 
 // ConsumeClaim push message
@@ -162,6 +201,10 @@ func (m *Manager) Setup(sarama.ConsumerGroupSession) error {
 // Cleanup is run at the end of a session, once all ConsumeClaim goroutines have exited
 func (m *Manager) Cleanup(sarama.ConsumerGroupSession) error {
 	return nil
+}
+
+func (m *Manager) IsAutoCommit() bool {
+	return m.option.autoSubmit
 }
 
 func (m *Manager) Close() error {

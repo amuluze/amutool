@@ -18,6 +18,8 @@ const (
 	WaitAll           = sarama.WaitForAll
 )
 
+type ConsumerMessage *sarama.ConsumerMessage
+
 var (
 	V0_8_2_0  = sarama.V0_8_2_0
 	V0_8_2_1  = sarama.V0_8_2_1
