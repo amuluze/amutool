@@ -3,6 +3,7 @@
 支持的数据库：
 - postgresql
 - mysql
+- clickhouse
 - sqlite
 
 toml 配置示例：

@@ -8,37 +8,63 @@ import (
 	"fmt"
 	"time"
 
+	"gorm.io/driver/clickhouse"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
-type Config struct {
-	Debug        bool
-	Type         string
-	Host         string
-	Port         string
-	UserName     string
-	Password     string
-	DBName       string
-	TablePrefix  string
-	MaxLifetime  int
-	MaxOpenConns int
-	MaxIdleConns int
+type DB struct {
+	*gorm.DB
 }
 
-func (c *Config) dial() gorm.Dialector {
+func NewDB(opts ...Option) (*DB, error) {
+	opt := &option{
+		Debug:        false,
+		MaxIdleConns: 50,
+		MaxOpenConns: 100,
+		MaxLifetime:  7200,
+	}
+	for _, o := range opts {
+		o(opt)
+	}
+	dial := dial(opt)
+
+	db, err := gorm.Open(dial, &gorm.Config{})
+	if err != nil {
+		return nil, err
+	}
+
+	// 开启调试模式
+	if opt.Debug {
+		db = db.Debug()
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	sqlDB.SetMaxIdleConns(opt.MaxIdleConns)
+	sqlDB.SetMaxOpenConns(opt.MaxOpenConns)
+	sqlDB.SetConnMaxLifetime(time.Second * time.Duration(opt.MaxLifetime))
+
+	return &DB{db}, nil
+}
+
+func dial(opt *option) gorm.Dialector {
 	var dsn string
 	var dialector gorm.Dialector
-	switch c.Type {
+	switch opt.Type {
 	case "mysql":
 		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-			c.UserName,
-			c.Password,
-			c.Host,
-			c.Port,
-			c.DBName,
+			opt.UserName,
+			opt.Password,
+			opt.Host,
+			opt.Port,
+			opt.DBName,
 		)
 		dialector = mysql.New(mysql.Config{
 			DSN:                       dsn,
@@ -50,56 +76,43 @@ func (c *Config) dial() gorm.Dialector {
 		})
 	case "postgres":
 		dsn = fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable TimeZone=Asia/Shanghai",
-			c.Host,
-			c.Port,
-			c.UserName,
-			c.DBName,
-			c.Password,
+			opt.Host,
+			opt.Port,
+			opt.UserName,
+			opt.DBName,
+			opt.Password,
 		)
 		dialector = postgres.New(postgres.Config{
 			DSN:                  dsn,
 			PreferSimpleProtocol: true,
 		})
+	case "clickhouse":
+		dsn = fmt.Sprintf("clickhouse://%s:%s@%s:%s/%s?dial_timeout=200ms&max_execution_time=60",
+			opt.UserName,
+			opt.Password,
+			opt.Host,
+			opt.Port,
+			opt.DBName,
+		)
+		dialector = clickhouse.Open(dsn)
 	default:
-		dsn = fmt.Sprintf("%s.db", c.DBName)
+		dsn = fmt.Sprintf("%s.db", opt.DBName)
 		dialector = sqlite.Open(dsn)
 	}
 
 	return dialector
 }
 
-type DB struct {
-	*gorm.DB
-}
-
-func NewDB(cfg *Config) (*DB, error) {
-	dial := cfg.dial()
-	db, err := gorm.Open(dial, &gorm.Config{})
-	if err != nil {
-		return nil, err
-	}
-
-	// 开启调试模式
-	if cfg.Debug {
-		db = db.Debug()
-	}
-
-	sqlDB, err := db.DB()
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil, err
-	}
-
-	sqlDB.SetMaxIdleConns(cfg.MaxIdleConns)
-	sqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
-	sqlDB.SetConnMaxLifetime(time.Second * time.Duration(cfg.MaxLifetime))
-
-	return &DB{db}, nil
-}
-
 func (db *DB) Close() {
 	if db != nil {
-		db.Close()
+		conn, err := db.DB.DB()
+		if err != nil {
+			return
+		}
+		err = conn.Close()
+		if err != nil {
+			return
+		}
 	}
 }
 
@@ -109,68 +122,4 @@ func (db *DB) RunInTransaction(fn func(tx *gorm.DB) error) error {
 
 func (db *DB) AutoMigrate(models ...interface{}) error {
 	return db.DB.AutoMigrate(models...)
-}
-
-type Option func(db *DB) *DB
-
-func OptionDB(db *DB, options ...Option) *DB {
-	for _, option := range options {
-		db = option(db)
-	}
-	return db
-}
-
-func WithTable(tableName string) Option {
-	return func(db *DB) *DB {
-		db.DB = db.DB.Table(tableName)
-		return db
-	}
-}
-
-func WithInIds(ids ...int64) Option {
-	return func(db *DB) *DB {
-		if len(ids) == 0 {
-			return db
-		}
-		db.DB = db.DB.Where("id IN (?)", ids)
-		return db
-	}
-}
-
-func WithById(id int64) Option {
-
-	return func(db *DB) *DB {
-		if id <= 0 {
-			return db
-		}
-		db.DB = db.DB.Where("id = ?", id)
-		return db
-	}
-}
-
-func WithOffset(offset int) Option {
-	if offset < 0 {
-		return nil
-	}
-	return func(db *DB) *DB {
-		db.DB = db.DB.Offset(offset)
-		return db
-	}
-}
-
-func WithLimit(limit int) Option {
-	if limit <= 0 {
-		return nil
-	}
-	return func(db *DB) *DB {
-		db.DB = db.DB.Limit(limit)
-		return db
-	}
-}
-
-func OrderBy(value interface{}) Option {
-	return func(db *DB) *DB {
-		db.DB = db.DB.Order(value)
-		return db
-	}
 }
