@@ -57,6 +57,9 @@ randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](
 - [x] redis: redis 客户端
 - [x] iohelper: io 操作相关
 - [x] docker: golang 操作 docker
+- [x] gpool: 协程池，用于并发除了简单任务
+
+
 
 ## TODO
 - [ ] clickhouse: clickhouse 客户端
