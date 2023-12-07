@@ -58,11 +58,11 @@ randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](
 - [x] iohelper: io 操作相关
 - [x] docker: golang 操作 docker
 - [x] gpool: 协程池，用于并发除了简单任务
-
+- [x] clickhousex: clickhouse 客户端，包含 BatchProcessor，支持批量写入 
 
 
 ## TODO
-- [ ] clickhouse: clickhouse 客户端
+
 - [ ] convertx: 类型转换
 - [ ] httpx:简单的 http 客户端
 - [ ] stringx: 字符串操作封装
