@@ -4,29 +4,26 @@
 
 golang 工具类封装
 
-[//]: # ([![Release]&#40;https://img.shields.io/badge/release-2.2.3-green.svg&#41;]&#40;https://github.com/duke-git/lancet/releases&#41;)
-[//]: # ([![GoDoc]&#40;https://godoc.org/github.com/duke-git/lancet/v2?status.svg&#41;]&#40;https://pkg.go.dev/github.com/duke-git/lancet/v2&#41;)
-
-[//]: # ([![Go Report Card]&#40;https://goreportcard.com/badge/github.com/duke-git/lancet/v2&#41;]&#40;https://goreportcard.com/report/github.com/duke-git/lancet/v2&#41;)
-
-[//]: # ([![test]&#40;https://github.com/duke-git/lancet/actions/workflows/codecov.yml/badge.svg?branch=main&event=push&#41;]&#40;https://github.com/duke-git/lancet/actions/workflows/codecov.yml&#41;)
-
-[//]: # ([![codecov]&#40;https://codecov.io/gh/duke-git/lancet/branch/main/graph/badge.svg?token=FC48T1F078&#41;]&#40;https://codecov.io/gh/duke-git/lancet&#41;)
-
-[//]: # ([![License]&#40;https://img.shields.io/badge/license-MIT-blue.svg&#41;]&#40;https://github.com/duke-git/lancet/blob/main/LICENSE&#41;)
-
-
+[//]: #
+[//]: #
+[//]: #
+[//]: #
+[//]: #
+[//]: #
 ## 文档
 
 - [Bannerx](#bannerx)
 - [Randx](#randx)
 
 ### bannerx
+
 bannerx 根据输入字符串生成一张 banner。 [[doc](https://gitee.com/amuluze/amutool/main/docs/bannerx.md)]
 **函数列表：**
+
 - GenerateBanner: 根据输入字符串生成 banner。
 
 ### randx
+
 randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](https://gitee.com/amuluze/amutool/main/docs/randx.md)]
 **函数列表：**
 
@@ -40,26 +37,26 @@ randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](
 - UUID4: 生成 UUID v4 字符串。
 
 ## DONE
-- [x] bannerx: banner 生成
-- [x] basex: base 64 编解码
-- [x] randx: 随机整数、字符串生成
-- [x] command: 运行 linux 命令
-- [x] database: 数据库操作，支持 postgres mysql sqlite
-- [x] logx: 日志 zap 封装
-- [x] conf: 配置文件加载，支持 json yaml toml
-- [x] envx: 环境变量获取
-- [x] errors: error 封装
-- [x] hashx:摘要算法
-- [x] uuidx: uuid 相关操作
-- [x] kafka:操作 kafka
-- [x] es: Elasticsearch Client and BulkClient
-- [x] timex: 时间相关操作
-- [x] redis: redis 客户端
-- [x] iohelper: io 操作相关
-- [x] docker: golang 操作 docker
-- [x] gpool: 协程池，用于并发除了简单任务
-- [x] clickhousex: clickhouse 客户端，包含 BatchProcessor，支持批量写入 
 
+- [X] bannerx: banner 生成
+- [X] basex: base 64 编解码
+- [X] randx: 随机整数、字符串生成
+- [X] command: 运行 linux 命令
+- [X] database: 数据库操作，支持 postgres mysql sqlite
+- [X] logx: 日志 zap 封装
+- [X] conf: 配置文件加载，支持 json yaml toml
+- [X] envx: 环境变量获取
+- [X] errors: error 封装
+- [X] hashx:摘要算法
+- [X] uuidx: uuid 相关操作
+- [X] kafka:操作 kafka
+- [X] es: Elasticsearch Client and BulkClient
+- [X] timex: 时间相关操作
+- [X] redis: redis 客户端
+- [X] iohelper: io 操作相关
+- [X] docker: golang 操作 docker
+- [X] gpool: 协程池，用于并发除了简单任务
+- [X] clickhousex: clickhouse 客户端，包含 BatchProcessor，支持批量写入
 
 ## TODO
 

@@ -5,7 +5,6 @@
 package gpool
 
 import (
-	"fmt"
 	"strconv"
 	"testing"
 	"time"
@@ -18,7 +17,7 @@ func TestNewGPool(t *testing.T) {
 		err := gp.Submit(func(args ...interface{}) {
 			time.Sleep(1 * time.Second)
 			name := args[0].(string)
-			fmt.Println("hello " + name + ", now is " + time.Now().Format("2006-01-02 04:05:00"))
+			t.Log("hello " + name + ", now is " + time.Now().Format("2006-01-02 04:05:00"))
 		}, "jack-"+strconv.Itoa(i))
 		if err != nil {
 			break
