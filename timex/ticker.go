@@ -24,6 +24,10 @@ func NewTicker(d time.Duration) Ticker {
 	}
 }
 
-func (r realTicker) Chan() <-chan time.Time {
+func (r *realTicker) Chan() <-chan time.Time {
 	return r.C
+}
+
+func (r *realTicker) Stop() {
+	r.Ticker.Stop()
 }
