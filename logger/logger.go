@@ -8,21 +8,24 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"path/filepath"
 	"time"
+
+	rotator "github.com/lestrrat-go/file-rotatelogs"
 )
+
+var defaultLevel slog.LevelVar
 
 type Logger struct {
 	*slog.Logger
-	level slog.LevelVar
 }
 
-func NewLogger(level slog.Level) *Logger {
-	var lvl slog.LevelVar
-	lvl.Set(level)
-	return &Logger{
+func NewTextLogger() *Logger {
+	defaultLevel.Set(slog.LevelInfo)
+	log := &Logger{
 		Logger: slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 			AddSource: true,
-			Level:     &lvl,
+			Level:     &defaultLevel,
 			ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
 				if a.Key == slog.TimeKey {
 					if t, ok := a.Value.Any().(time.Time); ok {
@@ -33,6 +36,57 @@ func NewLogger(level slog.Level) *Logger {
 			},
 		})),
 	}
+	return log
+}
+
+func NewJsonLogger() *Logger {
+	defaultLevel.Set(slog.LevelInfo)
+	log := &Logger{
+		Logger: slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			AddSource: true,
+			Level:     &defaultLevel,
+			ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+				if a.Key == slog.TimeKey {
+					if t, ok := a.Value.Any().(time.Time); ok {
+						a.Value = slog.StringValue(t.Format(time.DateTime))
+					}
+				}
+				return a
+			},
+		})),
+	}
+	return log
+}
+
+func NewJsonFileLogger(options ...Option) *Logger {
+	config := &Config{
+		Name:                "default",
+		LogFile:             "default.log",
+		LogLevel:            slog.LevelInfo,
+		LogFileRotationTime: 1,
+		LogFileMaxAge:       7,
+		LogFileSuffix:       ".%Y%m%d",
+	}
+	for _, option := range options {
+		option(config)
+	}
+
+	defaultLevel.Set(config.LogLevel)
+
+	logFilePath := config.LogFile
+	if !filepath.IsAbs(config.LogFile) {
+		absPath, _ := filepath.Abs(filepath.Join(filepath.Dir(os.Args[0]), config.LogFile))
+		logFilePath = absPath
+	}
+
+	_log, _ := rotator.New(
+		filepath.Join(logFilePath+config.LogFileSuffix),
+		rotator.WithLinkName(logFilePath),
+		rotator.WithMaxAge(time.Duration(config.LogFileMaxAge)*24*time.Hour*7),
+		rotator.WithRotationTime(time.Duration(config.LogFileRotationTime)*time.Hour*24),
+	)
+	defaultLogger := slog.New(slog.NewJSONHandler(_log, nil))
+	return &Logger{Logger: defaultLogger}
 }
 
 func (l *Logger) Debugf(format string, args ...interface{}) {
@@ -52,17 +106,17 @@ func (l *Logger) Errorf(format string, args ...interface{}) {
 }
 
 func (l *Logger) SetDebugLevel() {
-	l.level.Set(slog.LevelDebug)
+	defaultLevel.Set(slog.LevelDebug)
 }
 
 func (l *Logger) SetInfoLevel() {
-	l.level.Set(slog.LevelInfo)
+	defaultLevel.Set(slog.LevelInfo)
 }
 
 func (l *Logger) SetWarnLevel() {
-	l.level.Set(slog.LevelWarn)
+	defaultLevel.Set(slog.LevelWarn)
 }
 
 func (l *Logger) SetErrorLevel() {
-	l.level.Set(slog.LevelError)
+	defaultLevel.Set(slog.LevelError)
 }
