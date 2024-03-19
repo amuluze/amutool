@@ -32,6 +32,7 @@ func NewLogger(level slog.Level) *Logger {
 				return a
 			},
 		})),
+		level: lvl,
 	}
 }
 
