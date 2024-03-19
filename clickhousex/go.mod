@@ -1,9 +1,9 @@
-module gitee.com/amuluze/amutool/clickhousex
+module github.com/amuluze/amutool/clickhousex
 
 go 1.21.4
 
 require (
-	gitee.com/amuluze/amutool/errors v0.0.0-20231201063702-11a54597bbaa
+	github.com/amuluze/amutool/errors v0.0.0-20231201063702-11a54597bbaa
 	github.com/ClickHouse/clickhouse-go/v2 v2.16.0
 	gorm.io/driver/clickhouse v0.5.1
 	gorm.io/gorm v1.25.5

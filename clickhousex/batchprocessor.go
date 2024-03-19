@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"time"
 
-	"gitee.com/amuluze/amutool/errors"
+	"github.com/amuluze/amutool/errors"
 )
 
 type User struct {

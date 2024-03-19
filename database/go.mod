@@ -1,4 +1,4 @@
-module gitee.com/amuluze/amutool/database
+module github.com/amuluze/amutool/database
 
 go 1.21.4
 

@@ -1,4 +1,4 @@
-module gitee.com/amuluze/amutool/errors
+module github.com/amuluze/amutool/errors
 
 go 1.21.4
 

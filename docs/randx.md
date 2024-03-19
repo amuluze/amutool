@@ -9,7 +9,7 @@ randx 随机数生成器包，可以生成随机[]bytes, int, string。
 
 ```go
 import (
-    "gitee.com/amuluze/amutool/randx"
+    "github.com/amuluze/amutool/randx"
 )
 ```
 
@@ -40,7 +40,7 @@ package main
 
 import (
     "fmt"
-	"gitee.com/amuluze/amutool/randx"
+	"github.com/amuluze/amutool/randx"
 )
 
 func main() {
@@ -64,7 +64,7 @@ package main
 
 import (
     "fmt"
-	"gitee.com/amuluze/amutool/randx"
+	"github.com/amuluze/amutool/randx"
 )
 
 func main() {
@@ -90,7 +90,7 @@ package main
 
 import (
     "fmt"
-	"gitee.com/amuluze/amutool/randx"
+	"github.com/amuluze/amutool/randx"
 )
 
 func main() {
@@ -116,7 +116,7 @@ package main
 
 import (
     "fmt"
-	"gitee.com/amuluze/amutool/randx"
+	"github.com/amuluze/amutool/randx"
 )
 
 func main() {
@@ -142,7 +142,7 @@ package main
 
 import (
     "fmt"
-	"gitee.com/amuluze/amutool/randx"
+	"github.com/amuluze/amutool/randx"
 )
 
 func main() {
@@ -168,7 +168,7 @@ package main
 
 import (
     "fmt"
-	"gitee.com/amuluze/amutool/randx"
+	"github.com/amuluze/amutool/randx"
 )
 
 func main() {
@@ -194,7 +194,7 @@ package main
 
 import (
     "fmt"
-	"gitee.com/amuluze/amutool/randx"
+	"github.com/amuluze/amutool/randx"
 )
 
 func main() {
@@ -220,7 +220,7 @@ package main
 
 import (
     "fmt"
-	"gitee.com/amuluze/amutool/randx"
+	"github.com/amuluze/amutool/randx"
 )
 
 func main() {
@@ -231,4 +231,3 @@ func main() {
     fmt.Println(uuid)
 }
 ```
-

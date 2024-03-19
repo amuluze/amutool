@@ -1,9 +1,9 @@
-gitee.com/amuluze/amutool/iohelper v0.0.0-20231201065840-6949137ea47e h1:bQvqSsof2+xvchaQeSpWhbbJIKlU3XI9Hgv5V5AhW5g=
-gitee.com/amuluze/amutool/iohelper v0.0.0-20231201065840-6949137ea47e/go.mod h1:eFZVjUfI2FcWXebf1kIZTtRUKY3xaEzfNrJ7YNUbNhI=
-gitee.com/amuluze/amutool/logx v0.0.0-20231201063702-11a54597bbaa h1:LvBLA7Jb0YXlKSUO5ouO4f07R2BXj7B3rMA/xG1pP4U=
-gitee.com/amuluze/amutool/logx v0.0.0-20231201063702-11a54597bbaa/go.mod h1:iQ1swGwmzrzBrVy59DxzUralBu4Fp8oNqZo5mAMZ4/A=
-gitee.com/amuluze/amutool/uuidx v0.0.0-20231123075517-737af6a11537 h1:roIoTxpFpgiw7RixDPlg2ZlAHIkYde+rWTlb5Q/fFvk=
-gitee.com/amuluze/amutool/uuidx v0.0.0-20231123075517-737af6a11537/go.mod h1:1AK1ZxX+sdhlOf93ZI+wuvfMF+G7FbtlCCed/yfflYI=
+github.com/amuluze/amutool/iohelper v0.0.0-20231201065840-6949137ea47e h1:bQvqSsof2+xvchaQeSpWhbbJIKlU3XI9Hgv5V5AhW5g=
+github.com/amuluze/amutool/iohelper v0.0.0-20231201065840-6949137ea47e/go.mod h1:eFZVjUfI2FcWXebf1kIZTtRUKY3xaEzfNrJ7YNUbNhI=
+github.com/amuluze/amutool/logx v0.0.0-20231201063702-11a54597bbaa h1:LvBLA7Jb0YXlKSUO5ouO4f07R2BXj7B3rMA/xG1pP4U=
+github.com/amuluze/amutool/logx v0.0.0-20231201063702-11a54597bbaa/go.mod h1:iQ1swGwmzrzBrVy59DxzUralBu4Fp8oNqZo5mAMZ4/A=
+github.com/amuluze/amutool/uuidx v0.0.0-20231123075517-737af6a11537 h1:roIoTxpFpgiw7RixDPlg2ZlAHIkYde+rWTlb5Q/fFvk=
+github.com/amuluze/amutool/uuidx v0.0.0-20231123075517-737af6a11537/go.mod h1:1AK1ZxX+sdhlOf93ZI+wuvfMF+G7FbtlCCed/yfflYI=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

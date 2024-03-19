@@ -1,4 +1,4 @@
-module gitee.com/amuluze/amutool/bannerx
+module github.com/amuluze/amutool/bannerx
 
 go 1.21.4
 

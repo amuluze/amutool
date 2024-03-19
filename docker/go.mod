@@ -1,4 +1,4 @@
-module gitee.com/amuluze/amutool/docker
+module github.com/amuluze/amutool/docker
 
 go 1.21.4
 

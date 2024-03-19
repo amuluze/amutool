@@ -1,4 +1,4 @@
-module gitee.com/amuluze/amutool/kafka
+module github.com/amuluze/amutool/kafka
 
 go 1.21.4
 

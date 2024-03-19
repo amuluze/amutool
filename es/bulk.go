@@ -8,9 +8,9 @@ import (
 	"context"
 	"time"
 
-	"gitee.com/amuluze/amutool/uuidx"
+	"github.com/amuluze/amutool/uuidx"
 
-	"gitee.com/amuluze/amutool/logx"
+	"github.com/amuluze/amutool/logx"
 	"github.com/olivere/elastic/v7"
 )
 

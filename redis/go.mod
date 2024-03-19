@@ -1,4 +1,4 @@
-module gitee.com/amuluze/amutool/redis
+module github.com/amuluze/amutool/redis
 
 go 1.21.4
 

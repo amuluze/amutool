@@ -1,4 +1,4 @@
-module gitee.com/amuluze/amutool/logx
+module github.com/amuluze/amutool/logx
 
 go 1.21.4
 

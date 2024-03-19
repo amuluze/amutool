@@ -1,4 +1,4 @@
-module gitee.com/amuluze/amutool/task
+module github.com/amuluze/amutool/task
 
 go 1.21.4
 

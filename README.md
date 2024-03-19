@@ -4,12 +4,6 @@
 
 golang 工具类封装
 
-[//]: #
-[//]: #
-[//]: #
-[//]: #
-[//]: #
-[//]: #
 ## 文档
 
 - [Bannerx](#bannerx)
@@ -17,14 +11,14 @@ golang 工具类封装
 
 ### bannerx
 
-bannerx 根据输入字符串生成一张 banner。 [[doc](https://gitee.com/amuluze/amutool/main/docs/bannerx.md)]
+bannerx 根据输入字符串生成一张 banner。 [[doc](https://github.com/amuluze/amutool/blob/master/docs/bannerx.md)]
 **函数列表：**
 
 - GenerateBanner: 根据输入字符串生成 banner。
 
 ### randx
 
-randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](https://gitee.com/amuluze/amutool/main/docs/randx.md)]
+randx 随机数生成包，可以随机生成随机 []byte,int,string。 [[doc](https://github.com/amuluze/amutool/blob/master/docs/randx.md)]
 **函数列表：**
 
 - RandBytes: 生成随机字节切片。

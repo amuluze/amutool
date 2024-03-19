@@ -1,4 +1,4 @@
-module gitee.com/amuluze/amutool/uuidx
+module github.com/amuluze/amutool/uuidx
 
 go 1.21.4
 

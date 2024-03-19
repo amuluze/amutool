@@ -11,7 +11,7 @@ import (
 	"runtime"
 	"unicode/utf8"
 
-	"gitee.com/amuluze/amutool/validator"
+	"github.com/amuluze/amutool/validator"
 
 	"golang.org/x/text/encoding/simplifiedchinese"
 )

@@ -1,4 +1,4 @@
-module gitee.com/amuluze/amutool/conf
+module github.com/amuluze/amutool/conf
 
 go 1.21.4
 
