@@ -7,6 +7,7 @@ package logger
 import (
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestTextLogger(t *testing.T) {
@@ -38,14 +39,15 @@ func TestJsonLogger(t *testing.T) {
 func TestJsonFileLogger(t *testing.T) {
 	logx := NewJsonFileLogger(
 		SetName("test"),
-		SetLogFile("test.log"),
+		SetLogFile("/Users/amu/Desktop/github/amutool/logger/test.log"),
 		SetLogLevel("info"),
 		SetLogFileRotationTime(1),
 		SetLogFileMaxAge(7),
 		SetLogFileSuffix(".%Y%m%d"),
 	)
+	fmt.Printf("logx: %v\n", logx.Logger)
 	logx.SetDebugLevel()
-	logx.Debug("this is a debug message")
+	logx.Logger.Debug("this is a debug message")
 	logx.Info("this is a info message")
 	logx.Error("this is a error message")
 	fmt.Println("--------------------------")
@@ -53,4 +55,5 @@ func TestJsonFileLogger(t *testing.T) {
 	logx.Debug("this is a debug message")
 	logx.Info("this is a info message")
 	logx.Error("this is a error message")
+	time.Sleep(5 * time.Second)
 }

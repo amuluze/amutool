@@ -78,14 +78,25 @@ func NewJsonFileLogger(options ...Option) *Logger {
 		absPath, _ := filepath.Abs(filepath.Join(filepath.Dir(os.Args[0]), config.LogFile))
 		logFilePath = absPath
 	}
-
+	fmt.Printf("log file path: %s\n", logFilePath)
 	_log, _ := rotator.New(
 		filepath.Join(logFilePath+config.LogFileSuffix),
 		rotator.WithLinkName(logFilePath),
 		rotator.WithMaxAge(time.Duration(config.LogFileMaxAge)*24*time.Hour*7),
 		rotator.WithRotationTime(time.Duration(config.LogFileRotationTime)*time.Hour*24),
 	)
-	defaultLogger := slog.New(slog.NewJSONHandler(_log, nil))
+	defaultLogger := slog.New(slog.NewJSONHandler(_log, &slog.HandlerOptions{
+		AddSource: true,
+		Level:     &defaultLevel,
+		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+			if a.Key == slog.TimeKey {
+				if t, ok := a.Value.Any().(time.Time); ok {
+					a.Value = slog.StringValue(t.Format(time.DateTime))
+				}
+			}
+			return a
+		},
+	}))
 	return &Logger{Logger: defaultLogger}
 }
 
