@@ -6,7 +6,6 @@ package docker
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -24,6 +23,7 @@ type ContainerSummary struct {
 	State   string `json:"state"`   // State: created running paused restarting removing exited dead
 	Created string `json:"created"` // create time
 	Uptime  string `json:"uptime"`  // uptime in seconds
+	IP      string `json:"ip"`      // ip
 }
 
 type Container struct {
@@ -63,13 +63,31 @@ func (m *Manager) ListContainer(ctx context.Context) ([]ContainerSummary, error)
 		if c.State == "running" {
 			uptime = m.getUptime(ctx, c.ID)
 		}
+
+		var ip string
+		for _, nt := range c.NetworkSettings.Networks {
+			if nt.IPAddress != "" {
+				ip = nt.IPAddress
+				break
+			}
+		}
+
+		state := c.State
+		inspect, err := m.Client.ContainerInspect(ctx, c.ID)
+		if err == nil {
+			if inspect.ContainerJSONBase.State.Health != nil && inspect.ContainerJSONBase.State.Health.Status == "healthy" {
+				state = "running"
+			}
+		}
+
 		cs := ContainerSummary{
 			ID:      c.ID,
 			Name:    strings.Trim(c.Names[0], "/"),
 			Image:   c.Image,
-			State:   c.State,
+			State:   state,
 			Created: time.Unix(c.Created, 0).Format("2006-01-02 15:04:05"),
 			Uptime:  uptime,
+			IP:      ip,
 		}
 		containerSummaryList = append(containerSummaryList, cs)
 	}
@@ -124,19 +142,31 @@ func (m *Manager) CopyFileToContainer(ctx context.Context, containerID, srcFile,
 }
 
 // GetContainerMem 获取指定容器的内存使用情况，单位 MB
-func (m *Manager) GetContainerMem(ctx context.Context, containerID string) (float64, error) {
-	stats, _ := m.Client.ContainerStats(ctx, containerID, false)
-	body, _ := io.ReadAll(stats.Body)
-	fmt.Println(string(body))
-	memUsage := gjson.Get(string(body), "memory_stats.usage").Float() / (1024 * 1024)
-	return memUsage, nil
+func (m *Manager) GetContainerMem(ctx context.Context, containerID string) (float64, float64, float64, error) {
+	stats, err := m.Client.ContainerStats(ctx, containerID, false)
+	if err != nil {
+		return 0.0, 0.0, 0.0, err
+	}
+	body, err := io.ReadAll(stats.Body)
+	if err != nil {
+		return 0.0, 0.0, 0.0, err
+	}
+	memUsage := gjson.Get(string(body), "memory_stats.usage").Float()
+	memLimit := gjson.Get(string(body), "memory_stats.limit").Float()
+	memPercent := (memUsage / memLimit) * 100
+	return memPercent, memUsage, memLimit, nil
 }
 
 // GetContainerCPU 获取指定容器 CPU 使用情况，单位百分比
 func (m *Manager) GetContainerCPU(ctx context.Context, containerID string) (float64, error) {
-	stats, _ := m.Client.ContainerStats(ctx, containerID, false)
-	body, _ := io.ReadAll(stats.Body)
-	fmt.Println(string(body))
+	stats, err := m.Client.ContainerStats(ctx, containerID, false)
+	if err != nil {
+		return 0.0, err
+	}
+	body, err := io.ReadAll(stats.Body)
+	if err != nil {
+		return 0.0, err
+	}
 
 	cpuDelta := gjson.Get(string(body), "cpu_stats.cpu_usage.total_usage").Float() - gjson.Get(string(body), "precpu_stats.cpu_usage.total_usage").Float()
 	systemDelta := gjson.Get(string(body), "cpu_stats.system_cpu_usage").Float() - gjson.Get(string(body), "precpu_stats.system_cpu_usage").Float()
