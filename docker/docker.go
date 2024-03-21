@@ -15,9 +15,36 @@ type Manager struct {
 	Client *client.Client
 }
 
+type Version struct {
+	DockerVersion string `json:"docker_version"`
+	APIVersion    string `json:"api_version"`
+	MinAPIVersion string `json:"min_api_version"`
+	GitCommit     string `json:"git_commit"`
+	GoVersion     string `json:"go_version"`
+	OS            string `json:"os"`
+	Arch          string `json:"arch"`
+}
+
 func NewManager() (*Manager, error) {
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	return &Manager{Client: cli}, err
+}
+
+func (m *Manager) Version(ctx context.Context) (*Version, error) {
+	serverVersion, err := m.Client.ServerVersion(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Version{
+		DockerVersion: serverVersion.Version,
+		APIVersion:    serverVersion.APIVersion,
+		MinAPIVersion: serverVersion.MinAPIVersion,
+		GitCommit:     serverVersion.GitCommit,
+		GoVersion:     serverVersion.GoVersion,
+		OS:            serverVersion.Os,
+		Arch:          serverVersion.Arch,
+	}, nil
 }
 
 func (m *Manager) JoinNetwork(ctx context.Context, containerID string, networkID string) error {
