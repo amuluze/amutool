@@ -6,54 +6,57 @@ package logger
 
 import (
 	"fmt"
+	"log/slog"
 	"testing"
 	"time"
 )
 
 func TestTextLogger(t *testing.T) {
 	logx := NewTextLogger()
+	slog.SetDefault(logx.Logger)
 	logx.SetDebugLevel()
-	logx.Debug("this is a debug message")
-	logx.Info("this is a info message")
-	logx.Error("this is a error message")
+	slog.Debug("this is a debug message")
+	slog.Info("this is a info message")
+	slog.Error("this is a error message")
 	fmt.Println("--------------------------")
 	logx.SetErrorLevel()
-	logx.Debug("this is a debug message")
-	logx.Info("this is a info message")
-	logx.Error("this is a error message")
+	slog.Debug("this is a debug message")
+	slog.Info("this is a info message")
+	slog.Error("this is a error message")
 }
 
 func TestJsonLogger(t *testing.T) {
 	logx := NewJsonLogger()
+	slog.SetDefault(logx.Logger)
 	logx.SetDebugLevel()
-	logx.Debug("this is a debug message")
-	logx.Info("this is a info message")
-	logx.Error("this is a error message")
+	slog.Debug("this is a debug message")
+	slog.Info("this is a info message")
+	slog.Error("this is a error message")
 	fmt.Println("--------------------------")
 	logx.SetErrorLevel()
-	logx.Debug("this is a debug message")
-	logx.Info("this is a info message")
-	logx.Error("this is a error message")
+	slog.Debug("this is a debug message")
+	slog.Info("this is a info message")
+	slog.Error("this is a error message")
 }
 
 func TestJsonFileLogger(t *testing.T) {
 	logx := NewJsonFileLogger(
-		SetName("test"),
-		SetLogFile("/Users/amu/Desktop/github/amutool/logger/test.log"),
+		SetName("default"),
+		SetLogFile("default.log"),
 		SetLogLevel("info"),
 		SetLogFileRotationTime(1),
 		SetLogFileMaxAge(7),
 		SetLogFileSuffix(".%Y%m%d"),
 	)
-	fmt.Printf("logx: %v\n", logx.Logger)
+	slog.SetDefault(logx.Logger)
 	logx.SetDebugLevel()
-	logx.Logger.Debug("this is a debug message")
-	logx.Info("this is a info message")
-	logx.Error("this is a error message")
-	fmt.Println("--------------------------")
+	slog.Logger.Debug("this is a debug message")
+	slog.Info("this is a info message")
+	slog.Error("this is a error message")
+
 	logx.SetErrorLevel()
-	logx.Debug("this is a debug message")
-	logx.Info("this is a info message")
-	logx.Error("this is a error message")
+	slog.Debug("this is a debug message")
+	slog.Info("this is a info message")
+	slog.Error("this is a error message")
 	time.Sleep(5 * time.Second)
 }
