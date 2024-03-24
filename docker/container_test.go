@@ -20,7 +20,7 @@ func TestListContainer(t *testing.T) {
 
 func TestContainerMem(t *testing.T) {
 	manager, _ := NewManager()
-	percent, used, limit, err := manager.GetContainerMem(context.Background(), "dc505c86389c")
+	percent, used, limit, err := manager.GetContainerMem(context.Background(), "c6f4f0ce6d1a")
 	if err != nil {
 		panic(err)
 	}
@@ -29,7 +29,7 @@ func TestContainerMem(t *testing.T) {
 
 func TestContainerCPU(t *testing.T) {
 	manager, _ := NewManager()
-	cpu, err := manager.GetContainerCPU(context.Background(), "dc505c86389c")
+	cpu, err := manager.GetContainerCPU(context.Background(), "c6f4f0ce6d1a")
 	if err != nil {
 		panic(err)
 	}
