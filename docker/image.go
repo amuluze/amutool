@@ -13,6 +13,8 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/api/types/image"
 )
 
 type Image struct {
@@ -88,4 +90,14 @@ func (m *Manager) GetImageByID(ctx context.Context, imageID string) (*Image, err
 		Created: imageResponse.Created,
 		Size:    strconv.FormatFloat(float64(imageResponse.Size)/(1000*1000), 'f', 2, 64) + "MB",
 	}, nil
+}
+
+func (m *Manager) RemoveImage(ctx context.Context, imageID string) error {
+	_, err := m.Client.ImageRemove(ctx, imageID, image.RemoveOptions{Force: true})
+	return err
+}
+
+func (m *Manager) PruneImages(ctx context.Context) error {
+	_, err := m.Client.ImagesPrune(ctx, filters.NewArgs(filters.Arg("dangling", "true")))
+	return err
 }
