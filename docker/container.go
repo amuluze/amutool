@@ -26,9 +26,6 @@ type ContainerSummary struct {
 	IP      string `json:"ip"`      // ip
 }
 
-type Container struct {
-}
-
 // getUptime 获取指定容器的启动时间
 func (m *Manager) getUptime(ctx context.Context, containerID string) string {
 	inspect, _ := m.Client.ContainerInspect(ctx, containerID)
@@ -38,7 +35,7 @@ func (m *Manager) getUptime(ctx context.Context, containerID string) string {
 
 // GetContainerIDByName 根据名称获取指定 container ID
 func (m *Manager) GetContainerIDByName(ctx context.Context, name string) (string, error) {
-	containers, err := m.Client.ContainerList(ctx, types.ContainerListOptions{All: true})
+	containers, err := m.Client.ContainerList(ctx, container.ListOptions{All: true})
 	if err != nil {
 		return "", err
 	}
@@ -52,7 +49,7 @@ func (m *Manager) GetContainerIDByName(ctx context.Context, name string) (string
 
 // ListContainer 获取所有容器 []ContainerSummary
 func (m *Manager) ListContainer(ctx context.Context) ([]ContainerSummary, error) {
-	containers, err := m.Client.ContainerList(ctx, types.ContainerListOptions{All: true})
+	containers, err := m.Client.ContainerList(ctx, container.ListOptions{All: true})
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +114,7 @@ func (m *Manager) CreateContainer(ctx context.Context, imageTag string, networkI
 
 // StartContainer 根据 containerID 启动容器
 func (m *Manager) StartContainer(ctx context.Context, containerID string) error {
-	return m.Client.ContainerStart(ctx, containerID, types.ContainerStartOptions{})
+	return m.Client.ContainerStart(ctx, containerID, container.StartOptions{})
 }
 
 // StopContainer stop 指定容器
@@ -132,7 +129,7 @@ func (m *Manager) RestartContainer(ctx context.Context, containerID string) erro
 
 // DeleteContainer 删除指定容器
 func (m *Manager) DeleteContainer(ctx context.Context, containerID string) error {
-	return m.Client.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{Force: true, RemoveVolumes: false, RemoveLinks: false})
+	return m.Client.ContainerRemove(ctx, containerID, container.RemoveOptions{Force: true, RemoveVolumes: false, RemoveLinks: false})
 }
 
 // CopyFileToContainer 向容器中拷贝文件
@@ -172,4 +169,15 @@ func (m *Manager) GetContainerCPU(ctx context.Context, containerID string) (floa
 	systemDelta := gjson.Get(string(body), "cpu_stats.system_cpu_usage").Float() - gjson.Get(string(body), "precpu_stats.system_cpu_usage").Float()
 	cpuPercent := (cpuDelta / systemDelta) * 100.0
 	return cpuPercent, nil
+}
+
+func (m *Manager) ContainerLogs(ctx context.Context, containerID string) (io.ReadCloser, error) {
+	reader, err := m.Client.ContainerLogs(ctx, containerID, container.LogsOptions{
+		ShowStdout: true,
+		ShowStderr: true,
+		Follow:     true,
+		Timestamps: false,
+		Tail:       "any",
+	})
+	return reader, err
 }
