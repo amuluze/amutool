@@ -58,15 +58,15 @@ func (r *Error) CodeStatus() int {
 }
 
 func NewError(status int, msg string) *Error {
-	return &Error{Status: status, Message: msg}
+	return &Error{Status: status, Message: msg, ERR: errors.New(msg)}
 }
 
 func New400Error(msg string) error {
-	return &Error{Status: 400, Message: msg}
+	return &Error{Status: 400, Message: msg, ERR: errors.New(msg)}
 }
 
 func New500Error(msg string) error {
-	return &Error{Status: 500, Message: msg}
+	return &Error{Status: 500, Message: msg, ERR: errors.New(msg)}
 }
 
 func UnWrapError(err error) *Error {
