@@ -1,6 +1,6 @@
 module github.com/amuluze/amutool/logger
 
-go 1.21.4
+go 1.19
 
 require github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 

@@ -32,7 +32,7 @@ func (m *Manager) ListNetwork(ctx context.Context) ([]Network, error) {
 
 	var networkList []Network
 	for _, net := range nets {
-		var containers map[string]string
+		containers := make(map[string]string)
 		for id, container := range net.Containers {
 			ipAddr := container.IPv4Address
 			if slashIdx := strings.IndexByte(ipAddr, '/'); slashIdx != -1 {
@@ -59,7 +59,7 @@ func (m *Manager) QueryNetwork(ctx context.Context, networkID string) (*Network,
 	if err != nil {
 		return nil, err
 	}
-	var containers map[string]string
+	containers := make(map[string]string)
 	for id, container := range nr.Containers {
 		ipAddr := container.IPv4Address
 		if slashIdx := strings.IndexByte(ipAddr, '/'); slashIdx != -1 {

@@ -6,15 +6,14 @@ package docker
 
 import (
 	"context"
-	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/api/types/image"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/pkg/errors"
+	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/api/types/image"
 
-	"github.com/docker/docker/api/types"
+	"github.com/pkg/errors"
 )
 
 type Image struct {
@@ -27,7 +26,7 @@ type Image struct {
 
 // ListImage 获取本地所有的镜像信息，类似 docker images
 func (m *Manager) ListImage(ctx context.Context) ([]Image, error) {
-	images, err := m.Client.ImageList(ctx, types.ImageListOptions{All: true})
+	images, err := m.Client.ImageList(ctx, image.ListOptions{All: true})
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +53,7 @@ func (m *Manager) ListImage(ctx context.Context) ([]Image, error) {
 
 // GetImageByName 根据 imageName 获取 Image 详情, imageName -> image:latest
 func (m *Manager) GetImageByName(ctx context.Context, imageName string) (*Image, error) {
-	images, err := m.Client.ImageList(ctx, types.ImageListOptions{All: true})
+	images, err := m.Client.ImageList(ctx, image.ListOptions{All: true})
 	if err != nil {
 		return nil, err
 	}

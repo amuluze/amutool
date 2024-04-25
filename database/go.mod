@@ -1,6 +1,6 @@
 module github.com/amuluze/amutool/database
 
-go 1.21.4
+go 1.19
 
 require (
 	gorm.io/driver/clickhouse v0.5.1

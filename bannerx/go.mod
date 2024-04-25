@@ -1,6 +1,6 @@
 module github.com/amuluze/amutool/bannerx
 
-go 1.21.4
+go 1.19
 
 require (
 	github.com/dimiro1/banner v1.1.0

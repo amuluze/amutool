@@ -1,6 +1,6 @@
 module github.com/amuluze/amutool/docker
 
-go 1.21.4
+go 1.19
 
 require (
 	github.com/docker/docker v26.0.0+incompatible

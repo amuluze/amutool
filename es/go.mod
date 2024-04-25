@@ -1,11 +1,10 @@
 module github.com/amuluze/amutool/es
 
-go 1.21.4
+go 1.19
 
 require (
-	github.com/amuluze/amutool/iohelper v0.0.0-20231201065840-6949137ea47e
-	github.com/amuluze/amutool/logx v0.0.0-20231201063702-11a54597bbaa
-	github.com/amuluze/amutool/uuidx v0.0.0-20231123075517-737af6a11537
+	github.com/amuluze/amutool/logx v0.0.0-20240412134521-f5acb72cb7dd
+	github.com/amuluze/amutool/uuidx v0.0.0-20240412134521-f5acb72cb7dd
 	github.com/olivere/elastic/v7 v7.0.32
 )
 

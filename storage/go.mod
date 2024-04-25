@@ -1,6 +1,6 @@
 module github.com/amuluze/amutool/storage
 
-go 1.21.4
+go 1.19
 
 require (
 	github.com/amuluze/amutool/errors v0.0.0-20240324082810-4005041af57f
