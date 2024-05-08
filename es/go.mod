@@ -1,6 +1,8 @@
 module github.com/amuluze/amutool/es
 
-go 1.19
+go 1.21.4
+
+toolchain go1.21.9
 
 require (
 	github.com/amuluze/amutool/logx v0.0.0-20240412134521-f5acb72cb7dd

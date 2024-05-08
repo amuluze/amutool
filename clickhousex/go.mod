@@ -1,6 +1,8 @@
 module github.com/amuluze/amutool/clickhousex
 
-go 1.19
+go 1.21.4
+
+toolchain go1.21.9
 
 require (
 	github.com/ClickHouse/clickhouse-go/v2 v2.23.2
