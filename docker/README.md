@@ -23,10 +23,10 @@
 -   GetImageByID： 根据 imageID 获取 Image 详情（**Done**）
 -   RemoveImage： 删除镜像（**Done**）
 -   PruneImages： 清理虚悬镜像（**Done**）
--   ImportImage： 镜像导入
--   ExportImage： 镜像导出
--   TagImage： 修改镜像 tag
--   SearchImage： 镜像查找
+-   ImportImage： 镜像导入（**Done**）
+-   ExportImage： 镜像导出（**Done**）
+-   TagImage： 修改镜像 tag（**Done**）
+-   SearchImage： 镜像查找（**Done**）
 
 ### network
 

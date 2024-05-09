@@ -5,7 +5,13 @@
 package docker
 
 import (
+	"bytes"
 	"context"
+	"fmt"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/registry"
+	"io"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -101,4 +107,102 @@ func (m *Manager) RemoveImage(ctx context.Context, imageID string) error {
 func (m *Manager) PruneImages(ctx context.Context) error {
 	_, err := m.Client.ImagesPrune(ctx, filters.NewArgs(filters.Arg("dangling", "true")))
 	return err
+}
+
+// SearchImage 通过关键词查找镜像
+func (m *Manager) SearchImage(ctx context.Context, term string) ([]registry.SearchResult, error) {
+	search, err := m.Client.ImageSearch(ctx, term, types.ImageSearchOptions{Limit: 10})
+	if err != nil {
+		return []registry.SearchResult{}, err
+	}
+	fmt.Println(search)
+	return search, nil
+}
+
+// https://blog.csdn.net/u010918487/article/details/105788735
+
+// PullImage 根据名称拉去镜像，term 可以是 镜像名称(ubuntu 会拉去 ubuntu:latest) 也可以是 镜像名称:tag(ubuntu:18.04)
+func (m *Manager) PullImage(ctx context.Context, term string) error {
+	pullReader, err := m.Client.ImagePull(ctx, term, image.PullOptions{All: false, PrivilegeFunc: nil, RegistryAuth: ""})
+	if err != nil {
+		return err
+	}
+	defer func(pullReader io.ReadCloser) {
+		err := pullReader.Close()
+		if err != nil {
+			return
+		}
+	}(pullReader)
+	buf := new(bytes.Buffer)
+	_, err = buf.ReadFrom(pullReader)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+// TagImage 修改镜像 tag oldTag: ubuntu:latest  newTag ubuntu:22.04
+func (m *Manager) TagImage(ctx context.Context, oldTag string, newTag string) error {
+	return m.Client.ImageTag(ctx, oldTag, newTag)
+}
+
+// https://www.cnblogs.com/guangdelw/p/17567195.html
+
+// ImportImage 镜像导入
+func (m *Manager) ImportImage(ctx context.Context, sourceFile string) error {
+	inputFile, err := os.Open(sourceFile)
+	if err != nil {
+		return err
+	}
+	defer func(inputFile *os.File) {
+		err := inputFile.Close()
+		if err != nil {
+		}
+	}(inputFile)
+
+	resp, err := m.Client.ImageLoad(ctx, inputFile, true)
+	if err != nil {
+		return err
+	}
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(resp.Body)
+
+	// 读取并输出导入过程
+	_, err = io.Copy(os.Stdout, resp.Body)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ExportImage 镜像导出
+func (m *Manager) ExportImage(ctx context.Context, imageIDs []string, targetFile string) error {
+	resp, err := m.Client.ImageSave(ctx, imageIDs)
+	if err != nil {
+		return err
+	}
+	defer func(resp io.ReadCloser) {
+		err := resp.Close()
+		if err != nil {
+		}
+	}(resp)
+	outputFile, err := os.Create(targetFile)
+	if err != nil {
+		return err
+	}
+	defer func(outputFile *os.File) {
+		err := outputFile.Close()
+		if err != nil {
+		}
+	}(outputFile)
+
+	_, err = io.Copy(outputFile, resp)
+	if err != nil {
+		return err
+	}
+	return nil
 }
