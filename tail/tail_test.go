@@ -29,6 +29,11 @@ func TestTail(t *testing.T) {
 			}
 		}
 	}()
+	go func() {
+		for msg := range tail.Msg() {
+			fmt.Println("msg: ", msg)
+		}
+	}()
 	time.Sleep(10 * time.Second)
 	tail.Close()
 	time.Sleep(time.Second)
