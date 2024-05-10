@@ -181,3 +181,7 @@ func (m *Manager) ContainerLogs(ctx context.Context, containerID string) (io.Rea
 	})
 	return reader, err
 }
+
+func (m *Manager) RenameContainer(ctx context.Context, containerID, newName string) error {
+	return m.Client.ContainerRename(ctx, containerID, newName)
+}

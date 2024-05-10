@@ -6,6 +6,7 @@ package docker
 
 import (
 	"context"
+	"github.com/docker/docker/api/types/filters"
 	"strings"
 
 	"github.com/docker/docker/api/types/network"
@@ -24,6 +25,7 @@ type Network struct {
 	Containers map[string]string // map[cid]ipaddr
 }
 
+// ListNetwork lists all networks.
 func (m *Manager) ListNetwork(ctx context.Context) ([]Network, error) {
 	nets, err := m.Client.NetworkList(ctx, types.NetworkListOptions{})
 	if err != nil {
@@ -54,6 +56,7 @@ func (m *Manager) ListNetwork(ctx context.Context) ([]Network, error) {
 	return networkList, nil
 }
 
+// QueryNetwork queries a network by its ID.
 func (m *Manager) QueryNetwork(ctx context.Context, networkID string) (*Network, error) {
 	nr, err := m.Client.NetworkInspect(ctx, networkID, types.NetworkInspectOptions{})
 	if err != nil {
@@ -79,12 +82,12 @@ func (m *Manager) QueryNetwork(ctx context.Context, networkID string) (*Network,
 	return nw, nil
 }
 
-func (m *Manager) CreateNetwork(ctx context.Context, name string, internal bool) (string, error) {
+// CreateNetwork creates a new network.
+func (m *Manager) CreateNetwork(ctx context.Context, name string, driver string, internal bool) (string, error) {
 	response, err := m.Client.NetworkCreate(ctx, name, types.NetworkCreate{
-		CheckDuplicate: true,
-		Driver:         "bridge",
-		EnableIPv6:     false,
-		Internal:       internal,
+		Driver:     driver,
+		EnableIPv6: true,
+		Internal:   internal,
 	})
 	if err != nil {
 		return "", err
@@ -92,12 +95,13 @@ func (m *Manager) CreateNetwork(ctx context.Context, name string, internal bool)
 	return response.ID, nil
 }
 
-func (m *Manager) UpdateNetwork(ctx context.Context) error { return nil }
-
+// DeleteNetwork removes a network by network id.
 func (m *Manager) DeleteNetwork(ctx context.Context, networkID string) error {
-	err := m.Client.NetworkRemove(ctx, networkID)
-	if err != nil {
-		return err
-	}
-	return nil
+	return m.Client.NetworkRemove(ctx, networkID)
+}
+
+// PruneNetwork removes all dangling networks.
+func (m *Manager) PruneNetwork(ctx context.Context) error {
+	_, err := m.Client.NetworksPrune(ctx, filters.NewArgs(filters.Arg("dangling", "true")))
+	return err
 }
