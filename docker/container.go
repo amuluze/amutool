@@ -92,20 +92,23 @@ func (m *Manager) ListContainer(ctx context.Context) ([]ContainerSummary, error)
 }
 
 // CreateContainer 根据条件创建容器（各种条件会比较复杂），创建成功后返回 containerID，此时容器状态为 created
-func (m *Manager) CreateContainer(ctx context.Context, imageTag string, networkID string, containerName string) (string, error) {
+func (m *Manager) CreateContainer(ctx context.Context, imageName string, networkName string, containerName string) (string, error) {
 	containerConfig := &container.Config{
-		Image: imageTag,
+		Hostname: containerName,
+		Image:    imageName,
 	}
-	//hostConfig := &container.HostConfig{
-	//
-	//}
-	//networkConfig := &network.NetworkingConfig{
-	//
-	//}
+	hostConfig := &container.HostConfig{
+		NetworkMode: container.NetworkMode(networkName),
+		AutoRemove:  false,
+		RestartPolicy: container.RestartPolicy{
+			Name: "always",
+		},
+	}
+	//networkConfig := &network.NetworkingConfig{}
 	//platform := &v1.Platform{
 	//
 	//}
-	createResponse, err := m.Client.ContainerCreate(ctx, containerConfig, nil, nil, nil, containerName)
+	createResponse, err := m.Client.ContainerCreate(ctx, containerConfig, hostConfig, nil, nil, containerName)
 	if err != nil {
 		return "", err
 	}

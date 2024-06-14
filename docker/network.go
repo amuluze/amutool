@@ -25,6 +25,11 @@ type Network struct {
 	Containers map[string]string // map[cid]ipaddr
 }
 
+type SubNetworkConfig struct {
+	Subnet  string
+	Gateway string
+}
+
 // ListNetwork lists all networks.
 func (m *Manager) ListNetwork(ctx context.Context) ([]Network, error) {
 	nets, err := m.Client.NetworkList(ctx, types.NetworkListOptions{})
@@ -83,11 +88,31 @@ func (m *Manager) QueryNetwork(ctx context.Context, networkID string) (*Network,
 }
 
 // CreateNetwork creates a new network.
-func (m *Manager) CreateNetwork(ctx context.Context, name string, driver string, internal bool) (string, error) {
+func (m *Manager) CreateNetwork(ctx context.Context, name string, driver string) (string, error) {
+	//ipam := &network.IPAM{
+	//	Driver:  "default",
+	//	Options: nil,
+	//	Config: []network.IPAMConfig{
+	//		{
+	//			Subnet:  "172.18.0.0/16",
+	//			Gateway: "172.18.0.1",
+	//		},
+	//	},
+	//}
+	//if len(subConfig) > 0 {
+	//	conf := make([]network.IPAMConfig, 0, len(subConfig))
+	//	for sc := range subConfig {
+	//		conf = append(conf, network.IPAMConfig{
+	//			Subnet:  subConfig[sc].Subnet,
+	//			Gateway: subConfig[sc].Gateway,
+	//		})
+	//	}
+	//	ipam.Config = conf
+	//}
 	response, err := m.Client.NetworkCreate(ctx, name, types.NetworkCreate{
 		Driver:     driver,
-		EnableIPv6: true,
-		Internal:   internal,
+		EnableIPv6: false,
+		Internal:   true,
 	})
 	if err != nil {
 		return "", err

@@ -25,7 +25,7 @@ func TestQueryNetwork(t *testing.T) {
 
 func TestCreateNetwork(t *testing.T) {
 	manager, _ := NewManager()
-	network, err := manager.CreateNetwork(context.Background(), "test-network", "bridge", true)
+	network, err := manager.CreateNetwork(context.Background(), "test", "bridge")
 	if err != nil {
 		t.Fatalf("create network failed: %v\n", err)
 	}

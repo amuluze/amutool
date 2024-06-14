@@ -17,6 +17,15 @@ func TestListContainer(t *testing.T) {
 	}
 }
 
+func TestContainerCreate(t *testing.T) {
+	manager, _ := NewManager()
+	cid, err := manager.CreateContainer(context.Background(), "nginx:latest", "test", "web")
+	if err != nil {
+		t.Error("create container error: ", err)
+	}
+	t.Logf("container id: %#v", cid)
+}
+
 func TestContainerMem(t *testing.T) {
 	manager, _ := NewManager()
 	percent, used, limit, err := manager.GetContainerMem(context.Background(), "dc505c86389c")
