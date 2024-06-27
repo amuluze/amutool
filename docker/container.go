@@ -22,13 +22,14 @@ import (
 )
 
 type ContainerSummary struct {
-	ID      string `json:"id"`      // ID
-	Name    string `json:"name"`    // Name
-	Image   string `json:"image"`   // Image
-	State   string `json:"state"`   // State: created running paused restarting removing exited dead
-	Created string `json:"created"` // create time
-	Uptime  string `json:"uptime"`  // uptime in seconds
-	IP      string `json:"ip"`      // ip
+	ID      string            `json:"id"`      // ID
+	Name    string            `json:"name"`    // Name
+	Image   string            `json:"image"`   // Image
+	State   string            `json:"state"`   // State: created running paused restarting removing exited dead
+	Created string            `json:"created"` // create time
+	Uptime  string            `json:"uptime"`  // uptime in seconds
+	IP      string            `json:"ip"`      // ip
+	Labels  map[string]string `json:"labels"`
 }
 
 type PortMapping struct {
@@ -97,6 +98,7 @@ func (m *Manager) ListContainer(ctx context.Context) ([]ContainerSummary, error)
 			Created: time.Unix(c.Created, 0).Format("2006-01-02 15:04:05"),
 			Uptime:  uptime,
 			IP:      ip,
+			Labels:  c.Labels,
 		}
 		containerSummaryList = append(containerSummaryList, cs)
 	}

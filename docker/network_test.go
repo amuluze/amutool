@@ -40,7 +40,7 @@ func TestQueryNetwork(t *testing.T) {
 
 func TestCreateNetwork(t *testing.T) {
 	manager, _ := NewManager()
-	network, err := manager.CreateNetwork(context.Background(), "test", "bridge", "172.20.0.0/24")
+	network, err := manager.CreateNetwork(context.Background(), "test", "bridge", "172.20.0.0/24", map[string]string{AmprobeLabel: "true"})
 	if err != nil {
 		t.Fatalf("create network failed: %v\n", err)
 	}
@@ -49,7 +49,7 @@ func TestCreateNetwork(t *testing.T) {
 
 func TestCreateNetworkWithNetworkSegment(t *testing.T) {
 	manager, _ := NewManager()
-	network, err := manager.CreateNetwork(context.Background(), "test2", "bridge", "")
+	network, err := manager.CreateNetwork(context.Background(), "test2", "bridge", "", map[string]string{AmprobeLabel: "true"})
 	if err != nil {
 		t.Fatalf("create network failed: %v\n", err)
 	}

@@ -28,7 +28,7 @@ func TestContainerCreate(t *testing.T) {
 		"gateway",
 		[]string{"8088:8088"},
 		[]string{"/Users/amu/Desktop/common.scss:/app/common.scss:rw"},
-		nil,
+		map[string]string{AmprobeLabel: "true"},
 	)
 	if err != nil {
 		t.Error("create container error: ", err)

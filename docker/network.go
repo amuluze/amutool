@@ -24,6 +24,7 @@ type Network struct {
 	Internal   bool
 	SubNet     []SubNetworkConfig
 	Containers map[string]string // map[cid]ipaddr
+	Labels     map[string]string
 }
 
 type SubNetworkConfig struct {
@@ -63,6 +64,7 @@ func (m *Manager) ListNetwork(ctx context.Context) ([]Network, error) {
 			Created:    net.Created.Format("2006-01-02 15:04:05"),
 			SubNet:     subNet,
 			Containers: containers,
+			Labels:     net.Labels,
 		}
 		networkList = append(networkList, n)
 	}
@@ -98,12 +100,13 @@ func (m *Manager) QueryNetwork(ctx context.Context, networkID string) (*Network,
 		Created:    nr.Created.Format("2006-01-02 15:04:05"),
 		SubNet:     subNet,
 		Containers: containers,
+		Labels:     nr.Labels,
 	}
 	return nw, nil
 }
 
 // CreateNetwork creates a new network.
-func (m *Manager) CreateNetwork(ctx context.Context, name string, driver string, networkSegment string) (string, error) {
+func (m *Manager) CreateNetwork(ctx context.Context, name string, driver string, networkSegment string, labels map[string]string) (string, error) {
 	var options types.NetworkCreate
 	if networkSegment != "" {
 		// 根据网段 networkSegment 计算网关
@@ -134,6 +137,7 @@ func (m *Manager) CreateNetwork(ctx context.Context, name string, driver string,
 			EnableIPv6: false,
 			Internal:   true,
 			Options:    map[string]string{"com.docker.network.bridge.name": name},
+			Labels:     labels,
 		}
 	}
 	fmt.Printf("options: %#v\n", options.IPAM)
