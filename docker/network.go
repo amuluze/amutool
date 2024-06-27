@@ -6,10 +6,11 @@ package docker
 
 import (
 	"context"
+	"fmt"
 	"github.com/docker/docker/api/types/filters"
-	"strings"
-
 	"github.com/docker/docker/api/types/network"
+	"net"
+	"strings"
 
 	"github.com/docker/docker/api/types"
 )
@@ -21,7 +22,7 @@ type Network struct {
 	Scope      string
 	Created    string
 	Internal   bool
-	IPAM       network.IPAM
+	SubNet     []SubNetworkConfig
 	Containers map[string]string // map[cid]ipaddr
 }
 
@@ -47,13 +48,20 @@ func (m *Manager) ListNetwork(ctx context.Context) ([]Network, error) {
 			}
 			containers[id] = ipAddr
 		}
+		subNet := make([]SubNetworkConfig, 0)
+		for _, ncf := range net.IPAM.Config {
+			subNet = append(subNet, SubNetworkConfig{
+				Subnet:  ncf.Subnet,
+				Gateway: ncf.Gateway,
+			})
+		}
 		n := Network{
 			ID:         net.ID,
 			Name:       net.Name,
 			Driver:     net.Driver,
 			Scope:      net.Scope,
 			Created:    net.Created.Format("2006-01-02 15:04:05"),
-			IPAM:       net.IPAM,
+			SubNet:     subNet,
 			Containers: containers,
 		}
 		networkList = append(networkList, n)
@@ -75,45 +83,61 @@ func (m *Manager) QueryNetwork(ctx context.Context, networkID string) (*Network,
 		}
 		containers[id] = ipAddr
 	}
+	subNet := make([]SubNetworkConfig, 0)
+	for _, ncf := range nr.IPAM.Config {
+		subNet = append(subNet, SubNetworkConfig{
+			Subnet:  ncf.Subnet,
+			Gateway: ncf.Gateway,
+		})
+	}
 	nw := &Network{
 		ID:         nr.ID,
 		Name:       nr.Name,
 		Driver:     nr.Driver,
 		Scope:      nr.Scope,
 		Created:    nr.Created.Format("2006-01-02 15:04:05"),
-		IPAM:       nr.IPAM,
+		SubNet:     subNet,
 		Containers: containers,
 	}
 	return nw, nil
 }
 
 // CreateNetwork creates a new network.
-func (m *Manager) CreateNetwork(ctx context.Context, name string, driver string) (string, error) {
-	//ipam := &network.IPAM{
-	//	Driver:  "default",
-	//	Options: nil,
-	//	Config: []network.IPAMConfig{
-	//		{
-	//			Subnet:  "172.18.0.0/16",
-	//			Gateway: "172.18.0.1",
-	//		},
-	//	},
-	//}
-	//if len(subConfig) > 0 {
-	//	conf := make([]network.IPAMConfig, 0, len(subConfig))
-	//	for sc := range subConfig {
-	//		conf = append(conf, network.IPAMConfig{
-	//			Subnet:  subConfig[sc].Subnet,
-	//			Gateway: subConfig[sc].Gateway,
-	//		})
-	//	}
-	//	ipam.Config = conf
-	//}
-	response, err := m.Client.NetworkCreate(ctx, name, types.NetworkCreate{
-		Driver:     driver,
-		EnableIPv6: false,
-		Internal:   true,
-	})
+func (m *Manager) CreateNetwork(ctx context.Context, name string, driver string, networkSegment string) (string, error) {
+	var options types.NetworkCreate
+	if networkSegment != "" {
+		// 根据网段 networkSegment 计算网关
+		ip := net.ParseIP(strings.Split(networkSegment, "/")[0])
+		mask := net.CIDRMask(24, 32)
+		nw := ip.Mask(mask)
+		gateway := net.IPv4(nw[0], nw[1], nw[2], nw[3]+1).String()
+
+		ipam := &network.IPAM{
+			Driver:  "default",
+			Options: nil,
+			Config: []network.IPAMConfig{
+				{
+					Subnet:  networkSegment,
+					Gateway: gateway,
+				},
+			},
+		}
+		options = types.NetworkCreate{
+			Driver:     driver,
+			EnableIPv6: false,
+			Internal:   false,
+			IPAM:       ipam,
+		}
+	} else {
+		options = types.NetworkCreate{
+			Driver:     driver,
+			EnableIPv6: false,
+			Internal:   true,
+			Options:    map[string]string{"com.docker.network.bridge.name": name},
+		}
+	}
+	fmt.Printf("options: %#v\n", options.IPAM)
+	response, err := m.Client.NetworkCreate(ctx, name, options)
 	if err != nil {
 		return "", err
 	}

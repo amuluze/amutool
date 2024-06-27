@@ -60,8 +60,8 @@ func NewJsonLogger() *Logger {
 
 func NewJsonFileLogger(options ...Option) *Logger {
 	config := &Config{
-		Name:                "default",
-		LogFile:             "default.log",
+		Name:                "load",
+		LogFile:             "load.log",
 		LogLevel:            slog.LevelInfo,
 		LogFileRotationTime: 1,
 		LogFileMaxAge:       7,

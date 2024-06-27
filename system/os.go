@@ -5,15 +5,10 @@
 package system
 
 import (
-	"bytes"
+	"golang.org/x/text/encoding/simplifiedchinese"
 	"os"
 	"os/exec"
 	"runtime"
-	"unicode/utf8"
-
-	"github.com/amuluze/amutool/validator"
-
-	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
 type (
@@ -42,48 +37,6 @@ func SetOsEnv(key, value string) error {
 
 func RemoveOsEnv(key string) error {
 	return os.Unsetenv(key)
-}
-
-// ExecCommand execute command, return the stdout and stderr string of command, and error if error occur
-// param `command` is a complete command string, like, ls -a (linux), dir(windows), ping 127.0.0.1
-// in linux,  use /bin/bash -c to execute command
-// in windows, use powershell.exe to execute command
-func ExecCommand(command string, opts ...Option) (stdout, stderr string, err error) {
-	var out bytes.Buffer
-	var errOut bytes.Buffer
-
-	cmd := exec.Command("/bin/bash", "-c", command)
-	if IsWindows() {
-		cmd = exec.Command("powershell.exe", command)
-	}
-
-	for _, opt := range opts {
-		if opt != nil {
-			opt(cmd)
-		}
-	}
-	cmd.Stdout = &out
-	cmd.Stderr = &errOut
-
-	err = cmd.Run()
-
-	if err != nil {
-		if utf8.Valid(errOut.Bytes()) {
-			stderr = byteToString(errOut.Bytes(), "UTF8")
-		} else if validator.IsGBK(errOut.Bytes()) {
-			stderr = byteToString(errOut.Bytes(), "GBK")
-		}
-		return
-	}
-
-	data := out.Bytes()
-	if utf8.Valid(data) {
-		stdout = byteToString(data, "UTF8")
-	} else if validator.IsGBK(data) {
-		stdout = byteToString(data, "GBK")
-	}
-
-	return
 }
 
 func byteToString(data []byte, charset string) string {

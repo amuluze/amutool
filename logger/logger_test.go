@@ -41,8 +41,8 @@ func TestJsonLogger(t *testing.T) {
 
 func TestJsonFileLogger(t *testing.T) {
 	logx := NewJsonFileLogger(
-		SetName("default"),
-		SetLogFile("default.log"),
+		SetName("load"),
+		SetLogFile("load.log"),
 		SetLogLevel("info"),
 		SetLogFileRotationTime(1),
 		SetLogFileMaxAge(7),

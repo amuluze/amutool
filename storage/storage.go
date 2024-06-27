@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	defaultBucket = []byte("default")
+	defaultBucket = []byte("load")
 	defaultTimout = 10 * time.Second
 
 	Separator = "/"
@@ -137,7 +137,7 @@ func (s *Storage) acquire() error {
 			return err
 		}
 
-		// create default bucket if not exists
+		// create load bucket if not exists
 		err = s.db.Update(func(tx *bolt.Tx) error {
 			_, err := tx.CreateBucketIfNotExists(defaultBucket)
 			return err

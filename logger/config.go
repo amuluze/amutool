@@ -9,12 +9,12 @@ import (
 )
 
 type Config struct {
-	Name                string     `default:"default"`     // 【默认】Logger 名称
-	LogFile             string     `default:"default.log"` // 【默认】日志文件名称
-	LogLevel            slog.Level `default:"info"`        // 【默认】日志打印级别
-	LogFileRotationTime int        `default:"1"`           // 【默认】日志文件切割间隔，单位 D
-	LogFileMaxAge       int        `default:"7"`           // 【默认】日志文件保留时间，单位 D
-	LogFileSuffix       string     `default:".%Y%m%d"`     // 【默认】归档日志后缀
+	Name                string     `load:"load"`     // 【默认】Logger 名称
+	LogFile             string     `load:"load.log"` // 【默认】日志文件名称
+	LogLevel            slog.Level `load:"info"`     // 【默认】日志打印级别
+	LogFileRotationTime int        `load:"1"`        // 【默认】日志文件切割间隔，单位 D
+	LogFileMaxAge       int        `load:"7"`        // 【默认】日志文件保留时间，单位 D
+	LogFileSuffix       string     `load:".%Y%m%d"`  // 【默认】归档日志后缀
 }
 
 type Option func(*Config)

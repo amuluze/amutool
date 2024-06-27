@@ -6,6 +6,11 @@ package docker
 
 import (
 	"context"
+	"fmt"
+	"github.com/docker/docker/api/types/network"
+	"github.com/docker/go-connections/nat"
+	"github.com/tidwall/gjson"
+	goyaml "gopkg.in/yaml.v2"
 	"io"
 	"os"
 	"strings"
@@ -13,7 +18,7 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	"github.com/tidwall/gjson"
+	"github.com/docker/libcompose/yaml"
 )
 
 type ContainerSummary struct {
@@ -24,6 +29,13 @@ type ContainerSummary struct {
 	Created string `json:"created"` // create time
 	Uptime  string `json:"uptime"`  // uptime in seconds
 	IP      string `json:"ip"`      // ip
+}
+
+type PortMapping struct {
+	Proto         string
+	IP            string
+	HostPort      string
+	ContainerPort string
 }
 
 // getUptime 获取指定容器的启动时间
@@ -92,24 +104,79 @@ func (m *Manager) ListContainer(ctx context.Context) ([]ContainerSummary, error)
 }
 
 // CreateContainer 根据条件创建容器（各种条件会比较复杂），创建成功后返回 containerID，此时容器状态为 created
-func (m *Manager) CreateContainer(ctx context.Context, imageName string, networkName string, containerName string) (string, error) {
-	containerConfig := &container.Config{
-		Hostname: containerName,
-		Image:    imageName,
+func (m *Manager) CreateContainer(ctx context.Context, imageName string, networkID string, networkMode string, networkName string, containerName string, ports []string, vols []string, labels map[string]string) (string, error) {
+	config := &container.Config{}
+	config.Hostname = containerName
+	config.Image = imageName
+	config.Labels = labels
+	config.Tty = true
+
+	hostConfig := &container.HostConfig{}
+	hostConfig.NetworkMode = container.NetworkMode(networkMode)
+	hostConfig.RestartPolicy = container.RestartPolicy{Name: "always"}
+	hostConfig.PortBindings = make(nat.PortMap)
+
+	networkConfig := &network.NetworkingConfig{}
+	networkConfig.EndpointsConfig = make(map[string]*network.EndpointSettings)
+	networkConfig.EndpointsConfig[networkName] = &network.EndpointSettings{
+		NetworkID: networkID,
 	}
-	hostConfig := &container.HostConfig{
-		NetworkMode: container.NetworkMode(networkName),
-		AutoRemove:  false,
-		RestartPolicy: container.RestartPolicy{
-			Name: "always",
-		},
+
+	for _, port := range ports {
+		portsMapping, err := nat.ParsePortSpec(port)
+		if err != nil {
+			return "", err
+		}
+		for _, portMapping := range portsMapping {
+			port, err := nat.NewPort(portMapping.Port.Proto(), portMapping.Port.Port())
+			if err != nil {
+				return "", err
+			}
+			hostIP := portMapping.Binding.HostIP
+			if hostIP == "" {
+				hostIP = "0.0.0.0"
+			}
+			hostConfig.PortBindings[port] = append(hostConfig.PortBindings[port], nat.PortBinding{
+				HostIP:   hostIP,
+				HostPort: portMapping.Binding.HostPort,
+			})
+		}
 	}
-	//networkConfig := &network.NetworkingConfig{}
-	//platform := &v1.Platform{
-	//
-	//}
-	createResponse, err := m.Client.ContainerCreate(ctx, containerConfig, hostConfig, nil, nil, containerName)
+
+	config.ExposedPorts = make(nat.PortSet)
+	for port := range hostConfig.PortBindings {
+		config.ExposedPorts[port] = struct{}{}
+	}
+
+	for _, vol := range vols {
+		vol := "- " + vol
+		volumes := &yaml.Volumes{}
+
+		err := goyaml.Unmarshal([]byte(vol), volumes)
+		if err != nil {
+			return "", err
+		}
+		for _, volume := range volumes.Volumes {
+			if volume.AccessMode != "ro" {
+				volume.AccessMode = "rw"
+			}
+			volString := fmt.Sprintf("%s:%s:%s", volume.Source, volume.Destination, volume.AccessMode)
+			hostConfig.Binds = append(hostConfig.Binds, volString)
+		}
+	}
+
+	createResponse, err := m.Client.ContainerCreate(ctx, config, hostConfig, networkConfig, nil, containerName)
 	if err != nil {
+		return "", err
+	}
+	for _, w := range createResponse.Warnings {
+		fmt.Printf("Container Create Warning: %s\n", w)
+	}
+	if err := m.Client.NetworkConnect(ctx, networkID, createResponse.ID, nil); err != nil {
+		return "", err
+	}
+
+	if err := m.Client.ContainerStart(ctx, createResponse.ID, container.StartOptions{}); err != nil {
 		return "", err
 	}
 	return createResponse.ID, nil

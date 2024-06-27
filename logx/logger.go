@@ -48,7 +48,7 @@ func init() {
 				zap.AddCaller(),
 				zap.AddCallerSkip(2),
 			),
-			name:    "default",
+			name:    "load",
 			loggers: make(map[string]*Logger),
 		}
 	})
@@ -58,8 +58,8 @@ func (l *Logger) NewLogger(options ...Option) {
 	l.lock.Lock()
 	defer l.lock.Unlock()
 	config := &Config{
-		Name:                "default",
-		LogFile:             "default.log",
+		Name:                "load",
+		LogFile:             "load.log",
 		LogLevel:            zap.InfoLevel,
 		LogFormat:           "text",
 		LogFileRotationTime: 1,

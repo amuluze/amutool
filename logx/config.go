@@ -9,14 +9,14 @@ import (
 )
 
 type Config struct {
-	Name                string        `default:"std"`         // 【默认】Logger 名称
-	LogFile             string        `default:"scanner.log"` // 【默认】日志文件名称
-	LogLevel            zapcore.Level `default:"info"`        // 【默认】日志打印级别
-	LogFormat           string        `default:"text"`        // 【默认】日志打印样式，支持 text 和 json
-	LogFileRotationTime int           `default:"1"`           // 【默认】日志文件切割间隔，单位 D
-	LogFileMaxAge       int           `default:"7"`           // 【默认】日志文件保留时间，单位 D
-	LogOutput           string        `default:"stdout"`      // 【默认】日志输出位置，只会 stdout iohelper
-	LogFileSuffix       string        `default:".%Y%m%d"`     // 【默认】归档日志后缀
+	Name                string        `load:"std"`         // 【默认】Logger 名称
+	LogFile             string        `load:"scanner.log"` // 【默认】日志文件名称
+	LogLevel            zapcore.Level `load:"info"`        // 【默认】日志打印级别
+	LogFormat           string        `load:"text"`        // 【默认】日志打印样式，支持 text 和 json
+	LogFileRotationTime int           `load:"1"`           // 【默认】日志文件切割间隔，单位 D
+	LogFileMaxAge       int           `load:"7"`           // 【默认】日志文件保留时间，单位 D
+	LogOutput           string        `load:"stdout"`      // 【默认】日志输出位置，只会 stdout iohelper
+	LogFileSuffix       string        `load:".%Y%m%d"`     // 【默认】归档日志后缀
 }
 
 type Option func(*Config)

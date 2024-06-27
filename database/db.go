@@ -68,7 +68,7 @@ func dial(opt *option) gorm.Dialector {
 		)
 		dialector = mysql.New(mysql.Config{
 			DSN:                       dsn,
-			DefaultStringSize:         256,   // default size for string fields
+			DefaultStringSize:         256,   // load size for string fields
 			DisableDatetimePrecision:  true,  // disable datetime precision, which not supported before MySQL 5.6
 			DontSupportRenameIndex:    true,  // drop & create when rename index, rename index not supported before MySQL 5.7, MariaDB
 			DontSupportRenameColumn:   true,  // `change` when rename column, rename column not supported before MySQL 8, MariaDB
