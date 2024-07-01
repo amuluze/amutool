@@ -32,7 +32,7 @@ func TestSearchImage(t *testing.T) {
 }
 
 func TestPullImage(t *testing.T) {
-	imageName := "ubuntu"
+	imageName := "ubuntu:20.04"
 	manager, _ := NewManager()
 	err := manager.PullImage(context.Background(), imageName)
 	fmt.Printf("pull error: %v", err)
@@ -48,14 +48,14 @@ func TestTagImage(t *testing.T) {
 
 func TestExportImage(t *testing.T) {
 	imageIDs := []string{"ubuntu:latest"}
-	targetFile := "/Users/amu/Desktop/github/amutool/docker/ubuntu.tar"
+	targetFile := "/Users/amu/Desktop/ubuntu.tar"
 	manager, _ := NewManager()
 	err := manager.ExportImage(context.Background(), imageIDs, targetFile)
 	t.Log("export image error: ", err)
 }
 
 func TestImportImage(t *testing.T) {
-	sourceFile := "/Users/amu/Desktop/github/amutool/docker/ubuntu.tar"
+	sourceFile := "/Users/amu/Desktop/ubuntu.tar"
 	manager, _ := NewManager()
 	err := manager.ImportImage(context.Background(), sourceFile)
 	t.Log("import image error: ", err)

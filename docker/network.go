@@ -7,10 +7,11 @@ package docker
 import (
 	"context"
 	"fmt"
-	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/api/types/network"
 	"net"
 	"strings"
+
+	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/api/types/network"
 
 	"github.com/docker/docker/api/types"
 )
@@ -137,8 +138,10 @@ func (m *Manager) CreateNetwork(ctx context.Context, name string, driver string,
 			EnableIPv6: false,
 			Internal:   true,
 			Options:    map[string]string{"com.docker.network.bridge.name": name},
-			Labels:     labels,
 		}
+	}
+	if len(labels) != 0 {
+		options.Labels = labels
 	}
 	fmt.Printf("options: %#v\n", options.IPAM)
 	response, err := m.Client.NetworkCreate(ctx, name, options)

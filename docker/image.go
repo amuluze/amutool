@@ -8,13 +8,14 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/registry"
 	"io"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/registry"
 
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/image"
@@ -138,7 +139,7 @@ func (m *Manager) PullImage(ctx context.Context, term string) error {
 	if err != nil {
 		return err
 	}
-	return err
+	return nil
 }
 
 // TagImage 修改镜像 tag oldTag: ubuntu:latest  newTag ubuntu:22.04
@@ -157,6 +158,7 @@ func (m *Manager) ImportImage(ctx context.Context, sourceFile string) error {
 	defer func(inputFile *os.File) {
 		err := inputFile.Close()
 		if err != nil {
+			return
 		}
 	}(inputFile)
 
@@ -167,7 +169,7 @@ func (m *Manager) ImportImage(ctx context.Context, sourceFile string) error {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-
+			return
 		}
 	}(resp.Body)
 
@@ -188,6 +190,7 @@ func (m *Manager) ExportImage(ctx context.Context, imageIDs []string, targetFile
 	defer func(resp io.ReadCloser) {
 		err := resp.Close()
 		if err != nil {
+			return
 		}
 	}(resp)
 	outputFile, err := os.Create(targetFile)
@@ -197,6 +200,7 @@ func (m *Manager) ExportImage(ctx context.Context, imageIDs []string, targetFile
 	defer func(outputFile *os.File) {
 		err := outputFile.Close()
 		if err != nil {
+			return
 		}
 	}(outputFile)
 
