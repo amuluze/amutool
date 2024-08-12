@@ -6,15 +6,17 @@ package docker
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"github.com/docker/docker/api/types/network"
-	"github.com/docker/go-connections/nat"
-	"github.com/tidwall/gjson"
-	goyaml "gopkg.in/yaml.v2"
 	"io"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/docker/docker/api/types/network"
+	"github.com/docker/go-connections/nat"
+	"github.com/tidwall/gjson"
+	goyaml "gopkg.in/yaml.v2"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -58,6 +60,49 @@ func (m *Manager) GetContainerIDByName(ctx context.Context, name string) (string
 		}
 	}
 	return "", nil
+}
+
+// GetContainerByName 根据名称获取指定 container
+func (m *Manager) GetContainerByName(ctx context.Context, name string) (ContainerSummary, error) {
+	containers, err := m.Client.ContainerList(ctx, container.ListOptions{All: true})
+	if err != nil {
+		return ContainerSummary{}, err
+	}
+	for _, ct := range containers {
+		if ct.Names[0] == name {
+			var uptime string
+			if ct.State == "running" {
+				uptime = m.getUptime(ctx, ct.ID)
+			}
+
+			var ip string
+			for _, nt := range ct.NetworkSettings.Networks {
+				if nt.IPAddress != "" {
+					ip = nt.IPAddress
+					break
+				}
+			}
+
+			state := ct.State
+			inspect, err := m.Client.ContainerInspect(ctx, c.ID)
+			if err == nil {
+				if inspect.ContainerJSONBase.State.Health != nil && inspect.ContainerJSONBase.State.Health.Status == "healthy" {
+					state = "running"
+				}
+			}
+			return ContainerSummary{
+				ID:      ct.ID,
+				Name:    strings.Trim(ct.Names[0], "/"),
+				Image:   ct.Image,
+				State:   state,
+				Created: time.Unix(ct.Created, 0).Format("2006-01-02 15:04:05"),
+				Uptime:  uptime,
+				IP:      ip,
+				Labels:  ct.Labels,
+			}, nil
+		}
+	}
+	return ContainerSummary{}, errors.New("not found")
 }
 
 // ListContainer 获取所有容器 []ContainerSummary
