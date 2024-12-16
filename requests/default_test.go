@@ -20,7 +20,7 @@ type MessageReponse struct {
 
 func TestGetTwo(t *testing.T) {
 	reply := &MessageReponse{}
-	err := Get("http://10.9.35.5:8090/aaa", nil, reply)
+	err := Get("http://1xxx.xxx.xxx.xxx:8090/aaa", nil, reply)
 	if err != nil {
 		t.Fatalf("get error: %v", err)
 	}
@@ -33,7 +33,7 @@ func TestPost(t *testing.T) {
 		Age:  18,
 	}
 	reply := &PostResponse{}
-	err := Post("http://10.9.35.5:8090/users", params, reply, SetHeader("Referer", "https://example.com/test"), SetCookie("cid", "123456"))
+	err := Post("http://1xxx.xxx.xxx.xxx:8090/users", params, reply, SetHeader("Referer", "https://example.com/test"), SetCookie("cid", "123456"))
 	if err != nil {
 		t.Fatalf("post error: %v", err)
 	}
