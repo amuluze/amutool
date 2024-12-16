@@ -1,63 +1,19 @@
 // Package requests
-// Date: 2022/9/8 23:50
+// Date:   2024/12/13 16:44
 // Author: Amu
 // Description:
 package requests
 
-import "time"
-
 type Option func(req *Requests)
 
-func SetHeaders(rh map[string]string) Option {
+func SetHeader(key, value string) Option {
 	return func(req *Requests) {
-		req.Headers = rh
+		req.headers[key] = value
 	}
 }
 
-func SetCookies(rc map[string]string) Option {
+func SetCookie(key, value string) Option {
 	return func(req *Requests) {
-		req.Cookies = rc
-	}
-}
-
-func SetParams(rp map[string]string) Option {
-	return func(req *Requests) {
-		req.Param = rp
-	}
-}
-
-func SetData(rd map[string]string) Option {
-	return func(req *Requests) {
-		req.Data = rd
-	}
-}
-
-func SetJson(rj interface{}) Option {
-	return func(req *Requests) {
-		req.Json = rj
-	}
-}
-
-func SetRequestTimeout(rt time.Duration) Option {
-	return func(req *Requests) {
-		req.Timeout = rt
-	}
-}
-
-func SetMaxConns(mc int) Option {
-	return func(req *Requests) {
-		req.MaxConnsPerHost = mc
-	}
-}
-
-func SetMaxIdle(mi int) Option {
-	return func(req *Requests) {
-		req.MaxIdleConnsPerHost = mi
-	}
-}
-
-func SetIdleConnTimeout(ic time.Duration) Option {
-	return func(req *Requests) {
-		req.IdleConnTimeout = ic
+		req.cookies[key] = value
 	}
 }
