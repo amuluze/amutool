@@ -1,5 +1,5 @@
 // Package requests
-// Date:   2024/12/13 18:22
+// Date: 2024/12/16 15:22:00
 // Author: Amu
 // Description:
 package requests
@@ -8,19 +8,15 @@ import (
 	"fmt"
 	"net/url"
 	"reflect"
-	"testing"
 )
 
-type User struct {
-	Name string `json:"name"`
-	Age  int    `json:"age"`
-}
-
-func (u *User) ToQuery() string {
+func ToQuery(params any) string {
+	if params == nil {
+		return ""
+	}
 	values := url.Values{}
-	v := reflect.ValueOf(u).Elem()
+	v := reflect.ValueOf(params).Elem()
 	t := v.Type()
-	fmt.Println(v, t)
 
 	for i := 0; i < v.NumField(); i++ {
 		field := t.Field(i)
@@ -30,9 +26,4 @@ func (u *User) ToQuery() string {
 	}
 
 	return values.Encode()
-}
-
-func TestFormData(t *testing.T) {
-	user := &User{Name: "jack", Age: 18}
-	t.Logf("user to query: %s", user.ToQuery())
 }

@@ -4,16 +4,86 @@
 // Description:
 package requests
 
-import "fmt"
+import (
+	"encoding/json"
+)
 
-var requests = NewRequests()
+var req = NewRequests()
 
-func Get(url string, params FormData, options ...Option) {
-	get, err := requests.GET(url, params.ToQuery(), nil)
-	if err != nil {
-		return
+func Get(url string, params any, reply any, options ...Option) error {
+	if len(options) > 0 {
+		for _, option := range options {
+			option(req)
+		}
 	}
-	fmt.Println(get)
+
+	resp, err := req.GET(url, ToQuery(params))
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(resp, reply); err != nil {
+		return err
+	}
+	return nil
 }
 
-func Post(url string, data JsonData) {}
+func Post(url string, data any, reply any, options ...Option) error {
+	if len(options) > 0 {
+		for _, option := range options {
+			option(req)
+		}
+	}
+	body, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	resp, err := req.POST(url, body)
+	if err != nil {
+
+		return err
+	}
+	if err := json.Unmarshal(resp, reply); err != nil {
+		return err
+	}
+	return nil
+}
+
+func Put(url string, data any, reply any, options ...Option) error {
+	if len(options) > 0 {
+		for _, option := range options {
+			option(req)
+		}
+	}
+	body, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	resp, err := req.PUT(url, body)
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(resp, reply); err != nil {
+		return err
+	}
+	return nil
+}
+
+func Delete(url string, data any, reply any, options ...Option) error {
+	if len(options) > 0 {
+		for _, option := range options {
+			option(req)
+		}
+	}
+	body, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	resp, err := req.DELETE(url, body)
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(resp, reply); err != nil {
+		return err
+	}
+	return nil
+}
