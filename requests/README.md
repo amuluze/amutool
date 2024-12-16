@@ -58,7 +58,7 @@ type MessageReponse struct {
 
 func main() {
  reply := &MessageReponse{}
- err := requests.Get("http://10.9.35.5:8090/aaa", nil, reply)
+ err := requests.Get("http://1xxx.xxx.xxx.xxx5:8090/aaa", nil, reply)
     if err!= nil {
         fmt.Println(err)
     }
@@ -92,7 +92,7 @@ func main() {
   Age:  18,
  }
  reply := &PostResponse{}
- err := Post("http://10.9.35.5:8090/users", params, reply, SetHeader("Referer", "https://example.com/test"), SetCookie("cid", "123456"))
+ err := Post("http://1xxx.xxx.xxx.xxx:8090/users", params, reply, SetHeader("Referer", "https://example.com/test"), SetCookie("cid", "123456"))
  if err != nil {
   fmt.Println(err)
  }
