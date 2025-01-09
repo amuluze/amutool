@@ -84,7 +84,7 @@ func (m *Manager) GetContainerByName(ctx context.Context, name string) (Containe
 			}
 
 			state := ct.State
-			inspect, err := m.Client.ContainerInspect(ctx, c.ID)
+			inspect, err := m.Client.ContainerInspect(ctx, ct.ID)
 			if err == nil {
 				if inspect.ContainerJSONBase.State.Health != nil && inspect.ContainerJSONBase.State.Health.Status == "healthy" {
 					state = "running"
