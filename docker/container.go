@@ -304,19 +304,32 @@ func (m *Manager) RenameContainer(ctx context.Context, containerID, newName stri
 }
 
 // ExecCommand 在容器中执行命令
-func (m *Manager) ExecCommand(ctx context.Context, containerID string, cmd []string) error {
+func (m *Manager) ExecCommand(ctx context.Context, containerID string, cmd []string) ([]byte, error) {
 	create, err := m.Client.ContainerExecCreate(ctx, containerID, types.ExecConfig{
 		AttachStdout: true,
 		AttachStderr: true,
 		Cmd:          cmd,
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	err = m.Client.ContainerExecStart(ctx, create.ID, types.ExecStartCheck{})
+	resp, err := m.Client.ContainerExecAttach(ctx, create.ID, types.ExecStartCheck{})
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	defer resp.Close()
+
+	output, err := io.ReadAll(resp.Reader)
+	if err != nil {
+		return nil, err
+	}
+	inspect, err := m.Client.ContainerExecInspect(ctx, create.ID)
+	if err != nil {
+		return nil, err
+	}
+	if inspect.ExitCode != 0 {
+		return nil, fmt.Errorf("container exited with non-zero exit code: %d, output: %s", inspect.ExitCode, string(output))
+	}
+	return output, nil
 }
