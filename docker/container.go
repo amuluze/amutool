@@ -302,3 +302,21 @@ func (m *Manager) ContainerLogs(ctx context.Context, containerID string) (io.Rea
 func (m *Manager) RenameContainer(ctx context.Context, containerID, newName string) error {
 	return m.Client.ContainerRename(ctx, containerID, newName)
 }
+
+// ExecCommand 在容器中执行命令
+func (m *Manager) ExecCommand(ctx context.Context, containerID string, cmd []string) error {
+	create, err := m.Client.ContainerExecCreate(ctx, containerID, types.ExecConfig{
+		AttachStdout: true,
+		AttachStderr: true,
+		Cmd:          cmd,
+	})
+	if err != nil {
+		return err
+	}
+
+	err = m.Client.ContainerExecStart(ctx, create.ID, types.ExecStartCheck{})
+	if err != nil {
+		return err
+	}
+	return nil
+}
