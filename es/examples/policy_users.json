@@ -1,0 +1,27 @@
+{
+    "policy": {
+    "phases": {
+        "hot": {
+        "actions": {
+            "rollover": {
+            "max_docs": "50"
+            }
+        }
+        },
+        "warm": {
+        "min_age": "10s",
+        "actions": {
+            "allocate": {
+            "number_of_replicas": 0
+            }
+        }
+        },
+        "delete": {
+        "min_age": "20s",
+        "actions": {
+            "delete": {}
+        }
+        }
+    }
+    }
+}
