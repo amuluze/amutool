@@ -5,94 +5,112 @@
 package task
 
 import (
-	"context"
+	"fmt"
 	"sync"
 
-	"github.com/pkg/errors"
+	"github.com/robfig/cron/v3"
 )
 
+var (
+	taskManager *Manager
+)
+
+type CronTask interface {
+	Name() string
+	Schedule() string
+	Run()
+}
+
 type Manager struct {
-	tasks     sync.Map
-	taskChan  chan *Task
-	Ctx       context.Context
-	cancel    context.CancelFunc
-	runStatus *AtomicStatus
+	c           *cron.Cron
+	quit        chan struct{}
+	taskMap     sync.Map
+	scheduleMap sync.Map
 }
 
-func NewManager(ctx context.Context, m *Manager) {
-	m.tasks = sync.Map{}
-	m.runStatus = &AtomicStatus{}
-	m.Ctx, m.cancel = context.WithCancel(ctx)
-}
-
-func (m *Manager) Register(task *Task) error {
-	if _, ok := m.tasks.Load(task.name); ok {
-		return errors.New("has same register task name")
+func InitTaskManager() {
+	taskManager = &Manager{
+		quit:        make(chan struct{}),
+		c:           cron.New(cron.WithSeconds()),
+		taskMap:     sync.Map{},
+		scheduleMap: sync.Map{},
 	}
+}
 
-	m.tasks.Store(task.name, task)
-	if m.IsRun() {
-		m.taskChan <- task
+func GetCommonTask() *Manager {
+	return taskManager
+}
+
+func (t *Manager) Start() {
+	t.c.Start()
+}
+
+func (t *Manager) Stop() {
+	t.c.Stop()
+}
+
+func (t *Manager) AddTask(task CronTask) {
+	// 如果已经存在，则先移除，再重新添加
+	if taskID, ok := t.taskMap.Load(task.Name()); ok {
+		t.c.Remove(taskID.(cron.EntryID))
+		t.taskMap.Delete(task.Name())
+		t.scheduleMap.Delete(task.Name())
 	}
-	return nil
-}
-
-func (m *Manager) Run() {
-	m.tasks.Range(func(key, value interface{}) bool {
-		go value.(*Task).run()
-
-		return true
-	})
-
-	m.taskChan = make(chan *Task)
-	m.runStatus.SetRunStatus()
-breakLoop:
-	for {
-		select {
-		case task := <-m.taskChan:
-			go task.run()
-		case <-m.Ctx.Done():
-			break breakLoop
-		}
-	}
-
-	<-m.Ctx.Done()
-	m.close()
-}
-
-func (m *Manager) IsRun() bool {
-	return m.runStatus.IsRun()
-}
-
-func (m *Manager) Cancel(taskName string) {
-	task, ok := m.tasks.Load(taskName)
-	if !ok {
+	fmt.Printf("task schedule %s \n", task.Schedule())
+	taskID, err := t.c.AddJob(task.Schedule(), task)
+	if err != nil {
+		fmt.Printf("add job err:%v\n", err)
 		return
 	}
-
-	m.tasks.Delete(taskName)
-	task.(*Task).stop()
+	t.taskMap.Store(task.Name(), taskID)
+	t.scheduleMap.Store(task.Name(), task.Schedule())
 }
 
-func (m *Manager) close() {
-	m.tasks.Range(func(key, value interface{}) bool {
-		go value.(*Task).stop()
-		return true
-	})
+// AddOnceTask 添加只执行一次且立即执行的任务
+func (t *Manager) AddOnceTask(task CronTask) {
+	go task.Run()
+}
 
-	if m.taskChan != nil {
-		for {
-			select {
-			case <-m.taskChan:
-			default:
-				m.runStatus.SetStopStatus()
-				close(m.taskChan)
-				return
-			}
-		}
+func (t *Manager) RemoveTask(task CronTask) {
+	if taskID, ok := t.taskMap.Load(task.Name()); ok {
+		t.c.Remove(taskID.(cron.EntryID))
+		t.taskMap.Delete(task.Name())
+		t.scheduleMap.Delete(task.Name())
 	}
 }
 
-func (m *Manager) Stop() {
-	m.close()
+type Detail struct {
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Schedule string `json:"schedule"`
+	Prev     int64  `json:"prev"`
+	Next     int64  `json:"next"`
+}
+
+func (t *Manager) GetTaskInfo() []Detail {
+	details := make([]Detail, 0)
+	t.taskMap.Range(func(key, value interface{}) bool {
+		taskName := key.(string)
+		taskID := value.(cron.EntryID)
+		entry := t.c.Entry(taskID)
+		schedule := ""
+		if taskSchedule, ok := t.scheduleMap.Load(taskName); ok {
+			schedule = taskSchedule.(string)
+		}
+
+		details = append(details, Detail{
+			ID:       int(taskID),
+			Name:     taskName,
+			Schedule: schedule,
+			Prev: func() int64 {
+				if entry.Prev.Unix() > 0 {
+					return entry.Prev.Unix()
+				}
+				return 0
+			}(),
+			Next: entry.Next.Unix(),
+		})
+		return true
+	})
+	return details
 }
