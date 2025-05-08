@@ -50,7 +50,7 @@ func TestJsonFileLogger(t *testing.T) {
 	)
 	slog.SetDefault(logx.Logger)
 	logx.SetDebugLevel()
-	slog.Logger.Debug("this is a debug message")
+	slog.Debug("this is a debug message")
 	slog.Info("this is a info message")
 	slog.Error("this is a error message")
 

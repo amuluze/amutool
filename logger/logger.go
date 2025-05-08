@@ -82,7 +82,7 @@ func NewJsonFileLogger(options ...Option) *Logger {
 	_log, _ := rotator.New(
 		filepath.Join(logFilePath+config.LogFileSuffix),
 		rotator.WithLinkName(logFilePath),
-		rotator.WithMaxAge(time.Duration(config.LogFileMaxAge)*24*time.Hour*7),
+		rotator.WithMaxAge(time.Duration(config.LogFileMaxAge)*24*time.Hour),
 		rotator.WithRotationTime(time.Duration(config.LogFileRotationTime)*time.Hour*24),
 	)
 	defaultLogger := slog.New(slog.NewJSONHandler(_log, &slog.HandlerOptions{
